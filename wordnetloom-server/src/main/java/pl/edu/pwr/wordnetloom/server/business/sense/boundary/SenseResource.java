@@ -273,4 +273,11 @@ public class SenseResource {
         return Response.status(Response.Status.NOT_IMPLEMENTED)
                 .build();
     }
+
+    @GET
+    @Path("{id}/yiddish")
+    public JsonObject yiddishVariants(@HeaderParam("Accept-Language") Locale locale,
+                                      @PathParam("id") final UUID id) {
+        return entityBuilder.buildYiddishVariants(queryService.findSenseYiddish(id), uriInfo, locale);
+    }
 }

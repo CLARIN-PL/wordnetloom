@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business;
 
+import org.hibernate.Hibernate;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
@@ -12,6 +13,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.*;
 
 import javax.inject.Inject;
 import javax.json.*;
@@ -1308,6 +1310,10 @@ public class EntityBuilder {
                 .add("examples", this.linkBuilder.forSenseExamples(sense.getId(), uriInfo).toString())
                 .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString());
 
+        if(sense.getLexicon().getId() == 4){
+            linkBuilder.add("yiddish", this.linkBuilder.forYiddishExtension(sense, uriInfo).toString());
+        }
+
         builder.add("_links", linkBuilder);
 
         builder.add("_actions", createArrayBuilder()
@@ -1425,14 +1431,23 @@ public class EntityBuilder {
             linkBuilder.add("graph", this.linkBuilder.forSynsetsGraph(sense.getSynset().getId(), uriInfo).toString());
         }
 
+        builder.add("id", sense.getId().toString());
+
         if (searchMode && sense.getPartOfSpeech() != null) {
             builder.add("part_of_speech", sense.getPartOfSpeech().getId());
         }
 
         if (searchMode) {
             if (sense.getWord() != null) {
-                builder.add("lexicon", sense.getLexicon().getId());
-                builder.add("label", buildLabel(sense, false, locale));
+                builder.add("label", buildLabel(sense, true, locale));
+                if(Hibernate.isInitialized(sense.getYiddish())){
+                    builder.add("variant", sense.getVariant());
+                    JsonArray variants = sense.getYiddish()
+                            .stream()
+                            .map(this::buildYiddishShortExtension)
+                            .collect(JsonCollectors.toJsonArray());
+                    builder.add("variants", variants);
+                }
             }
         } else {
             if (sense.getWord() != null) {
@@ -1441,6 +1456,16 @@ public class EntityBuilder {
         }
         builder.add("_links", linkBuilder);
 
+        return builder.build();
+    }
+
+    public JsonObject buildYiddishShortExtension(YiddishSenseExtension yse){
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("id", yse.getId());
+        builder.add("variant_type", yse.getVariant().name());
+        builder.add("latin", yse.getLatinSpelling()!=null ? yse.getLatinSpelling():"");
+        builder.add("yiddish", yse.getYiddishSpelling()!=null ? yse.getYiddishSpelling():"");
+        builder.add("yivo", yse.getYivoSpelling()!=null ? yse.getYivoSpelling():"");
         return builder.build();
     }
 
@@ -1721,4 +1746,185 @@ public class EntityBuilder {
                 .build();
     }
 
+    public JsonObject buildYiddishVariants(Set<YiddishSenseExtension> senseYiddish, UriInfo uriInfo, Locale locale) {
+        JsonArray array = senseYiddish.stream()
+                .map(e -> buildYiddishVariant(e, linkBuilder.forYiddishVariant(e, uriInfo), locale))
+                .collect(JsonCollectors.toJsonArray());
+        return createObjectBuilder()
+                .add("rows", array)
+                .add("_links", selfLinkBuilder(uriInfo.getRequestUri().toString()))
+                .build();
+    }
+
+    private JsonObject buildYiddishVariant(YiddishSenseExtension e, Object forYiddishVariant, Locale locale) {
+
+        JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("id", e.getId());
+        if (e.getVariant() != null)
+            builder.add("variant_type", e.getVariant().name());
+
+        if (e.getLatinSpelling() != null)
+            builder.add("latin_spelling", e.getLatinSpelling());
+
+        if (e.getYiddishSpelling() != null)
+            builder.add("yiddish_spelling", e.getYiddishSpelling());
+
+        if (e.getYivoSpelling() != null)
+            builder.add("yivo_spelling", e.getYivoSpelling());
+
+        if (e.getMeaning() != null)
+            builder.add("meaning", e.getMeaning());
+
+        if (e.getEtymologicalRoot() != null)
+            builder.add("etymological_root", e.getEtymologicalRoot());
+
+        if (e.getComment() != null)
+            builder.add("comment", e.getComment());
+
+        if (e.getContext() != null)
+            builder.add("context", e.getContext());
+
+        if (e.getEtymology() != null)
+            builder.add("etymology", e.getEtymology());
+
+        if (e.getAge() != null) {
+            builder.add("age", Json.createObjectBuilder()
+                    .add("id", e.getAge().getId())
+                    .add("name", loc.find(e.getAge().getName(), locale)));
+        }
+
+        if (e.getGrammaticalGender() != null){
+            builder.add("grammatical_gender", Json.createObjectBuilder()
+                    .add("id", e.getGrammaticalGender().getId())
+                    .add("name", loc.find(e.getGrammaticalGender().getName(), locale)));
+        }
+
+        if(e.getLexicalCharacteristic() != null) {
+            builder.add("lexical_characteristic",
+                    Json.createObjectBuilder()
+                            .add("id", e.getLexicalCharacteristic().getId())
+                            .add("name", loc.find(e.getLexicalCharacteristic().getName(), locale)));
+        }
+
+        if(e.getStatus() != null) {
+            builder.add("status",
+                    Json.createObjectBuilder()
+                            .add("id", e.getStatus().getId())
+                            .add("name", loc.find(e.getStatus().getName(), locale)));
+        }
+
+        if(e.getStyle() != null) {
+            builder.add("style",
+                    Json.createObjectBuilder()
+                            .add("id", e.getStyle().getId())
+                            .add("name", loc.find(e.getStyle().getName(), locale)));
+        }
+
+        JsonArray inflection = e.getInflection()
+                .stream()
+                .map(i -> buildInflection(i, locale))
+                .collect(JsonCollectors.toJsonArray());
+
+        JsonArray particles = e.getParticles()
+                .stream()
+                .map(i -> buildParticle(i, locale))
+                .collect(JsonCollectors.toJsonArray());
+
+        JsonArray domains = e.getYiddishDomains()
+                .stream()
+                .map(i -> buildYiddishDomain(i, locale))
+                .collect(JsonCollectors.toJsonArray());
+
+        JsonArray trans = e.getTranscriptions()
+                .stream()
+                .map(i -> buildTranscription(i, locale))
+                .collect(JsonCollectors.toJsonArray());
+
+        JsonArray src = e.getSource()
+                .stream()
+                .map(i -> buildSource(i, locale))
+                .collect(JsonCollectors.toJsonArray());
+
+        builder.add("inflections", inflection);
+        builder.add("particles", particles);
+        builder.add("semantic_fields", domains);
+        builder.add("transcriptions", trans);
+        builder.add("sources", src);
+
+        JsonObjectBuilder linkBuilder = createObjectBuilder();
+        // linkBuilder.add("self", forYiddishVariant);
+        builder.add("_links", linkBuilder);
+
+        return builder.build();
+    }
+
+    private JsonObject buildYiddishDomain(YiddishDomain i, Locale locale) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("domain", Json.createObjectBuilder()
+                .add("id", i.getDomain().getId())
+                .add("name",loc.find(i.getDomain().getName(),locale)));
+        if(i.getModifier() !=null)
+            builder.add("modifier", Json.createObjectBuilder()
+                    .add("id", i.getModifier().getId())
+                    .add("name", loc.find(i.getModifier().getName(),locale))
+            );
+
+        return  builder.build();
+    }
+
+    private JsonObject buildTranscription(Transcription i, Locale locale) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("id", i.getTranscriptionDictionary().getId());
+        builder.add("name", loc.find(i.getTranscriptionDictionary().getName(),locale));
+
+        if(i.getPhonography() !=null)
+            builder.add("phonography", i.getPhonography());
+        return  builder.build();
+    }
+
+    private JsonObject buildSource(SourceDictionary i, Locale locale) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("id", i.getId());
+        builder.add("name", loc.find(i.getName(),locale));
+        return  builder.build();
+    }
+
+    private JsonObject buildParticle(Particle p, Locale locale) {
+        JsonObjectBuilder builder = createObjectBuilder();
+
+        if(p instanceof RootParticle) {
+            builder.add("type", "root");
+            builder.add("value", ((RootParticle) p).getRoot());
+        }
+        if(p instanceof PrefixParticle) {
+            builder.add("id", ((PrefixParticle) p).getPrefix().getId());
+            builder.add("type", "prefix");
+            builder.add("value", loc.find(((PrefixParticle) p).getPrefix().getName(), locale));
+        }
+        if(p instanceof InterfixParticle) {
+            builder.add("id", ((InterfixParticle) p).getInterfix().getId());
+            builder.add("type", "interfix");
+            builder.add("value", loc.find(((InterfixParticle) p).getInterfix().getName(), locale));
+        }
+        if(p instanceof SuffixParticle) {
+            builder.add("id",  ((SuffixParticle) p).getSuffix().getId());
+            builder.add("type", "suffix");
+            builder.add("value", loc.find(((SuffixParticle) p).getSuffix().getName(), locale));
+        }
+        if(p instanceof ConstituentParticle){
+            builder.add("type", "constituent");
+            builder.add("value", ((ConstituentParticle) p).getConstituent());
+        }
+
+        return  builder.build();
+    }
+
+    private JsonObject buildInflection(Inflection i, Locale locale) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("id", i.getInflectionDictionary().getId());
+        builder.add("name", loc.find(i.getInflectionDictionary().getName(),locale));
+        if(i.getText() !=null)
+            builder.add("text", i.getText());
+        return  builder.build();
+    }
 }

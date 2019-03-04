@@ -1,7 +1,9 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.control;
 
 import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.SourceDictionary;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.*;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -18,7 +20,12 @@ public class SenseSpecification {
             List<Predicate> criteria = new ArrayList<>();
 
             if (filter.getLemma() != null && !filter.getLemma().isEmpty()) {
-                criteria.add(byLemmaLike(filter.getLemma()).toPredicate(root, query, cb));
+                if(filter.getLexicon() != null && filter.getLexicon() == 4L){
+                    Predicate lemmas = filterAcrossLemmas(filter.getLemma(), root, cb);
+                    if (lemmas != null) criteria.add(lemmas);
+                }else {
+                    criteria.add(byLemmaLike(filter.getLemma()).toPredicate(root, query, cb));
+                }
             }
 
             if (filter.getPartOfSpeechId() != null) {
@@ -52,14 +59,210 @@ public class SenseSpecification {
             Predicate attributes = filterSenseAttributes(filter, root, cb);
             if (attributes != null) criteria.add(attributes);
 
+            Predicate yiddish = filterYiddishExtension(filter, root, cb);
+            if (yiddish != null) criteria.add(yiddish);
+
             return cb.and(criteria.toArray(new Predicate[0]));
         };
     }
 
+    public static Predicate filterAcrossLemmas(String lemma, Root<Sense> root, CriteriaBuilder cb) {
+        CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
+        Subquery<UUID> subquery = query.subquery(UUID.class);
+        Root<YiddishSenseExtension> yiddishRoot = subquery.from(YiddishSenseExtension.class);
+        subquery.select(yiddishRoot.get("sense").get("id"));
+        List<Predicate> predicates = new ArrayList<>();
+
+        Predicate latinPredicate =  cb.like(yiddishRoot.get("latinSpelling"),"%"+ lemma+"%");
+        Predicate yivoPredicate =  cb.like(yiddishRoot.get("yivoSpelling"), "%"+lemma+"%");
+        Predicate yiddishPredicate =  cb.like(yiddishRoot.get("yiddishSpelling"), "%"+lemma+"%");
+
+        Join<YiddishSenseExtension, Transcription> transJoin = yiddishRoot.join("transcriptions");
+        Predicate transPredicate =  cb.like(transJoin.get("phonography"), "%"+lemma +"%");
+
+        Predicate orPredicate = cb.or(latinPredicate,yivoPredicate,yiddishPredicate, transPredicate);
+        predicates.add(orPredicate);
+
+        subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+        return cb.in(root.get("id")).value(subquery);
+    }
+
+    public static Predicate filterYiddishRootParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
+        if (filter.getParticleRoot() != null && !filter.getParticleRoot().isEmpty()) {
+            CriteriaQuery<Long> query = cb.createQuery(Long.class);
+            Subquery<Long> subquery = query.subquery(Long.class);
+
+            Root<RootParticle> particleRoot = subquery.from(RootParticle.class);
+
+            subquery.select(particleRoot.get("extension").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+
+            Predicate sourcePredicate = cb.equal(particleRoot.get("root"), filter.getParticleRoot());
+            predicates.add(sourcePredicate);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
+    public static Predicate filterYiddishConstituentParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
+        if (filter.getParticleConstituent() != null && !filter.getParticleConstituent().isEmpty()) {
+            CriteriaQuery<Long> query = cb.createQuery(Long.class);
+            Subquery<Long> subquery = query.subquery(Long.class);
+
+            Root<ConstituentParticle> particleRoot = subquery.from(ConstituentParticle.class);
+
+            subquery.select(particleRoot.get("extension").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate sourcePredicate = cb.equal(particleRoot.get("constituent"), filter.getParticleConstituent());
+            predicates.add(sourcePredicate);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
+    public static Predicate filterYiddishPrefixParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
+        if (filter.getParticlePrefix() != null) {
+            CriteriaQuery<Long> query = cb.createQuery(Long.class);
+            Subquery<Long> subquery = query.subquery(Long.class);
+
+            Root<PrefixParticle> particleRoot = subquery.from(PrefixParticle.class);
+
+            subquery.select(particleRoot.get("extension").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate sourcePredicate = cb.equal(particleRoot.get("prefix").get("id"), filter.getParticlePrefix());
+            predicates.add(sourcePredicate);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
+    public static Predicate filterYiddishSuffixParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
+        if (filter.getParticleSuffix() != null) {
+            CriteriaQuery<Long> query = cb.createQuery(Long.class);
+            Subquery<Long> subquery = query.subquery(Long.class);
+
+            Root<SuffixParticle> particleRoot = subquery.from(SuffixParticle.class);
+
+            subquery.select(particleRoot.get("extension").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate sourcePredicate = cb.equal(particleRoot.get("suffix").get("id"), filter.getParticleSuffix());
+            predicates.add(sourcePredicate);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
+    public static Predicate filterYiddishExtension(SearchFilter filter, Root<Sense> root, CriteriaBuilder cb) {
+        if (filter.getEtymologicalRoot() != null || filter.getAgeId() != null
+                || (filter.getEtymology() !=null && !filter.getEtymology().isEmpty())
+                || filter.getGrammaticalGenderId() != null || filter.getYiddishStatusId() != null
+                || filter.getInflectionId() != null || filter.getLexicalCharacteristicId() != null
+                || filter.getSourceId() != null || filter.getStyleId() != null
+                || filter.getYiddishDomainId() != null || filter.getYiddishDomainModificationId() != null
+                || (filter.getParticleRoot() != null && !filter.getParticleRoot().isEmpty())
+                || (filter.getParticleConstituent() != null && !filter.getParticleConstituent().isEmpty())
+                || filter.getParticlePrefix() != null || filter.getParticleSuffix() !=null) {
+
+            CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
+            Subquery<UUID> subquery = query.subquery(UUID.class);
+            Root<YiddishSenseExtension> yiddishRoot = subquery.from(YiddishSenseExtension.class);
+            subquery.select(yiddishRoot.get("sense").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filter.getEtymologicalRoot() != null && !filter.getEtymologicalRoot().equals("")) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymologicalRoot"), filter.getEtymologicalRoot());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getAgeId() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("age").get("id"), filter.getAgeId());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getGrammaticalGenderId() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("grammaticalGender").get("id"), filter.getGrammaticalGenderId());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getLexicalCharacteristicId() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("lexicalCharacteristic").get("id"), filter.getLexicalCharacteristicId());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getStyleId() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("style").get("id"), filter.getStyleId());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getYiddishStatusId() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("status").get("id"), filter.getYiddishStatusId());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getEtymology() != null) {
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymology"), filter.getEtymology());
+                predicates.add(yiddishPredicate);
+            }
+
+            if (filter.getSourceId() != null) {
+                Join<YiddishSenseExtension, SourceDictionary> sourceJoin = yiddishRoot.join("source");
+                Predicate sourcePredicate = cb.equal(sourceJoin.get("id"), filter.getSourceId());
+                predicates.add(sourcePredicate);
+            }
+
+            if (filter.getInflectionId() != null) {
+                Join<YiddishSenseExtension, Inflection> sourceJoin = yiddishRoot.join("inflection");
+                Predicate sourcePredicate = cb.equal(sourceJoin.get("inflectionDictionary").get("id"), filter.getInflectionId());
+                predicates.add(sourcePredicate);
+            }
+
+            if (filter.getYiddishDomainId() != null || filter.getYiddishDomainModificationId() != null) {
+                Join<YiddishSenseExtension, YiddishDomain> sourceJoin = yiddishRoot.join("yiddishDomains");
+                if (filter.getYiddishDomainId() != null) {
+                    Predicate sourcePredicate = cb.equal(sourceJoin.get("domain").get("id"), filter.getYiddishDomainId());
+                    predicates.add(sourcePredicate);
+                }
+                if (filter.getYiddishDomainModificationId() != null) {
+                    Predicate sourcePredicate = cb.equal(sourceJoin.get("modifier").get("id"), filter.getYiddishDomainModificationId());
+                    predicates.add(sourcePredicate);
+                }
+            }
+
+            Predicate particlesRoot = filterYiddishRootParticles(filter, yiddishRoot, cb);
+            if (particlesRoot != null) predicates.add(particlesRoot);
+
+            Predicate particlesConst = filterYiddishConstituentParticles(filter, yiddishRoot, cb);
+            if (particlesConst != null) predicates.add(particlesConst);
+
+            Predicate particlesPrefix = filterYiddishPrefixParticles(filter, yiddishRoot, cb);
+            if (particlesPrefix != null) predicates.add(particlesPrefix);
+
+            Predicate particlesSuffix = filterYiddishSuffixParticles(filter, yiddishRoot, cb);
+            if (particlesSuffix != null) predicates.add(particlesSuffix);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
+
     public static Predicate filterSenseAttributes(SearchFilter filter, Root<Sense> root, CriteriaBuilder cb) {
 
         if (filter.getRegisterId() != null || filter.getComment() != null || filter.getDefinition() != null
-                || filter.getExample() != null || filter.getAspectId() != null) {
+                || filter.getExample() != null) {
 
             CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
             Subquery<UUID> subquery = query.subquery(UUID.class);
@@ -70,11 +273,6 @@ public class SenseSpecification {
 
             if (filter.getRegisterId() != null) {
                 Predicate registerPredicate = cb.equal(senseAttributesRoot.get("register").get("id"), filter.getRegisterId());
-                predicates.add(registerPredicate);
-            }
-
-            if (filter.getAspectId() != null) {
-                Predicate registerPredicate = cb.equal(senseAttributesRoot.get("aspect").get("id"), filter.getAspectId());
                 predicates.add(registerPredicate);
             }
 

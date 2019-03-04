@@ -27,19 +27,43 @@ public class SearchFilter {
 
     private Long registerId;
 
-    private Long aspectId;
-
     private UUID synsetId;
 
     private Boolean artificial;
 
-    private Long emotion;
-
-    private Long valuation;
-
-    private Long markedness;
-
     private Boolean senseWithoutSynset;
+
+    private Long yiddishDomainId;
+
+    private Long yiddishDomainModificationId;
+
+    private Long grammaticalGenderId;
+
+    private Long styleId;
+
+    private Long yiddishStatusId;
+
+    private Long lexicalCharacteristicId;
+
+    private Long sourceId;
+
+    private Long ageId;
+
+    private Long inflectionId;
+
+    private String etymologicalRoot;
+
+    private Long particlePrefix;
+
+    private Long particleSuffix;
+
+    private String particleRoot;
+
+    private String particleConstituent;
+
+    private String etymology;
+
+    private String sortBy;
 
     public SearchFilter() {
     }
@@ -132,30 +156,6 @@ public class SearchFilter {
         this.comment = comment;
     }
 
-    public Long getEmotion() {
-        return emotion;
-    }
-
-    public void setEmotion(Long emotion) {
-        this.emotion = emotion;
-    }
-
-    public Long getValuation() {
-        return valuation;
-    }
-
-    public void setValuation(Long valuation) {
-        this.valuation = valuation;
-    }
-
-    public Long getMarkedness() {
-        return markedness;
-    }
-
-    public void setMarkedness(Long markedness) {
-        this.markedness = markedness;
-    }
-
     public Boolean getArtificial() {
         return artificial;
     }
@@ -164,12 +164,132 @@ public class SearchFilter {
         this.artificial = artificial;
     }
 
-    public Long getAspectId() {
-        return aspectId;
+    public Long getYiddishDomainId() {
+        return yiddishDomainId;
     }
 
-    public void setAspectId(Long aspectId) {
-        this.aspectId = aspectId;
+    public void setYiddishDomainId(Long yiddishDomainId) {
+        this.yiddishDomainId = yiddishDomainId;
+    }
+
+    public Long getYiddishDomainModificationId() {
+        return yiddishDomainModificationId;
+    }
+
+    public void setYiddishDomainModificationId(Long yiddishDomainModificationId) {
+        this.yiddishDomainModificationId = yiddishDomainModificationId;
+    }
+
+    public Long getGrammaticalGenderId() {
+        return grammaticalGenderId;
+    }
+
+    public void setGrammaticalGenderId(Long grammaticalGenderId) {
+        this.grammaticalGenderId = grammaticalGenderId;
+    }
+
+    public Long getStyleId() {
+        return styleId;
+    }
+
+    public void setStyleId(Long styleId) {
+        this.styleId = styleId;
+    }
+
+    public Long getYiddishStatusId() {
+        return yiddishStatusId;
+    }
+
+    public void setYiddishStatusId(Long yiddishStatusId) {
+        this.yiddishStatusId = yiddishStatusId;
+    }
+
+    public Long getLexicalCharacteristicId() {
+        return lexicalCharacteristicId;
+    }
+
+    public void setLexicalCharacteristicId(Long lexicalCharacteristicId) {
+        this.lexicalCharacteristicId = lexicalCharacteristicId;
+    }
+
+    public Long getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(Long sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public Long getAgeId() {
+        return ageId;
+    }
+
+    public void setAgeId(Long ageId) {
+        this.ageId = ageId;
+    }
+
+    public Long getInflectionId() {
+        return inflectionId;
+    }
+
+    public void setInflectionId(Long inflectionId) {
+        this.inflectionId = inflectionId;
+    }
+
+    public String getEtymologicalRoot() {
+        return etymologicalRoot;
+    }
+
+    public void setEtymologicalRoot(String etymologicalRoot) {
+        this.etymologicalRoot = etymologicalRoot;
+    }
+
+    public Long getParticlePrefix() {
+        return particlePrefix;
+    }
+
+    public void setParticlePrefix(Long particlePrefix) {
+        this.particlePrefix = particlePrefix;
+    }
+
+    public Long getParticleSuffix() {
+        return particleSuffix;
+    }
+
+    public void setParticleSuffix(Long particleSuffix) {
+        this.particleSuffix = particleSuffix;
+    }
+
+    public String getParticleRoot() {
+        return particleRoot;
+    }
+
+    public void setParticleRoot(String particleRoot) {
+        this.particleRoot = particleRoot;
+    }
+
+    public String getParticleConstituent() {
+        return particleConstituent;
+    }
+
+    public void setParticleConstituent(String particleConstituent) {
+        this.particleConstituent = particleConstituent;
+    }
+
+    public String getEtymology() {
+        return etymology;
+    }
+
+    public void setEtymology(String etymology) {
+        this.etymology = etymology;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
     }
 
     public UUID getRelationTypeId() {

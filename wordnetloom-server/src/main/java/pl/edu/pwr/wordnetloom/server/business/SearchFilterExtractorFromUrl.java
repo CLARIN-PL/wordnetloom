@@ -45,11 +45,6 @@ public class SearchFilterExtractorFromUrl {
             searchFilter.setStatusId(Long.valueOf(statusId));
         }
 
-        final String aspectId = getUriInfo().getQueryParameters().getFirst("aspect");
-        if (aspectId != null) {
-            searchFilter.setAspectId(Long.valueOf(aspectId));
-        }
-
         final String registerId = getUriInfo().getQueryParameters().getFirst("register");
         if (registerId != null) {
             searchFilter.setRegisterId(Long.valueOf(registerId));
@@ -71,25 +66,76 @@ public class SearchFilterExtractorFromUrl {
 
         searchFilter.setExample(getUriInfo().getQueryParameters().getFirst("example"));
 
-        final String emotionId = getUriInfo().getQueryParameters().getFirst("emotion");
-        if (emotionId != null) {
-            searchFilter.setEmotion(Long.valueOf(emotionId));
-        }
-
-        final String valuationId = getUriInfo().getQueryParameters().getFirst("valuation");
-        if (valuationId != null) {
-            searchFilter.setValuation(Long.valueOf(valuationId));
-        }
-
-        final String markednessId = getUriInfo().getQueryParameters().getFirst("markedness");
-        if (markednessId != null) {
-            searchFilter.setMarkedness(Long.valueOf(markednessId));
-        }
-
         final String senseWithoutSynsets = getUriInfo().getQueryParameters().getFirst("senses_without_synset");
         if (senseWithoutSynsets != null) {
             searchFilter.setSenseWithoutSynset(Boolean.parseBoolean(senseWithoutSynsets));
         }
+
+        final String yiddishDomainId = getUriInfo().getQueryParameters().getFirst("yiddish_domain");
+        if (yiddishDomainId != null) {
+            searchFilter.setYiddishDomainId(Long.valueOf(yiddishDomainId));
+        }
+
+        final String yiddishDomainModificationId = getUriInfo().getQueryParameters().getFirst("yiddish_domain_modification");
+        if (yiddishDomainModificationId != null) {
+            searchFilter.setYiddishDomainModificationId(Long.valueOf(yiddishDomainModificationId));
+        }
+
+        final String grammaticalGenderId  = getUriInfo().getQueryParameters().getFirst("grammatical_gender");
+        if (grammaticalGenderId != null) {
+            searchFilter.setGrammaticalGenderId(Long.valueOf(grammaticalGenderId));
+        }
+
+        final String styleId = getUriInfo().getQueryParameters().getFirst("style");
+        if (styleId != null) {
+            searchFilter.setStyleId(Long.valueOf(styleId));
+        }
+
+        final String yiddishStatusId = getUriInfo().getQueryParameters().getFirst("yiddish_status");
+        if (yiddishStatusId != null) {
+            searchFilter.setYiddishStatusId(Long.valueOf(yiddishStatusId));
+        }
+
+        final String lexicalCharacteristicId = getUriInfo().getQueryParameters().getFirst("lexical_characteristic");
+        if (lexicalCharacteristicId != null) {
+            searchFilter.setLexicalCharacteristicId(Long.valueOf(lexicalCharacteristicId));
+        }
+
+        final String sourceId = getUriInfo().getQueryParameters().getFirst("source");
+        if (sourceId != null) {
+            searchFilter.setSourceId(Long.valueOf(sourceId));
+        }
+
+        final String ageId = getUriInfo().getQueryParameters().getFirst("age");
+        if (ageId != null) {
+            searchFilter.setAgeId(Long.valueOf(ageId));
+        }
+
+        final String inflectionId = getUriInfo().getQueryParameters().getFirst("inflection");
+        if (inflectionId != null) {
+            searchFilter.setInflectionId(Long.valueOf(inflectionId));
+        }
+
+        searchFilter.setEtymologicalRoot(getUriInfo().getQueryParameters().getFirst("etymological_root"));
+
+        final String particlePrefix = getUriInfo().getQueryParameters().getFirst("particle_prefix");
+        if (particlePrefix != null) {
+            searchFilter.setParticlePrefix(Long.valueOf(particlePrefix));
+        }
+
+        final String particleSuffix = getUriInfo().getQueryParameters().getFirst("particle_suffix");
+        if (particleSuffix != null) {
+            searchFilter.setParticleSuffix(Long.valueOf(particleSuffix));
+        }
+
+        searchFilter.setParticleRoot(getUriInfo().getQueryParameters().getFirst("particle_root"));
+        searchFilter.setParticleConstituent(getUriInfo().getQueryParameters().getFirst("particle_constituent"));
+        searchFilter.setEtymology(getUriInfo().getQueryParameters().getFirst("etymology"));
+        searchFilter.setSortBy(getUriInfo().getQueryParameters().getFirst("sort_by"));
+        if(searchFilter.getSortBy() == null){
+            searchFilter.setSortBy("latin");
+        }
+
         return searchFilter;
     }
 

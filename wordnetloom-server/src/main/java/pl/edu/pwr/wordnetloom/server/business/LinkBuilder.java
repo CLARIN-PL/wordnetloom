@@ -18,6 +18,7 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.boundary.SynsetResource;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.YiddishSenseExtension;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -221,5 +222,70 @@ public class LinkBuilder {
 
     public Object forSecurityChangePassword(UriInfo uriInfo) {
         return createResourceUri(SecurityResource.class, "changePassword", uriInfo);
+    }
+
+
+    public Object forAges(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllAges", uriInfo);
+    }
+
+    public Object forYiddishExtension(Sense s, UriInfo uriInfo) {
+        return createResourceUri(SenseResource.class, "yiddishVariants", s.getId(), uriInfo);
+    }
+
+    public Object forYiddishVariant(YiddishSenseExtension e, UriInfo uriInfo) {
+        return createResourceUri(SenseResource.class, "yiddishVariants", e.getId(), uriInfo);
+    }
+
+    public Object forSources(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllSources", uriInfo);
+    }
+
+    public Object forTranscription(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllTranscriptions", uriInfo);
+    }
+
+    public Object forStyles(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllStyles", uriInfo);
+    }
+
+    public Object forSuffixes(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllSuffixes", uriInfo);
+    }
+
+    public Object forPrefixes(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllPrefixes", uriInfo);
+    }
+
+    public Object forInterfixes(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllInterfixes", uriInfo);
+    }
+
+    public Object forInflections(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllInflections", uriInfo);
+    }
+
+    public Object forDialectals(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllDialectals", uriInfo);
+    }
+
+    public Object forYiddishStatuses(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllYiddishStatuses", uriInfo);
+    }
+
+    public Object forYiddishDomains(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllYiddishDomains", uriInfo);
+    }
+
+    public Object forYiddishDomainModifiers(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllYiddishDomainModifiers", uriInfo);
+    }
+
+    public Object forLexicalCharacteristics(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllLexicalCharacteristics", uriInfo);
+    }
+
+    public Object forGrammaticalGenders(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getAllGrammaticalGenders", uriInfo);
     }
 }

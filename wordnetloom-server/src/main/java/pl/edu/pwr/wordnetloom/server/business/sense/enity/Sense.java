@@ -6,15 +6,12 @@ import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.YiddishSenseExtension;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tbl_sense")
@@ -78,6 +75,24 @@ import java.util.UUID;
                 "LEFT JOIN FETCH s.lexicon l " +
                 "WHERE l.id = :id")
 
+@NamedQuery(name = Sense.FIND_YIDDISH_VARIANTS,
+        query = "SELECT DISTINCT s FROM Sense s " +
+                "LEFT JOIN FETCH s.word " +
+                "LEFT JOIN FETCH s.domain " +
+                "LEFT JOIN FETCH s.partOfSpeech " +
+                "LEFT JOIN FETCH s.lexicon " +
+                "LEFT JOIN FETCH s.yiddish y " +
+                "LEFT JOIN FETCH y.age " +
+                "LEFT JOIN FETCH y.grammaticalGender " +
+                "LEFT JOIN FETCH y.inflection " +
+                "LEFT JOIN FETCH y.lexicalCharacteristic " +
+                "LEFT JOIN FETCH y.particles " +
+                "LEFT JOIN FETCH y.source " +
+                "LEFT JOIN FETCH y.status " +
+                "LEFT JOIN FETCH y.style " +
+                "LEFT JOIN FETCH y.transcriptions " +
+                "LEFT JOIN FETCH y.yiddishDomains " +
+                "WHERE  s.id = :id")
 @NamedQuery(name = Sense.FIND_NEXT_VARIANT,
         query = "SELECT MAX(s.variant) FROM Sense AS s WHERE s.word.id = :wordId " +
                 "AND s.partOfSpeech.id = :posId AND s.lexicon.id = :lex")
@@ -100,6 +115,7 @@ public class Sense implements Serializable {
     public static final String COUNT_SENSE_BY_WORD_ID = "Sense.countSenseByWordId";
     public static final String FIND_SENSE_BY_SYNSET_ID_AND_POSITION = "Sense.findSenseBySynsetIdAndPosition";
     public static final String COUNT_SENSES_BY_SYNSET_ID = "Sense.countSensesBySynsetId";
+    public static final String FIND_YIDDISH_VARIANTS = "Sense.findYiddishVariants";
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -149,6 +165,9 @@ public class Sense implements Serializable {
 
     @OneToOne(mappedBy = "sense", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private SenseAttributes attributes;
+
+    @OneToMany(mappedBy = "sense", fetch = FetchType.LAZY)
+    private Set<YiddishSenseExtension> yiddish = new LinkedHashSet<>();
 
     public UUID getId(){
         return id;
@@ -236,6 +255,14 @@ public class Sense implements Serializable {
 
     public void setAttributes(SenseAttributes attributes) {
         this.attributes = attributes;
+    }
+
+    public Set<YiddishSenseExtension> getYiddish() {
+        return yiddish;
+    }
+
+    public void setYiddish(Set<YiddishSenseExtension> yiddish) {
+        this.yiddish = yiddish;
     }
 
     @Override

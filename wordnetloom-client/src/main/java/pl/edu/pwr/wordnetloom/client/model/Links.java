@@ -22,11 +22,10 @@ public class Links {
 
     private URI tests;
 
+    private URI yiddish;
+
     @JsonProperty("reverse_relation")
     private URI reverseRelation;
-
-    @JsonProperty("emotional-annotations")
-    private URI emotionalAnnotations;
 
     public URI getSelf() {
         return self;
@@ -84,14 +83,6 @@ public class Links {
         this.synset = synset;
     }
 
-    public URI getEmotionalAnnotations() {
-        return emotionalAnnotations;
-    }
-
-    public void setEmotionalAnnotations(URI emotionalAnnotations) {
-        this.emotionalAnnotations = emotionalAnnotations;
-    }
-
     public URI getTests() {
         return tests;
     }
@@ -108,6 +99,14 @@ public class Links {
         this.reverseRelation = reverseRelation;
     }
 
+    public URI getYiddish() {
+        return yiddish;
+    }
+
+    public void setYiddish(URI yiddish) {
+        this.yiddish = yiddish;
+    }
+
     @Override
     public String toString() {
         return "Links{" +
@@ -120,7 +119,6 @@ public class Links {
                 ", synset=" + synset +
                 ", tests=" + tests +
                 ", reverseRelation=" + reverseRelation +
-                ", emotionalAnnotations=" + emotionalAnnotations +
                 '}';
     }
 }

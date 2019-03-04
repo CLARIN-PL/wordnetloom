@@ -194,7 +194,7 @@ public class VertexRenderer implements Renderer.Vertex<Node, Edge> {
         String icon = node.getLexiconMarker();
         if(icon != null && !icon.isEmpty()) {
             Image img = ResourceProvider.lexiconImages.get(node.getLexiconMarker());
-            g.drawImage(img, Math.round(pos.x) - 40, Math.round(pos.y) - 21, 20, 20, null);
+            g.drawImage(img, Math.round(pos.x) - 40, Math.round(pos.y) - 21, 16, 16, null);
         }
     }
 

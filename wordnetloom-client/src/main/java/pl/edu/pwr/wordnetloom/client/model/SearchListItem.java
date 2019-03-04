@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.edu.pwr.wordnetloom.client.service.UuidAdapter;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import java.util.List;
 import java.util.UUID;
 
 public class SearchListItem {
@@ -17,6 +18,10 @@ public class SearchListItem {
 
     @JsonProperty("part_of_speech")
     private String partOfSpeech;
+
+    private int variant;
+
+    private List<YiddishVariant> variants;
 
     private String label;
 
@@ -80,6 +85,22 @@ public class SearchListItem {
 
     public boolean hasSynset(){
         return getLinks() != null && getLinks().getGraph() != null;
+    }
+
+    public int getVariant() {
+        return variant;
+    }
+
+    public void setVariant(int variant) {
+        this.variant = variant;
+    }
+
+    public List<YiddishVariant> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<YiddishVariant> variants) {
+        this.variants = variants;
     }
 
     @Override

@@ -4,15 +4,13 @@ import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.YiddishSenseExtension;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Stateless
 public class SenseQueryService {
@@ -51,6 +49,26 @@ public class SenseQueryService {
         orders.add(cb.asc(sense.get("partOfSpeech").get("id")));
         orders.add(cb.asc(sense.get("variant")));
         orders.add(cb.asc(sense.get("lexicon").get("id")));
+
+        if (filter.getLexicon() != null && filter.getLexicon() == 4L) {
+            if (filter.getSortBy() != null && !filter.getSortBy().isEmpty()) {
+                orders = new ArrayList<>();
+                if (filter.getSortBy().equals("latin")) {
+                    sense.fetch("yiddish", JoinType.LEFT);
+                } else {
+                    sense.fetch("yiddish", JoinType.LEFT);
+                    Join<Sense, YiddishSenseExtension> join = sense.join("yiddish", JoinType.INNER);
+                    if (filter.getSortBy().equals("yivo")) {
+                        orders.add(cb.asc(join.get("yivoSpelling")));
+                    }
+                    if (filter.getSortBy().equals("yiddish")) {
+                        orders.add(cb.asc(join.get("yiddishSpelling")));
+                    }
+                }
+            }
+        } else {
+            qc.distinct(true);
+        }
 
         qc.select(sense);
         qc.distinct(true);
@@ -180,7 +198,6 @@ public class SenseQueryService {
                 .setParameter("relTypeId", relationType)
                 .getResultList();
     }
-
     public List<SenseRelation> findSenseRelations(UUID source, UUID target, UUID relationType) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<SenseRelation> qc = cb.createQuery(SenseRelation.class);
@@ -208,5 +225,12 @@ public class SenseQueryService {
             sr.getChild().getDomain().getId();
         });
         return results;
+    }
+
+    public Set<YiddishSenseExtension> findSenseYiddish(UUID id) {
+        Sense s = em.createNamedQuery(Sense.FIND_YIDDISH_VARIANTS, Sense.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return s.getYiddish();
     }
 }

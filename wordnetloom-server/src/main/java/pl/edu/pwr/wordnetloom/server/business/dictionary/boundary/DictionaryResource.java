@@ -45,6 +45,20 @@ public class DictionaryResource {
                 .add("parts_of_speech", this.linkBuilder.forPartsOfSpeech(uriInfo).toString())
                 .add("statuses", this.linkBuilder.forStatutes(uriInfo).toString())
                 .add("registers", this.linkBuilder.forRegisters(uriInfo).toString())
+                .add("ages", this.linkBuilder.forAges(uriInfo).toString())
+                .add("sources", this.linkBuilder.forSources(uriInfo).toString())
+                .add("transcriptions", this.linkBuilder.forTranscription(uriInfo).toString())
+                .add("styles", this.linkBuilder.forStyles(uriInfo).toString())
+                .add("suffixes", this.linkBuilder.forSuffixes(uriInfo).toString())
+                .add("prefixes", this.linkBuilder.forPrefixes(uriInfo).toString())
+                .add("interfixes", this.linkBuilder.forInterfixes(uriInfo).toString())
+                .add("inflections", this.linkBuilder.forInflections(uriInfo).toString())
+                .add("dialectals", this.linkBuilder.forDialectals(uriInfo).toString())
+                .add("yiddish_statuses", this.linkBuilder.forYiddishStatuses(uriInfo).toString())
+                .add("yiddish_domains", this.linkBuilder.forYiddishDomains(uriInfo).toString())
+                .add("yiddish_domain_modifiers", this.linkBuilder.forYiddishDomainModifiers(uriInfo).toString())
+                .add("lexical_characteristics", this.linkBuilder.forLexicalCharacteristics(uriInfo).toString())
+                .add("grammatical_genders", this.linkBuilder.forGrammaticalGenders(uriInfo).toString())
                 .build());
 
         return linkBuilder.build();
@@ -113,4 +127,173 @@ public class DictionaryResource {
                 .orElse(Json.createObjectBuilder().build());
 
     }
+
+    @GET
+    @Path("grammatical-genders")
+    public JsonObject getAllGrammaticalGenders(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(GrammaticalGenderDictionary.class, "getGrammaticalGender", locale);
+    }
+
+    @GET
+    @Path("grammatical-genders/{id}")
+    public JsonObject getGrammaticalGender(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getGrammaticalGender", locale);
+    }
+
+    @GET
+    @Path("lexical-characteristics")
+    public JsonObject getAllLexicalCharacteristics(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(LexicalCharacteristicDictionary.class, "getLexicalCharacteristic", locale);
+    }
+
+    @GET
+    @Path("lexical-characteristic/{id}")
+    public JsonObject getLexicalCharacteristic(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getLexicalCharacteristic", locale);
+    }
+
+    @GET
+    @Path("yiddish-domain-modifiers")
+    public JsonObject getAllYiddishDomainModifiers(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(DomainModifierDictionary.class, "getYiddishDomainModifier", locale);
+    }
+
+    @GET
+    @Path("yiddish-domain-modifiers/{id}")
+    public JsonObject getYiddishDomainModifier(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getYiddishDomainModifier", locale);
+    }
+
+    @GET
+    @Path("yiddish-domains")
+    public JsonObject getAllYiddishDomains(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(DomainDictionary.class, "getYiddishDomain", locale);
+    }
+
+    @GET
+    @Path("yiddish-domains/{id}")
+    public JsonObject getYiddishDomain(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getYiddishDomain", locale);
+    }
+
+    @GET
+    @Path("yiddish-statuses")
+    public JsonObject getAllYiddishStatuses(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(StatusDictionary.class, "getYiddishStatus", locale);
+    }
+
+    @GET
+    @Path("yiddish-statuses/{id}")
+    public JsonObject getYiddishStatus(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getYiddishStatus", locale);
+    }
+
+    @GET
+    @Path("dialectals")
+    public JsonObject getAllDialectals(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(DialectalDictionary.class, "getDialectal", locale);
+    }
+
+    @GET
+    @Path("dialectals/{id}")
+    public JsonObject getDialectal(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getDialectal", locale);
+    }
+
+    @GET
+    @Path("inflections")
+    public JsonObject getAllInflections(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(InflectionDictionary.class, "getInflection", locale);
+    }
+
+    @GET
+    @Path("inflections/{id}")
+    public JsonObject getInflection(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getInflection", locale);
+    }
+
+    @GET
+    @Path("interfixes")
+    public JsonObject getAllInterfixes(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(InterfixDictionary.class, "getInterfix", locale);
+    }
+
+    @GET
+    @Path("interfixes/{id}")
+    public JsonObject getInterfix(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getInterfix", locale);
+    }
+
+    @GET
+    @Path("suffixes")
+    public JsonObject getAllSuffixes(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(SuffixDictionary.class, "getSuffix", locale);
+    }
+
+    @GET
+    @Path("suffixes/{id}")
+    public JsonObject getSuffix(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getSuffix", locale);
+    }
+
+    @GET
+    @Path("prefixes")
+    public JsonObject getAllPrefixes(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(PrefixDictionary.class, "getPrefix", locale);
+    }
+
+    @GET
+    @Path("prefixes/{id}")
+    public JsonObject getPrefix(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getPrefix", locale);
+    }
+
+    @GET
+    @Path("styles")
+    public JsonObject getAllStyles(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(StyleDictionary.class, "getStyle", locale);
+    }
+
+    @GET
+    @Path("styles/{id}")
+    public JsonObject getStyle(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getStyle", locale);
+    }
+
+    @GET
+    @Path("transcriptions")
+    public JsonObject getAllTranscriptions(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(TranscriptionDictionary.class, "getTranscription", locale);
+    }
+
+    @GET
+    @Path("transcriptions/{id}")
+    public JsonObject getTranscription(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getTranscription", locale);
+    }
+
+    @GET
+    @Path("sources")
+    public JsonObject getAllSources(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(SourceDictionary.class, "getSource", locale);
+    }
+
+    @GET
+    @Path("sources/{id:\\d+}")
+    public JsonObject getSource(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getSource", locale);
+    }
+
+    @GET
+    @Path("ages")
+    public JsonObject getAllAges(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(AgeDictionary.class, "getAge", locale);
+    }
+
+    @GET
+    @Path("ages/{id:\\d+}")
+    public JsonObject getAge(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getAge", locale);
+    }
+
 }

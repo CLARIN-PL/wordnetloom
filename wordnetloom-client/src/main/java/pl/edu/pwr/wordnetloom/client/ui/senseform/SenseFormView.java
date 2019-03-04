@@ -39,7 +39,7 @@ public class SenseFormView implements FxmlView<SenseFormViewModel> {
 	public Label variantLabel, ownerLabel;
 
 	@FXML
-	public ComboBox<String> lexiconCombo, posCombo, aspectCombo,
+	public ComboBox<String> lexiconCombo, posCombo,
             domainCombo ,registerCombo, statusCombo;
 
 	@FXML
@@ -83,9 +83,6 @@ public class SenseFormView implements FxmlView<SenseFormViewModel> {
         lexiconCombo.setItems(viewModel.lexiconList());
         lexiconCombo.valueProperty().bindBidirectional(viewModel.selectedLexiconProperty());
 
-        aspectCombo.setItems(viewModel.aspectList());
-        aspectCombo.valueProperty().bindBidirectional(viewModel.selectedAspectProperty());
-
         posCombo.setItems(viewModel.partOfSpeechList());
         posCombo.valueProperty().bindBidirectional(viewModel.selectedPartOfSpeechProperty());
 
@@ -107,11 +104,6 @@ public class SenseFormView implements FxmlView<SenseFormViewModel> {
         validationVisualizer.initVisualization(viewModel.partOfSpeechValidation(), posCombo, true);
         validationVisualizer.initVisualization(viewModel.domainValidation(), domainCombo, true);
         validationVisualizer.initVisualization(viewModel.linkValidation(), linkInput, false);
-
-        aspectCombo.disableProperty().bind(
-                Bindings.createBooleanBinding(()->lexiconCombo.getSelectionModel().getSelectedItem().equals("isiZulu"),
-                        viewModel.selectedLexiconProperty())
-        );
     }
 
     private void openExampleDialog() {

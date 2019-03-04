@@ -213,18 +213,6 @@ public class EntityBuilder {
                                                 .add("type", "TEXT")
                                                 .add("required", "false"))
                                         .add(createObjectBuilder()
-                                                .add("name", "emotion")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
-                                                .add("name", "valuation")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
-                                                .add("name", "markedness")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
                                                 .add("name", "start")
                                                 .add("type", "NUMBER")
                                                 .add("required", "false"))
@@ -309,10 +297,6 @@ public class EntityBuilder {
                                                 .add("type", "NUMBER")
                                                 .add("required", "false"))
                                         .add(createObjectBuilder()
-                                                .add("name", "aspect")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
                                                 .add("name", "register")
                                                 .add("type", "NUMBER")
                                                 .add("required", "false"))
@@ -327,18 +311,6 @@ public class EntityBuilder {
                                         .add(createObjectBuilder()
                                                 .add("name", "comment")
                                                 .add("type", "TEXT")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
-                                                .add("name", "emotion")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
-                                                .add("name", "valuation")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
-                                                .add("name", "markedness")
-                                                .add("type", "NUMBER")
                                                 .add("required", "false"))
                                         .add(createObjectBuilder()
                                                 .add("name", "senses_without_synset")
@@ -376,10 +348,6 @@ public class EntityBuilder {
                                                 .add("type", "NUMBER")
                                                 .add("required", "true"))
                                         .add(createObjectBuilder()
-                                                .add("name", "aspect")
-                                                .add("type", "NUMBER")
-                                                .add("required", "false"))
-                                        .add(createObjectBuilder()
                                                 .add("name", "register")
                                                 .add("type", "NUMBER")
                                                 .add("required", "false"))
@@ -413,16 +381,8 @@ public class EntityBuilder {
             builder.add("description", loc.find(dic.getDescription(), locale));
         }
 
-        if (dic instanceof Aspect) {
-            builder.add("tag", ((Aspect) dic).getTag());
-        }
-
         if (dic instanceof Status) {
             builder.add("color", ((Status) dic).getColor());
-        }
-
-        if (dic instanceof Markedness) {
-            builder.add("value", loc.find(((Markedness) dic).getValue(), locale));
         }
 
         JsonObjectBuilder linkBuilder = createObjectBuilder();
@@ -1309,9 +1269,6 @@ public class EntityBuilder {
         }
 
         if (attributes != null) {
-            if (Objects.nonNull(attributes.getAspect())) {
-                builder.add("aspect", attributes.getAspect().getId());
-            }
 
             if (Objects.nonNull(attributes.getRegister())) {
                 builder.add("register", attributes.getRegister().getId());
@@ -1349,8 +1306,7 @@ public class EntityBuilder {
         }
         linkBuilder.add("graph", this.linkBuilder.forSenseGraph(sense.getId(), uriInfo).toString())
                 .add("examples", this.linkBuilder.forSenseExamples(sense.getId(), uriInfo).toString())
-                .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString())
-                .add("emotional-annotations", this.linkBuilder.forEmotionalAnnotations(sense, uriInfo).toString());
+                .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString());
 
         builder.add("_links", linkBuilder);
 
@@ -1384,10 +1340,6 @@ public class EntityBuilder {
                                         .add("name", "domain")
                                         .add("type", "NUMBER")
                                         .add("required", "true"))
-                                .add(createObjectBuilder()
-                                        .add("name", "aspect")
-                                        .add("type", "NUMBER")
-                                        .add("required", "false"))
                                 .add(createObjectBuilder()
                                         .add("name", "register")
                                         .add("type", "NUMBER")
@@ -1580,35 +1532,7 @@ public class EntityBuilder {
         return builder.build();
     }
 
-    public JsonObject buildEmotionalAnnotation(EmotionalAnnotation ea, URI self) {
 
-        JsonObjectBuilder builder = createObjectBuilder();
-        builder.add("id", ea.getId());
-        builder.add("emotional_characteristic", ea.isEmotionalCharacteristic());
-        builder.add("super_annotation", ea.isSuperAnnotation());
-        if (ea.getEmotions() != null) {
-            JsonArrayBuilder emo = createArrayBuilder();
-            ea.getEmotions().forEach(e -> emo.add(e.getEmotion().getId()));
-            builder.add("emotions", emo);
-        }
-        if (ea.getValuations() != null) {
-            JsonArrayBuilder val = createArrayBuilder();
-            ea.getValuations().forEach(v -> val.add(v.getValuation().getId()));
-            builder.add("valuations", val);
-        }
-        if (ea.getMarkedness() != null)
-            builder.add("markedness", ea.getMarkedness().getId());
-        if (ea.getExample1() != null)
-            builder.add("example1", ea.getExample1());
-        if (ea.getExample2() != null)
-            builder.add("example2", ea.getExample2());
-
-        JsonObjectBuilder linkBuilder = createObjectBuilder();
-        linkBuilder.add("self", self.toString());
-        builder.add("_links", linkBuilder);
-
-        return builder.build();
-    }
 
     public String buildLabel(Sense sense, Boolean withLexicon, Locale locale) {
         StringBuilder sb = new StringBuilder();
@@ -1796,49 +1720,5 @@ public class EntityBuilder {
                                         ))))
                 .build();
     }
-
-    public JsonObject buildEmotionalAnnotations(List<EmotionalAnnotation> emotions, UriInfo uriInfo) {
-        JsonArray array = emotions.stream()
-                .map(e -> buildEmotionalAnnotation(e, linkBuilder.forEmotionalAnnotation(e, uriInfo)))
-                .collect(JsonCollectors.toJsonArray());
-        return createObjectBuilder()
-                .add("rows", array)
-                .add("_links", selfLinkBuilder(uriInfo.getRequestUri().toString()))
-                .add("_actions", createArrayBuilder()
-                        .add(createArrayBuilder()
-                                .add(createObjectBuilder()
-                                        .add("name", "add-emotional-annotation")
-                                        .add("title", "Creates new emotional annotation")
-                                        .add("method", HttpMethod.POST)
-                                        .add("href", uriInfo.getRequestUri().toString())
-                                        .add("type", MediaType.APPLICATION_JSON)
-                                        .add("headers", Json.createArrayBuilder()
-                                                .add(createObjectBuilder()
-                                                        .add("name", "Authorization")
-                                                        .add("type", "TEXT")
-                                                        .add("required", "true")
-                                                ))
-                                        .add("fields", Json.createArrayBuilder()
-                                                .add(createObjectBuilder()
-                                                        .add("name", "emotional_characteristic")
-                                                        .add("type", "BOOLEAN")
-                                                        .add("required", "true"))
-                                                .add(createObjectBuilder()
-                                                        .add("name", "markedness")
-                                                        .add("type", "NUMBER")
-                                                        .add("required", "false"))
-                                                .add(createObjectBuilder()
-                                                        .add("name", "example1")
-                                                        .add("type", "TEXT")
-                                                        .add("required", "false"))
-                                                .add(createObjectBuilder()
-                                                        .add("name", "example2")
-                                                        .add("type", "TEXT")
-                                                        .add("required", "false"))
-                                        ))
-                        ))
-                .build();
-    }
-
 
 }

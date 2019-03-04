@@ -82,17 +82,6 @@ public class SenseQueryService {
         return em.createQuery(cq).getSingleResult();
     }
 
-    public Optional<EmotionalAnnotation> findSenseEmotion(Long id) {
-        try {
-            return Optional.of(
-                    em.createNamedQuery(EmotionalAnnotation.FIND_BY_ID, EmotionalAnnotation.class)
-                            .setParameter("id", id)
-                            .getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
-    }
-
     public Optional<SenseRelation> findSenseRelation(UUID source, UUID target, UUID relationType) {
         try {
             return Optional.of(
@@ -162,13 +151,7 @@ public class SenseQueryService {
         }
     }
 
-    public List<EmotionalAnnotation> findSenseEmotions(UUID id) {
-        return em.createNamedQuery(EmotionalAnnotation.FIND_ALL_BY_SENSE_ID, EmotionalAnnotation.class)
-                .setParameter("id", id)
-                .getResultList();
-    }
-
-    public Long countByWordId(UUID id) {
+     public Long countByWordId(UUID id) {
         return em.createNamedQuery(Sense.COUNT_SENSE_BY_WORD_ID, Long.class)
                 .setParameter("id", id)
                 .getSingleResult();

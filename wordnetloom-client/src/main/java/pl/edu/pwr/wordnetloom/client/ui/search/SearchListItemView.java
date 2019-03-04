@@ -31,7 +31,6 @@ public class SearchListItemView implements FxmlView<SearchListItemViewModel> {
 	private SearchListItemViewModel viewModel;
 
 	private Tooltip tooltip;
-	private Boolean mouseEntered = false;
 
 	public void initialize() {
 		mainLabel.textProperty().bind(viewModel.labelProperty());
@@ -42,24 +41,6 @@ public class SearchListItemView implements FxmlView<SearchListItemViewModel> {
 		if(!viewModel.getSearchListItem().hasSynset()) {
 			mainLabel.setTextFill(Color.RED);
 		}
-
-		// TODO: delay to retrieve information from server, problem with threads, refine
-//		mainLabel.addEventFilter(MouseEvent.MOUSE_ENTERED, event->{
-//			mouseEntered = true;
-//			new Timer().schedule(
-//					new TimerTask() {
-//						@Override
-//						public void run() {
-//							if(tooltip.getText().isEmpty() && mouseEntered){
-//								tooltip.setText(viewModel.getTooltipText());
-//							}
-//						}
-//					}, 1000, 5000
-//			);
-//		});
-//		mainLabel.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-//			mouseEntered = false;
-//		});
 	}
 
 	private void initTooltip() {

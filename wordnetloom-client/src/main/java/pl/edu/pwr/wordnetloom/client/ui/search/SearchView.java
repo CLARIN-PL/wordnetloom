@@ -46,7 +46,7 @@ public class SearchView implements FxmlView<SearchViewModel> {
     public CheckBox onlyWithoutSynset;
 
     @FXML
-    public TitledPane generalPanel, sensePanel, synsetPanel, emotionPanel;
+    public TitledPane generalPanel, sensePanel, synsetPanel;
 
     public ComboBox synsetType;
 
@@ -60,9 +60,8 @@ public class SearchView implements FxmlView<SearchViewModel> {
     public Label unitsCount;
 
     @FXML
-    private ComboBox<String> lexiconInput, aspectInput, partOfSpeechInput,
+    private ComboBox<String> lexiconInput, partOfSpeechInput,
             domainInput, statusInput, registerInput, senseRelationTypeInput, synsetRelationTypeInput;
-    //emotionInput, valuationInput, markednessInput,
 
     @FXML
     private LazyListView<SearchListItemViewModel> searchResultList;
@@ -171,23 +170,11 @@ public class SearchView implements FxmlView<SearchViewModel> {
         domainInput.setItems(viewModel.domainList());
         domainInput.valueProperty().bindBidirectional(viewModel.selectedDomainProperty());
 
-        aspectInput.setItems(viewModel.aspectList());
-        aspectInput.valueProperty().bindBidirectional(viewModel.selectedAspectProperty());
-
         statusInput.setItems(viewModel.statusList());
         statusInput.valueProperty().bindBidirectional(viewModel.selectedStatusProperty());
 
         registerInput.setItems(viewModel.registerList());
         registerInput.valueProperty().bindBidirectional(viewModel.selectedRegisterProperty());
-
-       /* emotionInput.setItems(viewModel.emotionList());
-        emotionInput.valueProperty().bindBidirectional(viewModel.selectedEmotionProperty());
-
-        valuationInput.setItems(viewModel.valuationList());
-        valuationInput.valueProperty().bindBidirectional(viewModel.selectedValuationProperty());
-
-        markednessInput.setItems(viewModel.markednessList());
-        markednessInput.valueProperty().bindBidirectional(viewModel.selectedMarkednessProperty());*/
 
         senseRelationTypeInput.setItems(viewModel.senseRelationTypeList());
         senseRelationTypeInput.valueProperty().bindBidirectional(viewModel.selectedSenseRelationTypeProperty());

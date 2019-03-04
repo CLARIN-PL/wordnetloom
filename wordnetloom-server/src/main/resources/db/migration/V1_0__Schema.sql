@@ -1,7 +1,6 @@
 --
 -- Table structure for table `tbl_application_localised_string`
 --
-
 DROP TABLE IF EXISTS `tbl_application_localised_string`;
 CREATE TABLE `tbl_application_localised_string` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -13,7 +12,6 @@ CREATE TABLE `tbl_application_localised_string` (
 --
 -- Table structure for table `tbl_corpus_example`
 --
-
 DROP TABLE IF EXISTS `tbl_corpus_example`;
 CREATE TABLE `tbl_corpus_example` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -26,7 +24,6 @@ CREATE TABLE `tbl_corpus_example` (
 --
 -- Table structure for table `tbl_dictionaries`
 --
-
 DROP TABLE IF EXISTS `tbl_dictionaries`;
 CREATE TABLE `tbl_dictionaries` (
   `dtype` varchar(31) NOT NULL,
@@ -47,7 +44,6 @@ CREATE TABLE `tbl_dictionaries` (
 --
 -- Table structure for table `tbl_domain`
 --
-
 DROP TABLE IF EXISTS `tbl_domain`;
 
 CREATE TABLE `tbl_domain` (
@@ -64,7 +60,6 @@ CREATE TABLE `tbl_domain` (
 --
 -- Table structure for table `tbl_part_of_speech`
 --
-
 DROP TABLE IF EXISTS `tbl_part_of_speech`;
 
 CREATE TABLE `tbl_part_of_speech` (
@@ -79,7 +74,6 @@ CREATE TABLE `tbl_part_of_speech` (
 --
 -- Table structure for table `tbl_lexicon`
 --
-
 DROP TABLE IF EXISTS `tbl_lexicon`;
 
 CREATE TABLE `tbl_lexicon` (
@@ -95,14 +89,13 @@ CREATE TABLE `tbl_lexicon` (
   `citation` text,
   `confidence_score` varchar(255) DEFAULT NULL,
   `description` text,
-  `onlyToRead` bit(1) DEFAULT b'0',
+  `read_only` bit(1) DEFAULT b'0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `tbl_word`
 --
-
 DROP TABLE IF EXISTS `tbl_word`;
 
 CREATE TABLE `tbl_word` (
@@ -118,7 +111,6 @@ CREATE TABLE `tbl_word` (
 --
 -- Table structure for table `tbl_synset`
 --
-
 DROP TABLE IF EXISTS `tbl_synset`;
 
 CREATE TABLE `tbl_synset` (
@@ -136,7 +128,6 @@ CREATE TABLE `tbl_synset` (
 --
 -- Table structure for table `tbl_sense`
 --
-
 DROP TABLE IF EXISTS `tbl_sense`;
 
 CREATE TABLE `tbl_sense` (
@@ -166,7 +157,6 @@ CREATE TABLE `tbl_sense` (
 --
 -- Table structure for table `tbl_users`
 --
-
 DROP TABLE IF EXISTS `tbl_users`;
 
 CREATE TABLE `tbl_users` (
@@ -182,7 +172,6 @@ CREATE TABLE `tbl_users` (
 --
 -- Table structure for table `tbl_users_settings`
 --
-
 DROP TABLE IF EXISTS `tbl_users_settings`;
 
 CREATE TABLE `tbl_users_settings` (
@@ -218,7 +207,6 @@ CREATE TABLE `tbl_relation_tests` (
 --
 -- Table structure for table `tbl_relation_type`
 --
-
 DROP TABLE IF EXISTS `tbl_relation_type`;
 
 CREATE TABLE `tbl_relation_type` (
@@ -253,7 +241,6 @@ CREATE TABLE `tbl_relation_type` (
 --
 -- Table structure for table `tbl_relation_type_allowed_lexicons`
 --
-
 DROP TABLE IF EXISTS `tbl_relation_type_allowed_lexicons`;
 
 CREATE TABLE `tbl_relation_type_allowed_lexicons` (
@@ -267,7 +254,6 @@ CREATE TABLE `tbl_relation_type_allowed_lexicons` (
 --
 -- Table structure for table `tbl_relation_type_allowed_parts_of_speech`
 --
-
 DROP TABLE IF EXISTS `tbl_relation_type_allowed_parts_of_speech`;
 
 CREATE TABLE `tbl_relation_type_allowed_parts_of_speech` (
@@ -281,7 +267,6 @@ CREATE TABLE `tbl_relation_type_allowed_parts_of_speech` (
 --
 -- Table structure for table `tbl_sense_attributes`
 --
-
 DROP TABLE IF EXISTS `tbl_sense_attributes`;
 
 CREATE TABLE `tbl_sense_attributes` (
@@ -290,10 +275,8 @@ CREATE TABLE `tbl_sense_attributes` (
   `definition` text,
   `link` varchar(255) DEFAULT NULL,
   `register_id` bigint(20) DEFAULT NULL,
-  `aspect_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `error_comment` text,
-  `proper_name` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`sense_id`),
   KEY `FKhnsf3ffqr27ceqnrji9g69hxp` (`user_id`),
   CONSTRAINT `FK_sense_attributes_sense` FOREIGN KEY (`sense_id`) REFERENCES `tbl_sense` (`id`),
@@ -341,9 +324,9 @@ CREATE TABLE `tbl_synset_attributes` (
   `synset_id` binary(16) NOT NULL,
   `comment` text,
   `definition` text,
-  `princeton_id` varchar(255) DEFAULT NULL COMMENT 'External original Princeton Id',
   `owner_id` bigint(20) DEFAULT NULL COMMENT 'Synset owner',
   `error_comment` text,
+  `princeton_id` varchar(255) DEFAULT NULL COMMENT 'External original Princeton Id',
   `ili_id` varchar(255) DEFAULT NULL COMMENT 'OMW id',
   PRIMARY KEY (`synset_id`),
   KEY `FKd4daq7s6mjs49n2flpjndk0ob` (`owner_id`),
@@ -354,7 +337,6 @@ CREATE TABLE `tbl_synset_attributes` (
 --
 -- Table structure for table `tbl_synset_examples`
 --
-
 DROP TABLE IF EXISTS `tbl_synset_examples`;
 
 CREATE TABLE `tbl_synset_examples` (
@@ -371,7 +353,6 @@ CREATE TABLE `tbl_synset_examples` (
 --
 -- Table structure for table `tbl_synset_relation`
 --
-
 DROP TABLE IF EXISTS `tbl_synset_relation`;
 
 CREATE TABLE `tbl_synset_relation` (
@@ -387,7 +368,6 @@ CREATE TABLE `tbl_synset_relation` (
 --
 -- Table structure for table `tbl_word_form`
 --
-
 DROP TABLE IF EXISTS `tbl_word_form`;
 
 CREATE TABLE `tbl_word_form` (
@@ -396,56 +376,4 @@ CREATE TABLE `tbl_word_form` (
   `tag` varchar(255)  DEFAULT NULL,
   `word` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
---
--- Table structure for table `tbl_emotional_annotations`
---
-DROP TABLE IF EXISTS `tbl_emotional_annotations`;
-
-CREATE TABLE `tbl_emotional_annotations` (
-  `id` binary(16) NOT NULL,
-  `sense_id` binary(16) DEFAULT NULL,
-  `has_emotional_characteristic` bit(1) NOT NULL DEFAULT b'0',
-  `super_anotation` bit(1) NOT NULL DEFAULT b'0',
-  `example1` varchar(512) DEFAULT NULL,
-  `example2` varchar(512) DEFAULT NULL,
-  `owner` bigint(20) DEFAULT NULL,
-  `markedness_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_emotional_annotations_users` (`owner`),
-  KEY `FK_annotations_markedness` (`markedness_id`),
-  KEY `emotional_annotations_uuid_index` (`id`),
-  KEY `FK_emotional_annotation_sense` (`sense_id`),
-  CONSTRAINT `FK_annotations_markedness` FOREIGN KEY (`markedness_id`) REFERENCES `tbl_dictionaries` (`id`),
-  CONSTRAINT `FK_emotional_annotation_sense` FOREIGN KEY (`sense_id`) REFERENCES `tbl_sense` (`id`),
-  CONSTRAINT `FK_emotional_annotations_users` FOREIGN KEY (`owner`) REFERENCES `tbl_users` (`id`)
-) ENGINE=InnoDB;
-
---
--- Table structure for table `tbl_sense_emotions`
---
-DROP TABLE IF EXISTS `tbl_sense_emotions`;
-
-CREATE TABLE `tbl_sense_emotions` (
-  `annotation_id` binary(16) NOT NULL,
-  `emotion` bigint(20) NOT NULL,
-  PRIMARY KEY (`annotation_id`,`emotion`),
-  KEY `emotion` (`emotion`),
-  CONSTRAINT `FK_sense_emotions_emotional_annotations` FOREIGN KEY (`annotation_id`) REFERENCES `tbl_emotional_annotations` (`id`),
-  CONSTRAINT `tbl_sense_emotions_ibfk_2` FOREIGN KEY (`emotion`) REFERENCES `tbl_dictionaries` (`id`)
-) ENGINE=InnoDB;
-
---
--- Table structure for table `tbl_sense_valuations`
---
-DROP TABLE IF EXISTS `tbl_sense_valuations`;
-
-CREATE TABLE `tbl_sense_valuations` (
-  `valuation` bigint(20) NOT NULL,
-  `annotation_id` binary(16) NOT NULL,
-  PRIMARY KEY (`annotation_id`,`valuation`),
-  KEY `valuation` (`valuation`),
-  CONSTRAINT `FK_sense_valuations_emotional_annotations` FOREIGN KEY (`annotation_id`) REFERENCES `tbl_emotional_annotations` (`id`),
-  CONSTRAINT `tbl_sense_valuations_ibfk_2` FOREIGN KEY (`valuation`) REFERENCES `tbl_dictionaries` (`id`)
 ) ENGINE=InnoDB;

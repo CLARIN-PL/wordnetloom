@@ -12,7 +12,6 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.security.boundary.SecurityResource;
 import pl.edu.pwr.wordnetloom.server.business.sense.boundary.SenseResource;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.EmotionalAnnotation;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseExample;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
@@ -21,7 +20,6 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
 import javax.ws.rs.core.UriInfo;
-import java.math.BigInteger;
 import java.net.URI;
 import java.util.UUID;
 
@@ -41,10 +39,6 @@ public class LinkBuilder {
 
     public URI forStatutes(UriInfo uriInfo) {
         return createResourceUri(DictionaryResource.class, "getAllStatuses", uriInfo);
-    }
-
-    public URI forEmotions(UriInfo uriInfo) {
-        return createResourceUri(DictionaryResource.class, "getAllEmotions", uriInfo);
     }
 
     public URI forPartOfSpeech(PartOfSpeech p, UriInfo uriInfo) {
@@ -101,15 +95,6 @@ public class LinkBuilder {
                 .path(SenseResource.class, "senseExample").build(se.getSenseAttributes().getId(), se.getId());
     }
 
-    public URI forEmotionalAnnotations(Sense s, UriInfo uriInfo) {
-        return createResourceUri(SenseResource.class, "emotionalAnnotations", s.getId(), uriInfo);
-    }
-
-    public URI forEmotionalAnnotation(EmotionalAnnotation ea, UriInfo uriInfo) {
-        return uriInfo.getBaseUriBuilder().path(SenseResource.class)
-                .path(SenseResource.class, "emotionalAnnotation").build(ea.getSense().getId(), ea.getId());
-    }
-
     public URI forRelationTypes(UriInfo uriInfo) {
         return createResourceUri(RelationTypeResource.class, uriInfo);
     }
@@ -144,13 +129,6 @@ public class LinkBuilder {
                 .build();
     }
 
-    private URI createResourceUri(Class<?> resourceClass, UriInfo uriInfo, int page, int perPage) {
-        return uriInfo.getBaseUriBuilder().path(resourceClass)
-                .queryParam("start", page)
-                .queryParam("limit", perPage)
-                .build();
-    }
-
     private URI createResourceUri(Class<?> resourceClass, String method, UriInfo uriInfo, int page, int perPage) {
         return uriInfo.getBaseUriBuilder().path(resourceClass).path(resourceClass, method)
                 .queryParam("start", page)
@@ -158,25 +136,14 @@ public class LinkBuilder {
                 .build();
     }
 
-    public URI forValuations(UriInfo uriInfo) {
-        return createResourceUri(DictionaryResource.class, "getAllValuations", uriInfo);
-    }
-
-    public URI forMarkedness(UriInfo uriInfo) {
-        return createResourceUri(DictionaryResource.class, "getAllMarkedness", uriInfo);
-    }
-
-    public URI forAspects(UriInfo uriInfo) {
-        return createResourceUri(DictionaryResource.class, "getAllAspects", uriInfo);
-    }
-
     public URI forSenseRelations(Sense s, UriInfo uriInfo) {
         return createResourceUri(SenseResource.class, "senseRelations", s.getId(), uriInfo);
     }
-    public URI forSenseRelation(SenseRelation r, UriInfo uriInfo){
-            return uriInfo.getBaseUriBuilder().path(SenseResource.class)
-                    .path(SenseResource.class, "relation")
-                    .build(r.getParent().getId(),r.getRelationType().getId(),r.getChild().getId());
+
+    public URI forSenseRelation(SenseRelation r, UriInfo uriInfo) {
+        return uriInfo.getBaseUriBuilder().path(SenseResource.class)
+                .path(SenseResource.class, "relation")
+                .build(r.getParent().getId(), r.getRelationType().getId(), r.getChild().getId());
     }
 
     public URI forSenseGraph(UUID senseId, UriInfo uriInfo) {
@@ -217,49 +184,42 @@ public class LinkBuilder {
     }
 
     public URI forSecurityAuthorize(UriInfo uriInfo) {
-        return createResourceUri(SecurityResource.class,"authorize", uriInfo);
+        return createResourceUri(SecurityResource.class, "authorize", uriInfo);
     }
+
     public URI forSecurityClaims(UriInfo uriInfo) {
-        return createResourceUri(SecurityResource.class, "claims",uriInfo);
+        return createResourceUri(SecurityResource.class, "claims", uriInfo);
     }
 
     public URI forSearchCorpusExamples(UriInfo uriInfo) {
-        return  createResourceUri(CorpusExampleResource.class, "searchCorpusExamples", uriInfo);
+        return createResourceUri(CorpusExampleResource.class, "searchCorpusExamples", uriInfo);
     }
 
     public URI forCorpusExamples(UriInfo uriInfo) {
-        return  createResourceUri(CorpusExampleResource.class, uriInfo);
+        return createResourceUri(CorpusExampleResource.class, uriInfo);
     }
 
     public URI forSearchSynsets(UriInfo uriInfo, int start, int limit) {
         return createResourceUri(SynsetResource.class, "search", uriInfo, start, limit);
     }
 
-    public URI forSynsetRelation(UUID source, UUID target, UUID relationType, UriInfo uriInfo){
+    public URI forSynsetRelation(UUID source, UUID target, UUID relationType, UriInfo uriInfo) {
         return uriInfo.getBaseUriBuilder().path(SynsetResource.class)
                 .path(SynsetResource.class, "relation")
-                .build(source,relationType,target);
+                .build(source, relationType, target);
     }
 
-    public URI forSynsetRelation(SynsetRelation sr, UriInfo uriInfo){
+    public URI forSynsetRelation(SynsetRelation sr, UriInfo uriInfo) {
         return uriInfo.getBaseUriBuilder().path(SynsetResource.class)
                 .path(SynsetResource.class, "relation")
                 .build(sr.getParent().getId(), sr.getRelationType().getId(), sr.getChild().getId());
     }
 
-    public URI forSynsetRelationTypes(UriInfo uriInfo) {
-        return  createResourceUri(RelationTypeResource.class, "synsetRelationTypes", uriInfo);
-    }
-
-    public URI forSenseRelationTypes(UriInfo uriInfo) {
-        return  createResourceUri(RelationTypeResource.class, "senseRelationTypes", uriInfo);
-    }
-
     public URI forSearchSynsetRelations(UriInfo uriInfo) {
-        return  createResourceUri(SynsetResource.class, "searchRelations", uriInfo);
+        return createResourceUri(SynsetResource.class, "searchRelations", uriInfo);
     }
 
     public Object forSecurityChangePassword(UriInfo uriInfo) {
-        return  createResourceUri(SecurityResource.class, "changePassword", uriInfo);
+        return createResourceUri(SecurityResource.class, "changePassword", uriInfo);
     }
 }

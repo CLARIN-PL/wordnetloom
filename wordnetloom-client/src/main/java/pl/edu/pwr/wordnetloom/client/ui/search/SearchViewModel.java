@@ -44,10 +44,6 @@ public class SearchViewModel implements ViewModel {
     private static final String DOMAIN_NOTHING_SELECTED_MARKER = "Domain";
     private static final String STATUS_NOTHING_SELECTED_MARKER = "Status";
     private static final String REGISTER_NOTHING_SELECTED_MARKER = "Register";
-    private static final String EMOTION_NOTHING_SELECTED_MARKER = "Emotion";
-    private static final String VALUATION_NOTHING_SELECTED_MARKER = "Valuation";
-    private static final String MARKEDNESS_NOTHING_SELECTED_MARKER = "Markedness";
-    private static final String ASPECT_NOTHING_SELECTED_MARKER = "Aspect";
     private static final String LEXICON_NOTHING_SELECTED_MARKER = "Lexicon";
     private static final String SENSE_RELATION_TYPE_NOTHING_SELECTED_MARKER = "Sense Relation Type";
     private static final String SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER = "Synset Relation Type";
@@ -81,22 +77,6 @@ public class SearchViewModel implements ViewModel {
     private final ObjectProperty<Dictionary> register = new SimpleObjectProperty<>();
     private final StringProperty selectedRegister = new SimpleStringProperty(REGISTER_NOTHING_SELECTED_MARKER);
 
-    private ObservableList<String> emotions;
-    private final ObjectProperty<Dictionary> emotion = new SimpleObjectProperty<>();
-    private final StringProperty selectedEmotion = new SimpleStringProperty(EMOTION_NOTHING_SELECTED_MARKER);
-
-    private ObservableList<String> aspects;
-    private final ObjectProperty<Dictionary> aspect = new SimpleObjectProperty<>();
-    private final StringProperty selectedAspect = new SimpleStringProperty(ASPECT_NOTHING_SELECTED_MARKER);
-
-    private ObservableList<String> valuations;
-    private final ObjectProperty<Dictionary> valuation = new SimpleObjectProperty<>();
-    private final StringProperty selectedValuation = new SimpleStringProperty(VALUATION_NOTHING_SELECTED_MARKER);
-
-    private ObservableList<String> markednesses;
-    private final ObjectProperty<Dictionary> markedness = new SimpleObjectProperty<>();
-    private final StringProperty selectedMarkedness = new SimpleStringProperty(MARKEDNESS_NOTHING_SELECTED_MARKER);
-
     private ObservableList<String> lexicons;
     private final ObjectProperty<Dictionary> lexicon = new SimpleObjectProperty<>();
     private final StringProperty selectedLexicon = new SimpleStringProperty(LEXICON_NOTHING_SELECTED_MARKER);
@@ -116,10 +96,6 @@ public class SearchViewModel implements ViewModel {
     private ItemList<Dictionary> domainItemList;
     private ItemList<Dictionary> statusItemList;
     private ItemList<Dictionary> registerItemList;
-    private ItemList<Dictionary> aspectItemList;
-    private ItemList<Dictionary> emotionItemList;
-    private ItemList<Dictionary> valuationItemList;
-    private ItemList<Dictionary> markednessItemList;
     private ItemList<RelationType> synsetRelationTypeItemList;
     private ItemList<RelationType> senseRelationTypeItemList;
 
@@ -193,10 +169,6 @@ public class SearchViewModel implements ViewModel {
         initDomainList();
         initStatusList();
         initRegisterList();
-        initEmotionList();
-        initAspectsList();
-        initValuationList();
-        initMarkednessList();
         initLexiconList();
         initSynsetRelationTypeList();
         initSenseRelationTypeList();
@@ -265,25 +237,10 @@ public class SearchViewModel implements ViewModel {
             Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.STATUS_DICTIONARY, STATUS_NOTHING_SELECTED_MARKER, status);
         });
 
-        selectedAspect.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.ASPECT_DICTIONARY, ASPECT_NOTHING_SELECTED_MARKER, aspect);
-        });
-
         selectedRegister.addListener((obs, oldV, newV) -> {
             Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.REGISTER_DICTIONARY, REGISTER_NOTHING_SELECTED_MARKER, register);
         });
 
-        selectedEmotion.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.EMOTION_DICTIONARY, EMOTION_NOTHING_SELECTED_MARKER, emotion);
-        });
-
-        selectedValuation.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.VALUATION_DICTIONARY, VALUATION_NOTHING_SELECTED_MARKER, valuation);
-        });
-
-        selectedMarkedness.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.MARKEDNESS_DICTIONARY, MARKEDNESS_NOTHING_SELECTED_MARKER, markedness);
-        });
 
         selectedSynsetRelation.addListener((obs, oldV, newV) -> {
             if (newV != null && !newV.equals(SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER)) {
@@ -399,12 +356,6 @@ public class SearchViewModel implements ViewModel {
             filter.setStatusId(status.get().getId());
         } else {
             filter.setStatusId(null);
-        }
-
-        if (selectedAspect.get() != null && !ASPECT_NOTHING_SELECTED_MARKER.equals(selectedAspect.get())) {
-            filter.setAspectId(aspect.get().getId());
-        } else {
-            filter.setAspectId(null);
         }
 
         if (selectedRegister.get() != null && !REGISTER_NOTHING_SELECTED_MARKER.equals(selectedRegister.get())) {
@@ -554,24 +505,12 @@ public class SearchViewModel implements ViewModel {
         selectedRegister.set(null);
         filter.setRegisterId(null);
 
-        selectedAspect.set(null);
-        filter.setAspectId(null);
-
         selectedStatus.set(null);
         filter.setStatusId(null);
 
         selectedSynsetRelation.set(null);
         selectedSenseRelation.set(null);
         filter.setRelationTypeId(null);
-
-        selectedValuation.set(null);
-        filter.setValuation(null);
-
-        selectedMarkedness.set(null);
-        filter.setMarkedness(null);
-
-        selectedEmotion.set(null);
-        filter.setEmotion(null);
 
         comment.set("");
         filter.setComment("");
@@ -607,13 +546,6 @@ public class SearchViewModel implements ViewModel {
         partsOfSpeech.addListener((ListChangeListener<String>) p -> selectedPartOfSpeech.set(PART_OF_SPEECH_NOTHING_SELECTED_MARKER));
     }
 
-    private void initAspectsList() {
-        aspectItemList = Dictionaries.initDictionaryItemList(Dictionaries.ASPECT_DICTIONARY);
-        ObservableList<String> mappedList = aspectItemList.getTargetList();
-        aspects = Dictionaries.createListWithNothingSelectedMarker(mappedList, ASPECT_NOTHING_SELECTED_MARKER);
-        aspects.addListener((ListChangeListener<String>) p -> selectedAspect.set(ASPECT_NOTHING_SELECTED_MARKER));
-    }
-
     private void initDomainList() {
         domainItemList = Dictionaries.initDictionaryItemList(Dictionaries.DOMAIN_DICTIONARY);
         ObservableList<String> mappedList = domainItemList.getTargetList();
@@ -633,27 +565,6 @@ public class SearchViewModel implements ViewModel {
         ObservableList<String> mappedList = registerItemList.getTargetList();
         registers = Dictionaries.createListWithNothingSelectedMarker(mappedList, REGISTER_NOTHING_SELECTED_MARKER);
         registers.addListener((ListChangeListener<String>) p -> selectedRegister.set(REGISTER_NOTHING_SELECTED_MARKER));
-    }
-
-    private void initEmotionList() {
-        emotionItemList = Dictionaries.initDictionaryItemList(Dictionaries.EMOTION_DICTIONARY);
-        ObservableList<String> mappedList = emotionItemList.getTargetList();
-        emotions = Dictionaries.createListWithNothingSelectedMarker(mappedList, EMOTION_NOTHING_SELECTED_MARKER);
-        emotions.addListener((ListChangeListener<String>) p -> selectedEmotion.set(EMOTION_NOTHING_SELECTED_MARKER));
-    }
-
-    private void initValuationList() {
-        valuationItemList = Dictionaries.initDictionaryItemList(Dictionaries.VALUATION_DICTIONARY);
-        ObservableList<String> mappedList = valuationItemList.getTargetList();
-        valuations = Dictionaries.createListWithNothingSelectedMarker(mappedList, VALUATION_NOTHING_SELECTED_MARKER);
-        valuations.addListener((ListChangeListener<String>) p -> selectedValuation.set(VALUATION_NOTHING_SELECTED_MARKER));
-    }
-
-    private void initMarkednessList() {
-        markednessItemList = Dictionaries.initDictionaryItemList(Dictionaries.MARKEDNESS_DICTIONARY);
-        ObservableList<String> mappedList = markednessItemList.getTargetList();
-        markednesses = Dictionaries.createListWithNothingSelectedMarker(mappedList, MARKEDNESS_NOTHING_SELECTED_MARKER);
-        markednesses.addListener((ListChangeListener<String>) p -> selectedMarkedness.set(MARKEDNESS_NOTHING_SELECTED_MARKER));
     }
 
     private void initSynsetRelationTypeList() {
@@ -726,38 +637,6 @@ public class SearchViewModel implements ViewModel {
 
     public Property<String> selectedRegisterProperty() {
         return selectedRegister;
-    }
-
-    public Property<String> selectedMarkednessProperty() {
-        return selectedMarkedness;
-    }
-
-    public ObservableList<String> markednessList() {
-        return markednesses;
-    }
-
-    public Property<String> selectedValuationProperty() {
-        return selectedValuation;
-    }
-
-    public ObservableList<String> aspectList() {
-        return aspects;
-    }
-
-    public Property<String> selectedAspectProperty() {
-        return selectedAspect;
-    }
-
-    public ObservableList<String> valuationList() {
-        return valuations;
-    }
-
-    public Property<String> selectedEmotionProperty() {
-        return selectedEmotion;
-    }
-
-    public ObservableList<String> emotionList() {
-        return emotions;
     }
 
     public ObservableList<SearchListItemViewModel> searchListProperty() {

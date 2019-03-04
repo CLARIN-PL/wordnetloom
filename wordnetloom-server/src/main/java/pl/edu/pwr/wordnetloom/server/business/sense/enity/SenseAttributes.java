@@ -1,6 +1,5 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Aspect;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Register;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
@@ -13,8 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tbl_sense_attributes")
 @NamedQuery(name = SenseAttributes.FIND_BY_ID,
-        query = "SELECT DISTINCT s FROM SenseAttributes s "+
-                "LEFT JOIN FETCH s.aspect " +
+        query = "SELECT DISTINCT s FROM SenseAttributes s " +
                 "LEFT JOIN FETCH s.examples " +
                 "LEFT JOIN FETCH s.register " +
                 "WHERE s.id= :id")
@@ -32,10 +30,6 @@ public class SenseAttributes implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "senseAttributes", orphanRemoval = true)
     private Set<SenseExample> examples;
-
-    @ManyToOne
-    @JoinColumn(name = "aspect_id", referencedColumnName = "id")
-    private Aspect aspect;
 
     @Lob
     private String definition;
@@ -133,13 +127,5 @@ public class SenseAttributes implements Serializable {
             examples = new HashSet<>();
         }
         examples.add(e);
-    }
-
-    public Aspect getAspect() {
-        return aspect;
-    }
-
-    public void setAspect(Aspect aspect) {
-        this.aspect = aspect;
     }
 }

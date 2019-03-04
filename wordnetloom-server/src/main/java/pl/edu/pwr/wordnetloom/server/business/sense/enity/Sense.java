@@ -70,7 +70,6 @@ import java.util.UUID;
         query = "SELECT DISTINCT s  FROM Sense s " +
                 "LEFT JOIN FETCH s.attributes sa "+
                 "LEFT JOIN FETCH sa.examples " +
-                "LEFT JOIN FETCH sa.aspect " +
                 "LEFT JOIN FETCH sa.register " +
                 "LEFT JOIN FETCH s.word " +
                 "LEFT JOIN FETCH s.domain " +

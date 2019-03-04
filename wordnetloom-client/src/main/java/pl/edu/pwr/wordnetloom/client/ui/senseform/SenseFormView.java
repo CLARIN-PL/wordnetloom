@@ -49,9 +49,6 @@ public class SenseFormView implements FxmlView<SenseFormViewModel> {
 	public ListView<ExampleListItemViewModel> exampleList;
 
 	@FXML
-	public WebView web;
-
-	@FXML
     public VBox webPanel;
 
 	@FXML

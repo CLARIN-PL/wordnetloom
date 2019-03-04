@@ -41,14 +41,10 @@ public class DictionaryResource {
 
         final JsonObjectBuilder linkBuilder = createObjectBuilder();
         linkBuilder.add("_links", Json.createObjectBuilder()
-                .add("aspects", this.linkBuilder.forAspects(uriInfo).toString())
                 .add("domains", this.linkBuilder.forDomains(uriInfo).toString())
                 .add("parts_of_speech", this.linkBuilder.forPartsOfSpeech(uriInfo).toString())
                 .add("statuses", this.linkBuilder.forStatutes(uriInfo).toString())
-                .add("emotions", this.linkBuilder.forEmotions(uriInfo).toString())
                 .add("registers", this.linkBuilder.forRegisters(uriInfo).toString())
-                .add("valuations", this.linkBuilder.forValuations(uriInfo).toString())
-                .add("markedness", this.linkBuilder.forMarkedness(uriInfo).toString())
                 .build());
 
         return linkBuilder.build();
@@ -67,18 +63,6 @@ public class DictionaryResource {
     }
 
     @GET
-    @Path("emotions")
-    public JsonObject getAllEmotions(@HeaderParam("Accept-Language") Locale locale) {
-        return buildDictionaryArray(Emotion.class, "getEmotion", locale);
-    }
-
-    @GET
-    @Path("emotions/{id:\\d+}")
-    public JsonObject getEmotion(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
-        return buildDictionary(id, "getEmotion", locale);
-    }
-
-    @GET
     @Path("registers")
     public JsonObject getAllRegisters(@HeaderParam("Accept-Language") Locale locale) {
         return buildDictionaryArray(Register.class, "getRegister", locale);
@@ -88,42 +72,6 @@ public class DictionaryResource {
     @Path("registers/{id:\\d+}")
     public JsonObject getRegister(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
         return buildDictionary(id, "getRegister", locale);
-    }
-
-    @GET
-    @Path("valuations")
-    public JsonObject getAllValuations(@HeaderParam("Accept-Language") Locale locale) {
-        return buildDictionaryArray(Valuation.class, "getValuation", locale);
-    }
-
-    @GET
-    @Path("valuations/{id:\\d+}")
-    public JsonObject getValuation(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
-        return buildDictionary(id, "getValuation", locale);
-    }
-
-    @GET
-    @Path("markedness")
-    public JsonObject getAllMarkedness(@HeaderParam("Accept-Language") Locale locale) {
-        return buildDictionaryArray(Markedness.class, "getMarkedness", locale);
-    }
-
-    @GET
-    @Path("markedness/{id:\\d+}")
-    public JsonObject getMarkedness(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
-        return buildDictionary(id, "getMarkedness", locale);
-    }
-
-    @GET
-    @Path("aspects")
-    public JsonObject getAllAspects(@HeaderParam("Accept-Language") Locale locale) {
-        return buildDictionaryArray(Aspect.class, "getAspect", locale);
-    }
-
-    @GET
-    @Path("aspects/{id:\\d+}")
-    public JsonObject getAspect(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
-        return buildDictionary(id, "getAspect", locale);
     }
 
     @GET

@@ -33,9 +33,6 @@ public class Dictionaries {
     public static final String ASPECT_DICTIONARY = "aspects";
     public static final String STATUS_DICTIONARY = "statuses";
     public static final String REGISTER_DICTIONARY = "register";
-    public static final String EMOTION_DICTIONARY = "emotions";
-    public static final String VALUATION_DICTIONARY = "valuations";
-    public static final String MARKEDNESS_DICTIONARY = "markedness";
     public static final String LEXICON_DICTIONARY = "lexicon";
 
     private static final Map<String, ObservableList<Dictionary>> dictionaries = new ConcurrentHashMap<>();

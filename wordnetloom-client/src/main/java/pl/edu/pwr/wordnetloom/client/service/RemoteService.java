@@ -163,12 +163,8 @@ public class RemoteService {
             JsonObject _links = jsonObject.getJsonObject("_links");
             dic.put(PART_OF_SPEECH_DICTIONARY, _links.getString("parts_of_speech"));
             dic.put(DOMAIN_DICTIONARY, _links.getString("domains"));
-            dic.put(ASPECT_DICTIONARY, _links.getString("aspects"));
             dic.put(STATUS_DICTIONARY, _links.getString("statuses"));
             dic.put(REGISTER_DICTIONARY, _links.getString("registers"));
-            dic.put(EMOTION_DICTIONARY, _links.getString("emotions"));
-            dic.put(VALUATION_DICTIONARY, _links.getString("valuations"));
-            dic.put(MARKEDNESS_DICTIONARY, _links.getString("markedness"));
             dic.put(LEXICON_DICTIONARY, SERVER_TARGET_URL + PATH_LEXICONS);
         }
         response.close();

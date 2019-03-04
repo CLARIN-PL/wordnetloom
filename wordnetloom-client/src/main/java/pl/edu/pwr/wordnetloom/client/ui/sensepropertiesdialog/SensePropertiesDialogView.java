@@ -19,7 +19,7 @@ public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialog
     public Button saveButton, closeButton;
 
     @FXML
-	public Tab sensePropertiesTab, emotionalAnnotationsTab;
+	public Tab sensePropertiesTab;
 
     @FXML
 	public TabPane tabs;

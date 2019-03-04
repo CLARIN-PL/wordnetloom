@@ -2,7 +2,6 @@ package pl.edu.pwr.wordnetloom.server.business.sense.boundary;
 
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.control.DictionaryQueryService;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Aspect;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Register;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
@@ -26,7 +25,10 @@ import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -104,13 +106,6 @@ public class SenseCommandService {
                     .ifPresent(senseAttributes::setRegister);
         }
 
-        if (!sense.isNull("aspect")) {
-            dictionaryQueryService.findDictionaryById(sense.getInt("aspect"))
-                    .filter(r -> r instanceof Aspect)
-                    .map(r -> (Aspect) r)
-                    .ifPresent(senseAttributes::setAspect);
-        }
-
         if (!sense.isNull("definition") && !sense.getString("definition").isEmpty()) {
             senseAttributes.setDefinition(sense.getString("definition"));
         }
@@ -143,7 +138,7 @@ public class SenseCommandService {
             }
         }
 
-        if (ns.getPartOfSpeech() != null && ns.getWord() != null && ns.getLexicon() !=null) {
+        if (ns.getPartOfSpeech() != null && ns.getWord() != null && ns.getLexicon() != null) {
             ns.setVariant(findNextVariant(ns.getWord().getId(), ns.getPartOfSpeech().getId(), ns.getLexicon().getId()));
         }
 
@@ -174,7 +169,7 @@ public class SenseCommandService {
         examples.forEach(e -> {
             e.setSenseAttributes(senseAttributes);
             em.persist(e);
-         });
+        });
 
         result.setEntity(ns);
 
@@ -196,7 +191,7 @@ public class SenseCommandService {
 
                 if (!sense.isNull("part_of_speech")) {
                     dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
-                            .ifPresent(p ->{
+                            .ifPresent(p -> {
                                 s.setPartOfSpeech(p);
                                 hasPartOfSpeechChanged.set(ous.get().getPartOfSpeech().getId() != p.getId());
                             });
@@ -221,12 +216,12 @@ public class SenseCommandService {
                 } else {
                     result.addError("lemma", "Lemma may not be empty");
                 }
-                System.out.println(sense.getInt("lexicon") +"," +sense.getInt("part_of_speech")+","+ s.getWord().getId());
+                System.out.println(sense.getInt("lexicon") + "," + sense.getInt("part_of_speech") + "," + s.getWord().getId());
 
-                if(hasLexiconChanged.get() || hasPartOfSpeechChanged.get() || hasWordChanged){
+                if (hasLexiconChanged.get() || hasPartOfSpeechChanged.get() || hasWordChanged) {
                     System.out.println("Updating variant");
                     s.setVariant(findNextVariant(s.getWord().getId(), s.getPartOfSpeech().getId(), s.getLexicon().getId()));
-                    System.out.println(s.getLexicon().getId() +","+ s.getPartOfSpeech().getId() +","+ s.getWord().getId());
+                    System.out.println(s.getLexicon().getId() + "," + s.getPartOfSpeech().getId() + "," + s.getWord().getId());
                 }
 
                 if (!sense.isNull("domain")) {
@@ -243,15 +238,6 @@ public class SenseCommandService {
                             .ifPresent(s.getAttributes()::setRegister);
                 } else {
                     s.getAttributes().setRegister(null);
-                }
-
-                if (!sense.isNull("aspect")) {
-                    dictionaryQueryService.findDictionaryById(sense.getInt("aspect"))
-                            .filter(r -> r instanceof Aspect)
-                            .map(r -> (Aspect) r)
-                            .ifPresent(s.getAttributes()::setAspect);
-                } else {
-                    s.getAttributes().setAspect(null);
                 }
 
                 if (!sense.isNull("definition") && !sense.getString("definition").isEmpty()) {
@@ -390,7 +376,7 @@ public class SenseCommandService {
                     reverse = null;
                 }
                 Set<Lexicon> allowedLexicons = type.get().getLexicons();
-                if(!allowedLexicons.isEmpty()) {
+                if (!allowedLexicons.isEmpty()) {
                     boolean allowedParentLexicon = allowedLexicons.contains(parent.get().getLexicon());
                     boolean allowedChildLexicon = allowedLexicons.contains(child.get().getLexicon());
                     if (!allowedParentLexicon || !allowedChildLexicon) {
@@ -408,7 +394,7 @@ public class SenseCommandService {
                     }
                 }
                 Set<PartOfSpeech> allowedPos = type.get().getPartsOfSpeech();
-                if(!allowedPos.isEmpty()) {
+                if (!allowedPos.isEmpty()) {
                     boolean allowedParentPos = allowedPos.contains(parent.get().getPartOfSpeech());
 
                     boolean allowedChildPos = allowedPos.contains(child.get().getPartOfSpeech());
@@ -474,7 +460,7 @@ public class SenseCommandService {
         } catch (NoResultException ex) {
             return variant.get();
         }
-        System.out.println("Found variant:"+variant.get());
+        System.out.println("Found variant:" + variant.get());
         return Math.max(0, variant.orElse(0)) + 1;
     }
 
@@ -539,20 +525,20 @@ public class SenseCommandService {
 
     }
 
-    public void deleteSense(UUID id){
-         senseQueryService.findById(id)
-                .ifPresent( s-> {
-                    if(s.getSynset() == null){
+    public void deleteSense(UUID id) {
+        senseQueryService.findById(id)
+                .ifPresent(s -> {
+                    if (s.getSynset() == null) {
                         em.remove(s);
                         return;
                     }
                     Optional<Synset> synset = synsetQueryService.findById(s.getSynset().getId());
-                    if(synset.isPresent()){
+                    if (synset.isPresent()) {
                         synset.get().getSenses().remove(s);
-                        if(synset.get().getSenses().size() == 0){
+                        if (synset.get().getSenses().size() == 0) {
                             em.remove(s);
                             em.remove(synset.get());
-                        }else{
+                        } else {
                             AtomicInteger counter = new AtomicInteger(0);
                             synset.get().getSenses()
                                     .forEach(z -> {

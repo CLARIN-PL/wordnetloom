@@ -260,31 +260,6 @@ public class SenseResource {
         return Response.noContent().build();
     }
 
-    @GET
-    @Path("{id}/emotional-annotations")
-    public JsonObject emotionalAnnotations(@HeaderParam("Accept-Language") Locale locale,
-                                           @PathParam("id") final UUID id) {
-        List<EmotionalAnnotation> emotions = queryService.findSenseEmotions(id);
-        emotions.sort((e1, e2) -> Boolean.compare(e1.isSuperAnnotation(), e2.isSuperAnnotation()));
-        return entityBuilder.buildEmotionalAnnotations(emotions, uriInfo);
-    }
-
-    @POST
-    @Path("{id}/emotional-annotations")
-    public Response addEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .build();
-    }
-
-    @GET
-    @Path("{id}/emotional-annotations/{annotationId}")
-    public JsonObject emotionalAnnotation(@HeaderParam("Accept-Language") Locale locale,
-                                          @PathParam("id") final UUID id, @PathParam("annotationId") final Long annotationId) {
-        return queryService.findSenseEmotion(annotationId)
-                .map(e -> entityBuilder.buildEmotionalAnnotation(e, linkBuilder.forEmotionalAnnotation(e, uriInfo)))
-                .orElse(Json.createObjectBuilder().build());
-    }
-
     @PUT
     @Path("{id}/emotional-annotations/{annotationId}")
     public Response updateEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {

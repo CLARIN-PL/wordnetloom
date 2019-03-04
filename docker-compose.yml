@@ -1,8 +1,7 @@
 version: '3.1'
 
 services:
-  wordnetloom_db:
-    container_name: "wordnetloom_db"
+  db:
     image: mysql:8.0.13
     restart: always
     volumes:
@@ -14,18 +13,17 @@ services:
       MYSQL_DATABASE: wordnet
     ports:
       - "33366:3306"
-  wordnetloom_server:
-    container_name: "wordnetloom_server"
+  application_server:
     build: .
     restart: always
     depends_on:
-      - wordnetloom_db
+      - db
     environment:
         WAIT_HOSTS: mysql:3306
     ports:
      - "8080:8080"
     links:
-    - wordnetloom_db:wordnetloom_db
+    - db:db
 
 volumes:
   db_data:

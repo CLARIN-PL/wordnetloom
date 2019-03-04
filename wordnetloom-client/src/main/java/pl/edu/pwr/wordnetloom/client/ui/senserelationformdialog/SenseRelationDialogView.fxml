@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.edu.pwr.wordnetloom.client.ui.senserelationformdialog.SenseRelationDialogView">
+    <children>
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <children>
+                <Separator/>
+                <Pagination fx:id="formPagination" maxPageIndicatorCount="2" pageCount="2"
+                            style="-fx-background-color: white;" VBox.vgrow="ALWAYS"/>
+                <Separator/>
+                <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                    <children>
+                        <Button id="previousButton" fx:id="previousButton" mnemonicParsing="false" onAction="#previous"
+                                text="%common.previous"/>
+                        <Button id="nextButton" fx:id="nextButton" defaultButton="true" mnemonicParsing="false"
+                                onAction="#next" text="%common.next"/>
+                        <Button id="okButton" fx:id="okButton" defaultButton="true" mnemonicParsing="false"
+                                onAction="#ok" prefWidth="80.0" text="%common.ok">
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

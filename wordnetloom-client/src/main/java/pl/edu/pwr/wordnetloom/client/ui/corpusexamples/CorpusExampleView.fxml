@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<TabPane minHeight="140.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.181"
+         xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="pl.edu.pwr.wordnetloom.client.ui.corpusexamples.CorpusExampleView">
+    <Tab text="Corpus examples">
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <content>
+                <ListView fx:id="examples"/>
+            </content>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+        </ScrollPane>
+    </Tab>
+</TabPane>

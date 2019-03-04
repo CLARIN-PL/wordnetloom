@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.relationtypeform.RelationTypeFormView">
+   <children>
+      <GridPane vgap="3.0" VBox.vgrow="NEVER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="140.0" />
+          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints fillHeight="false" vgrow="NEVER" />
+          <RowConstraints vgrow="NEVER" />
+          <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="%relation.type.name" GridPane.rowIndex="2" />
+            <Label text="%relation.type.shortcut" GridPane.rowIndex="3" />
+            <Label text="%relation.type.display.form" GridPane.rowIndex="4" />
+            <TextField fx:id="nameFiled" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="shortcutFiled" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="displayField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="%relation.type.description" GridPane.rowIndex="5" />
+            <Label text="%relation.type.lexicons" GridPane.rowIndex="6" />
+            <Label text="%relation.type.global.wordnet" GridPane.rowIndex="8" />
+            <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <content>
+                  <TextArea fx:id="descriptionArea" prefHeight="80.0" />
+               </content>
+            </ScrollPane>
+            <Label text="%relation.type.multilingual" GridPane.rowIndex="7" />
+            <CheckBox fx:id="interlingualCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <HBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <children>
+                  <TextField fx:id="lexiconField" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#selectLexicons" text="..." />
+               </children>
+            </HBox>
+            <ComboBox fx:id="globalWordnet" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label text="%relation.type.pos" GridPane.rowIndex="9" />
+            <Label text="%relation.type.reverse" GridPane.rowIndex="10" />
+            <Label text="%relation.type.color" GridPane.rowIndex="12" />
+            <HBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+               <children>
+                  <TextField fx:id="posField" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="selectPosButton" mnemonicParsing="false" onAction="#selectPartsOfSpeech" text="..." />
+               </children>
+            </HBox>
+            <HBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
+               <children>
+                  <ComboBox fx:id="reverseCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <ColorPicker fx:id="colorCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <Label text="%relation.type.direction" GridPane.rowIndex="13" />
+            <ComboBox fx:id="directionCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <Label text="%relation.type.type" />
+            <ComboBox fx:id="typeCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            <ComboBox fx:id="parentCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="%relation.type.parent" GridPane.rowIndex="1" />
+            <CheckBox fx:id="autoReverseCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <Label  text="%relation.auto.reverse" GridPane.rowIndex="11" />
+         </children>
+      </GridPane>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

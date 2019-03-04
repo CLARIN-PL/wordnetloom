@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" spacing="3.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.search.SearchListItemView">
+    <ImageView fx:id="img" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+    <Label fx:id="mainLabel" text="Sense" wrapText="true">
+        <font>
+            <Font size="12.0" />
+        </font>
+        <contextMenu>
+            <ContextMenu maxHeight="1.7976931348623157E308">
+                <items>
+                    <MenuItem mnemonicParsing="false" onAction="#openInNewTab" text="Open in new tab" />
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </Label>
+
+    <padding>
+        <Insets left="1.0" right="1.0" />
+    </padding>
+</HBox>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.embed.swing.SwingNode?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ScrollPane?>
+<TitledPane animated="false" text="%preview.title" xmlns:fx="http://javafx.com/fxml/1"  xmlns="http://javafx.com/javafx/8.0.181"
+            fx:controller="pl.edu.pwr.wordnetloom.client.ui.preview.PreviewView">
+    <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="150">
+        <SwingNode fx:id="satellite" />
+    </ScrollPane>
+</TitledPane>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.embed.swing.SwingNode?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<ScrollPane fx:id="graphTab" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.graph.GraphTabView">
+    <StackPane>
+        <SwingNode fx:id="graph" />
+        <StackPane fx:id="progressOverlay" StackPane.alignment="CENTER">
+            <children>
+                <ProgressIndicator maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0" />
+            </children>
+        </StackPane>
+    </StackPane>
+   <contextMenu>
+      <ContextMenu fx:id="contextMenu">
+        <items>
+        </items>
+      </ContextMenu>
+   </contextMenu>
+</ScrollPane>

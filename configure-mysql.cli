@@ -1,0 +1,15 @@
+# Batch script to enable Elytron on the server
+
+connect 127.0.0.1
+
+batch
+
+module add --name=com.mysql --resources=/tmp/mysql-connector-java-8.0.13.jar --dependencies=javax.api,javax.transaction.api
+
+/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)
+
+data-source add --jndi-name=java:/jdbc/datasources/wordnetDS --name=wordnetDS --connection-url=jdbc:mysql://wordnetloom_db/wordnet?useSSL=false&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true --driver-name=mysql --user-name=root --password=password --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+
+run-batch
+
+reload

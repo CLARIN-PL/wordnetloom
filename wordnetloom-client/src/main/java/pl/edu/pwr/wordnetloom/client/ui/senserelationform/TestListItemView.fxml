@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.TextFlow?>
+<HBox alignment="BASELINE_LEFT" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.181"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="pl.edu.pwr.wordnetloom.client.ui.senserelationform.TestListItemView">
+    <TextFlow fx:id="textFlow"/>
+    <padding>
+        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0"/>
+    </padding>
+</HBox>

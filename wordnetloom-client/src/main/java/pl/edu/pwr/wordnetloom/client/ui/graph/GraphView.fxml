@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TabPane?>
+<TabPane fx:id="tabs" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/8.0.181"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.graph.GraphView">
+</TabPane>

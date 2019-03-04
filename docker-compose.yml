@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  wordnetloom_db:
+    container_name: "wordnetloom_db"
+    image: mysql:8.0.13
+    restart: always
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+      - /storage/docker/mysql-wordnet-db:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordnet
+    ports:
+      - "33366:3306"
+  wordnetloom_server:
+    container_name: "wordnetloom_server"
+    build: .
+    restart: always
+    depends_on:
+      - wordnetloom_db
+    environment:
+        WAIT_HOSTS: mysql:3306
+    ports:
+     - "8080:8080"
+    links:
+    - wordnetloom_db:wordnetloom_db
+
+volumes:
+  db_data:

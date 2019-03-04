@@ -1,0 +1,33 @@
+.split-pane > .split-pane-divider {
+    -fx-padding: 0 1px 0 1px;
+}
+
+.searchBoxLabel {
+    -fx-padding: 0 4 0 6;
+}
+
+.searchBoxLabelIcon {
+    -glyph-size: 13;
+    -glyph-name: SEARCH;
+}
+
+.column-filter .context-menu {
+    -fx-background-color: white;
+}
+
+.column-filter .context-menu:focused {
+    -fx-background-color: white;
+}
+
+.column-filter .custom-menu-item {
+    -fx-background-color: white;
+    -fx-padding: 0;
+}
+
+.column-filter .custom-menu-item:focused {
+    -fx-background-color: white;
+}
+
+.invisible-pagination-control .pagination-control {
+    visibility: hidden;
+}

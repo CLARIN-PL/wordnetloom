@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox alignment="CENTER_RIGHT" minHeight="36.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.navbar.NavBarView">
+    <children>
+        <MenuButton fx:id="usernameMenuButton" mnemonicParsing="false" text="username">
+            <items>
+                <MenuItem fx:id="profile" mnemonicParsing="false" onAction="#showProfile" text="%menu.my_profile" />
+                <Menu fx:id="subMenuSettings" mnemonicParsing="false" text="%menu.settings">
+                    <items>
+                        <MenuItem fx:id="relationTypes" mnemonicParsing="false" onAction="#showRelationTypes" text="%menu.relation.types" />
+                        <MenuItem fx:id="dictionaries" mnemonicParsing="false" onAction="#showDictionaries" text="%menu.dictionaries" />
+                        <MenuItem fx:id="lexicons" mnemonicParsing="false" onAction="#showLexicons" text="%menu.lexicons" />
+                    </items>
+                </Menu>
+                <SeparatorMenuItem />
+                <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="%menu.logout" />
+            </items>
+        </MenuButton>
+    </children>
+    <padding>
+        <Insets left="15.0" right="15.0" />
+    </padding>
+</HBox>

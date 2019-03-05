@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DataEntry {
 
-    private UUID synsetId;
+    private UUID id;
 
     private Map<NodeDirection, List<SynsetRelation>> relations;
 
@@ -16,6 +16,8 @@ public class DataEntry {
     private Long partOfSpeech;
 
     private Long lexicon;
+
+    private boolean isSynset;
 
     private boolean fullyLoaded = false;
 
@@ -33,7 +35,7 @@ public class DataEntry {
     }
 
     public DataEntry withSynsetId(UUID id) {
-        this.synsetId = id;
+        this.id = id;
         return this;
     }
 
@@ -82,8 +84,8 @@ public class DataEntry {
         }
     }
 
-    public UUID getSynsetId() {
-        return synsetId;
+    public UUID getId() {
+        return id;
     }
 
     public String getLabel() {
@@ -102,10 +104,18 @@ public class DataEntry {
         this.lexicon = lexicon;
     }
 
+    public boolean isSynset() {
+        return isSynset;
+    }
+
+    public void setSynset(boolean synset) {
+        isSynset = synset;
+    }
+
     @Override
     public String toString() {
         return "DataEntry{" +
-                "synsetId=" + synsetId +
+                "id=" + id +
                 ", relations=" + relations +
                 ", label='" + label + '\'' +
                 ", partOfSpeech=" + partOfSpeech +

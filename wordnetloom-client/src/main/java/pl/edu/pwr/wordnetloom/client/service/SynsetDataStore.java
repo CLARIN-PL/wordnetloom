@@ -9,6 +9,7 @@ import java.awt.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,6 +40,10 @@ public class SynsetDataStore {
         return  loadNode(node);
     }
 
+    public DataEntry loadSense(UUID senseId) {
+        NodeExpanded node = service.findSenseGraph(senseId);
+        return  loadNode(node);
+    }
     /**
      * Loading synset and his relations. For all relations of main synset will be loaded synsets with simple relations.
      * Relations will loaded for all directions (LEFT, RIGHT, BOTTOM, TOP)
@@ -56,6 +61,7 @@ public class SynsetDataStore {
 
     private DataEntry loadNode(NodeExpanded node ){
         DataEntry root = mapExpanded(node);
+        root.setSynset(node.isSynsetMode());
         root.setFullyLoaded(true);
         addData(root);
 
@@ -100,25 +106,25 @@ public class SynsetDataStore {
     }
 
     private void addData(DataEntry entry) {
-        if (data.containsKey(entry.getSynsetId())) {
-//            data.replace(entry.getSynsetId(), entry);
+        if (data.containsKey(entry.getId())) {
+//            data.replace(entry.getId(), entry);
             // TODO: odkomentować to i sprawić by działało poprawnie
             // TODO: jakoś to pozmieniać, aby wierzchołki mogły być podmieniane na grafie
-            if (!data.get(entry.getSynsetId()).isFullyLoaded() && entry.isFullyLoaded()) {
-                data.replace(entry.getSynsetId(), entry);
+            if (!data.get(entry.getId()).isFullyLoaded() && entry.isFullyLoaded()) {
+                data.replace(entry.getId(), entry);
             }
         } else {
-            data.put(entry.getSynsetId(), entry);
+            data.put(entry.getId(), entry);
         }
     }
 
     public void insertData(DataEntry entry){
-//        if(data.containsKey(entry.getSynsetId())){
-//            data.replace(entry.getSynsetId(), entry);
+//        if(data.containsKey(entry.getId())){
+//            data.replace(entry.getId(), entry);
 //        } else {
-//            data.put(entry.getSynsetId(), entry);
+//            data.put(entry.getId(), entry);
 //        }
-        data.put(entry.getSynsetId(), entry);
+        data.put(entry.getId(), entry);
     }
 
     private void mapDirectedNodes(DataEntry root, List<NodeExpanded> exp, NodeDirection dir) {
@@ -149,8 +155,8 @@ public class SynsetDataStore {
         addData(entry);
 
         en.getOptionalRel().ifPresent(rel -> {
-            SynsetRelation p = mapRelation(root.getSynsetId(), en.getId(), rel.get(0));
-            SynsetRelation c = mapRelation(en.getId(), root.getSynsetId(), rel.get(1));
+            SynsetRelation p = mapRelation(root.getId(), en.getId(), rel.get(0));
+            SynsetRelation c = mapRelation(en.getId(), root.getId(), rel.get(1));
             data.get(p.getSource()).addRelation(p, dir);
             data.get(c.getSource()).addRelation(c, dir.getOpposite());
         });
@@ -166,16 +172,19 @@ public class SynsetDataStore {
 
         if(rel == null) return relation.get();
 
-       relationTypeService.getSynsetRelationTypeByShortName(rel)
-               .ifPresent( rt -> {
-                   defaultColor.set(Color.decode(rt.getColor()));
-                   relation.set(new SynsetRelation()
-                           .withSource(parentId)
-                           .withTarget(childId)
-                           .withColor(defaultColor.get())
-                           .withRelationType(rt.getId()));
-               });
+       Optional<RelationType> rt = relationTypeService.getSynsetRelationTypeByShortName(rel);
+       if(!rt.isPresent()){
+           rt = relationTypeService.getSenseRelationTypeByShortName(rel);
+       }
 
+       if(rt.isPresent()){
+           defaultColor.set(Color.decode(rt.get().getColor()));
+           relation.set(new SynsetRelation()
+                   .withSource(parentId)
+                   .withTarget(childId)
+                   .withColor(defaultColor.get())
+                   .withRelationType(rt.get().getId()));
+       }
         return relation.get();
     }
 
@@ -194,4 +203,5 @@ public class SynsetDataStore {
                 .withPartOfSpeech(node.getPos())
                 .withLexicon(node.getLex());
     }
+
 }

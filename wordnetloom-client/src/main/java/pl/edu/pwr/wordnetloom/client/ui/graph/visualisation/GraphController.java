@@ -521,7 +521,11 @@ public class GraphController {
 
     public void showRelation(final SynsetNode synsetNode, NodeDirection direction, RelationType relationType) {
         if (!synsetNode.isFullyLoaded()) {
-            store.load(synsetNode.getSynsetId());
+            if(synsetNode.isSynsetMode()) {
+                store.load(synsetNode.getSynsetId());
+            }else{
+                store.loadSense(synsetNode.getSynsetId());
+            }
             synsetNode.setFullyLoaded(true);
         }
 
@@ -756,17 +760,19 @@ public class GraphController {
             selectedNode = synset;
         }
         if (synset instanceof SynsetNode) {
-            graphViewModel.showSynsetProperties(((SynsetNode) synset).getSynsetId());
-            graphViewModel.showCorpusExamples(synset.getLabel());
+            if(((SynsetNode) synset).isSynsetMode()) {
+                graphViewModel.showSynsetProperties(((SynsetNode) synset).getSynsetId());
+                graphViewModel.showCorpusExamples(synset.getLabel());
 
-            if (synsetRelationScope.isMakeSynsetRelationMode()) {
-                if (!synsetRelationScope.getFirstSelectedSynset().equals(((SynsetNode) synset).getSynsetId())) {
-                    synsetRelationScope.setSecondSelectedSynset(((SynsetNode) synset).getSynsetId());
+                if (synsetRelationScope.isMakeSynsetRelationMode()) {
+                    if (!synsetRelationScope.getFirstSelectedSynset().equals(((SynsetNode) synset).getSynsetId())) {
+                        synsetRelationScope.setSecondSelectedSynset(((SynsetNode) synset).getSynsetId());
 
-                    Platform.runLater(
-                            this::openSynsetRelationDialog
-                    );
-                    updateCursorEvent.fire(new UpdateCursorEvent(VisualisationPopupGraphMousePlugin.DEFAULT_CURSOR));
+                        Platform.runLater(
+                                this::openSynsetRelationDialog
+                        );
+                        updateCursorEvent.fire(new UpdateCursorEvent(VisualisationPopupGraphMousePlugin.DEFAULT_CURSOR));
+                    }
                 }
             }
         }
@@ -799,7 +805,7 @@ public class GraphController {
                         sourceEntry.getRelations(direction).remove(synsetRelation);
                         sourceEntry.getRelations(direction).remove(reverseSynsetRelation);
                     }
-                    if(sourceEntry.getRelations(direction).size() == 1 && sourceEntry.getRelations(direction).get(0).getSource().equals(targetEntry.getSynsetId())){
+                    if(sourceEntry.getRelations(direction).size() == 1 && sourceEntry.getRelations(direction).get(0).getSource().equals(targetEntry.getId())){
                         sourceEntry.getRelations(direction).clear();
                         sourceNode.getRelations(direction).clear();
                     }
@@ -811,7 +817,7 @@ public class GraphController {
                         targetEntry.getRelations(direction).remove(synsetRelation);
                         targetEntry.getRelations(direction).remove(reverseSynsetRelation);
                     }
-                    if(targetEntry.getRelations(direction).size() == 1 && targetEntry.getRelations(direction).get(0).getTarget().equals(sourceEntry.getSynsetId())){
+                    if(targetEntry.getRelations(direction).size() == 1 && targetEntry.getRelations(direction).get(0).getTarget().equals(sourceEntry.getId())){
                         targetEntry.getRelations(direction).clear();
                         targetNode.getRelations(direction).clear();
                     }

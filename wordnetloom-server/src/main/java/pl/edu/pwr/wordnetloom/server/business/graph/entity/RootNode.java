@@ -16,14 +16,21 @@ public class RootNode {
 
     private String label;
 
+    private boolean synsetMode;
+
     public RootNode() {
     }
 
-    public RootNode(UUID id, long lex, long pos, String label) {
+    public RootNode( boolean synsetMode) {
+        this.synsetMode = synsetMode;
+    }
+
+    public RootNode(UUID id, long lex, long pos, String label, boolean synsetMode) {
         this.id = id;
         this.lex = lex;
         this.pos = pos;
         this.label = label;
+        this.synsetMode = synsetMode;
     }
 
     public UUID getId(){
@@ -40,5 +47,9 @@ public class RootNode {
 
     public String getLabel() {
         return label;
+    }
+
+    public boolean isSynsetMode() {
+        return synsetMode;
     }
 }

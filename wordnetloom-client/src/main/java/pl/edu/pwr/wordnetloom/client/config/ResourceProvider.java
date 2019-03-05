@@ -76,7 +76,7 @@ public class ResourceProvider {
     }
 
     public static javafx.scene.image.Image getById(Long id) {
-        if (id != null)
+        if (id != null && lexiconImages.get("lexicon." + id) != null)
             return SwingFXUtils.toFXImage(toBufferedImage(lexiconImages.get("lexicon." + id)), null);
         return null;
     }

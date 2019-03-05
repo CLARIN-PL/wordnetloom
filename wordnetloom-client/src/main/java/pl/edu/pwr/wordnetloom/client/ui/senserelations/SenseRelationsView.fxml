@@ -16,6 +16,7 @@
             <children>
                <Button fx:id="addButton" mnemonicParsing="false" onAction="#addSenseRelation"/>
                <Button fx:id="removeButton" mnemonicParsing="false" onAction="#removeSenseRelation"/>
+               <Button fx:id="showVisualisationButton" mnemonicParsing="false" onAction="#showVisualisation"/>
             </children>
          </HBox>
       </children>

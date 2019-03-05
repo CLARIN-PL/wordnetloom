@@ -79,7 +79,6 @@ public class SearchListItemViewModel implements ViewModel {
         }
     }
 
-
     public ObjectProperty<Image> imgProperty() {
         return img;
     }

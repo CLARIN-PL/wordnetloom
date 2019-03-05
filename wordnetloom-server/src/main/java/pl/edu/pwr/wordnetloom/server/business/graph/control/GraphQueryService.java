@@ -156,10 +156,10 @@ public class GraphQueryService {
             result = fetchSenseGraphNode(source.getId());
         }
 
-        NodeExpanded node = new NodeExpanded(new RootNode(source.getId(),source.getLex(), source.getPos(), source.getLabel()), source.getRel());
+        NodeExpanded node = new NodeExpanded(new RootNode(source.getId(),source.getLex(), source.getPos(), source.getLabel(), isSynset), source.getRel());
 
         result.stream()
-                .map(o ->  buildNodeHidden(locale,o[0],o[1],o[2],o[3],o[4],o[5],o[6],o[7]))
+                .map(o ->  buildNodeHidden(locale,o[0],o[1],o[2],o[3],o[4],o[5],o[6],o[7],isSynset))
                 .collect(Collectors.toList())
                 .stream()
                 .collect(Collectors.groupingBy(NodeHidden::getPosition))
@@ -193,15 +193,14 @@ public class GraphQueryService {
                 .map(s -> new RootNode(s.getId(),
                         s.getLexicon().getId(),
                         s.getSenses().stream().findFirst().get().getPartOfSpeech().getId(),
-                        entityBuilder.buildLabel(s, locale)) )
-                .orElse(new RootNode());
+                        entityBuilder.buildLabel(s, locale),true) )
+                .orElse(new RootNode(true));
         NodeExpanded node = new NodeExpanded(rn, null);
         return graph(result, node, locale, true);
     }
 
     public List<NodeExpanded> pathToHyperonym(final UUID synsetId, Locale locale){
-        // TODO: chyba lepiej, gdyby ta nazwa była pobierana z klienta
-        final String HYPERONYM_NAME = "hype"; //TODO będzie trzeba jakoś zmieniać nazwę tej relacji
+        final String HYPERONYM_NAME = "hype";
         Optional<RelationType> hyperonymRelation = relationTypeQueryService.findRelationTypeByName(HYPERONYM_NAME, locale);
         if(!hyperonymRelation.isPresent()){
             return new ArrayList<>();
@@ -224,21 +223,19 @@ public class GraphQueryService {
                 usedIds.add(id);
             });
         }
-        // TODO: można zrobić coś, aby nie były ładowane w całości, aby było szybciej
         return pathIds.stream()
                 .map(synId -> getNodeExpanded(synId, locale))
                 .collect(Collectors.toList());
     }
 
-    // TODO: zmienić nazwę i wykorzystać w innych metodach
     private NodeExpanded getNodeExpanded(final UUID id, final Locale locale){
         List<Object[]> result = fetchSynsetGraphNode(id);
         RootNode rootNode = synsetQueryService.findSynsetHead(id)
                 .map(sense -> new RootNode(sense.getId(),
                         sense.getLexicon().getId(),
                         sense.getSenses().stream().findFirst().get().getPartOfSpeech().getId(),
-                        entityBuilder.buildLabel(sense, locale)))
-                .orElse(new RootNode());
+                        entityBuilder.buildLabel(sense, locale),true))
+                .orElse(new RootNode(true));
         NodeExpanded node = new NodeExpanded(rootNode, null);
         return graph(result, node, locale, true);
     }
@@ -249,7 +246,7 @@ public class GraphQueryService {
         NodeExpanded node = new NodeExpanded(new RootNode(s.getId(),
                 s.getLexicon().getId(),
                 s.getPartOfSpeech().getId(),
-                createSenseLabel(s, locale)), null);
+                createSenseLabel(s, locale), false), null);
         return graph(result, node, locale, false);
     }
 
@@ -258,17 +255,17 @@ public class GraphQueryService {
     }
 
     private NodeHidden buildNodeHidden(Locale locale, Object position, Object target, Object firstRelation, Object secondRelation,
-                                       Object label, Object domain, Object pos,Object lexicon) {
+                                       Object label, Object domain, Object pos,Object lexicon,boolean isSynset) {
         String r1 = firstRelation != null ? loc.find(((BigInteger) firstRelation).longValue(), locale) : null;
         String r2 = secondRelation != null ? loc.find(((BigInteger) secondRelation).longValue(), locale) : null;
         String dom = domain != null ? "(" + loc.find(((BigInteger) domain).longValue(), locale) + ")" : "";
-        return new NodeHidden(position, target, r1, r2, label, dom, pos, lexicon);
+        return new NodeHidden(position, target, r1, r2, label, dom, pos, lexicon, isSynset);
     }
 
     private NodeExpanded graph(final List<Object[]> result, final NodeExpanded node, Locale locale, boolean isSynset) {
 
         result.stream()
-                .map(o ->  buildNodeHidden(locale,o[0],o[1],o[2],o[3],o[4],o[5],o[6],o[7]))
+                .map(o ->  buildNodeHidden(locale,o[0],o[1],o[2],o[3],o[4],o[5],o[6],o[7], isSynset))
                 .collect(Collectors.toList())
                 .stream()
                 .collect(Collectors.groupingBy(NodeHidden::getPosition))

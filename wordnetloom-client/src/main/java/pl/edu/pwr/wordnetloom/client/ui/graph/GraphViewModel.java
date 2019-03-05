@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
@@ -29,7 +28,6 @@ import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -93,15 +91,13 @@ public class GraphViewModel implements ViewModel {
             RelationType relationType = remoteService.getRelationType(relation.getRelationType().getLinks().getSelf());
             remoteService.delete(relation.getLinks().getSelf());
             removeRelationFromGraph(relation.getSource().getId(), relation.getTarget().getId(), relation.getRelationType().getId());
-            // TODO można wysyłać jakiś event do usunięcia
             if(relationType.getReverseRelation() != null && checkRemoveReverseRelation(relation, relationType)){
                 UUID reverseRelationId = relationType.getReverseRelation().getId();
                 remoteService.delete(relation.getLinks().getReverseRelation());
                 removeRelationFromGraph(relation.getTarget().getId(), relation.getSource().getId(), reverseRelationId);
-//              graphController.removeRelation(relation.getTarget().getId(), relation.getSource().getId(), reverseRelationId);
             }
         }
-//        refreshAllGraphs();
+
         // TODO: temporary solution
         showRelationsOnAllGraph(null, null, null);
     }
@@ -160,24 +156,6 @@ public class GraphViewModel implements ViewModel {
     public void onShowSynsetRelation(@Observes(notifyObserver = Reception.ALWAYS) ShowSynsetRelationsEvent event) {
         Optional<RelationType> rt = RelationTypeService.getSynsetRelationTypeById(event.getRelation().getRelationType().getId());
         if (rt.isPresent()) {
-//            UUID sourceId = event.getRelation().getSource().getId();
-//            UUID targetId = event.getRelation().getTarget().getId();
-//
-//            SynsetRelation synsetRelation = new SynsetRelation(sourceId, targetId, rt.get().getId());
-//            SynsetRelation reverseSynsetRelation = new SynsetRelation(targetId, sourceId, rt.get().getReverseRelationTypeId());
-//            if(store.getById(sourceId) != null){
-//                System.out.println("Dodano source");
-//                store.getById(sourceId).getRelations(rt.get().getDirection()).add(synsetRelation);
-//
-//            }
-//            if(store.getById(targetId) != null){
-//                System.out.println("Dodano target");
-//                store.getById(targetId).getRelations(rt.get().getDirection().getOpposite()).add(reverseSynsetRelation);
-//            }
-//            SynsetEdge edge = new SynsetEdge(synsetRelation);
-//            showRelationsOnAllGraph(edge);
-//            SynsetNode node = new SynsetNode(event.getRelation().getSource().getId(), store);
-            // TODO: check this, too many connection to server, temporary solution
             store.load(event.getRelation().getSource().getId());
             store.load(event.getRelation().getTarget().getId());
             showRelationsOnAllGraph(event.getRelation().getSource().getId(), event.getRelation().getSource().getId(), event.getRelation().getRelationType().getId());
@@ -189,15 +167,6 @@ public class GraphViewModel implements ViewModel {
             // TODO: temporary solution, refreshing all graph
              v.getGraphController()
                     .refreshView(((SynsetNode)v.getGraphController().getRootNode()).getSynsetId());
-
-//            SynsetNode sourceNode = new SynsetNode(sourceId, store);
-//            SynsetNode targetNode = new SynsetNode(targetId, store);
-//            SynsetEdge edge = new SynsetEdge(new SynsetRelation(sourceId, targetId, relationId));
-//            v.getGraphController().getGraph().addVertex(sourceNode);
-//            v.getGraphController().getGraph().addVertex(targetNode);
-//            v.getGraphController().addMissingRelationInForest();
-//            v.getGraphController().recreateLayoutWithFix(null, null);
-
         });
     }
 
@@ -230,7 +199,7 @@ public class GraphViewModel implements ViewModel {
         String tabId = selectedGraphTab.get().getId();
         GraphTabViewModel activeTab = tabs.get(tabId);
         for(DataEntry entry : entries){
-            activeTab.getGraphController().showRelation(entry.getSynsetId(), hyperonymRelationType);
+            activeTab.getGraphController().showRelation(entry.getId(), hyperonymRelationType);
         }
     }
 
@@ -268,7 +237,7 @@ public class GraphViewModel implements ViewModel {
                             if (event.getGraphLink() != null || event.getSynsetId() != null) {
                                 graphTabsList.stream().filter(t -> t.getId().equals(tabId))
                                         .findFirst().ifPresent(t -> t.setText(getValue().getLabel()));
-                                activeTab.loadGraph(getValue().getSynsetId());
+                                activeTab.loadGraph(getValue().getId());
                             }
                             activeTab.progressOverlayProperty().setValue(false);
                         });

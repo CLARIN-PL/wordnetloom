@@ -39,20 +39,9 @@ public class RelationTypesViewModel implements ViewModel {
         senseRoot.get().setExpanded(true);
         synsetRoot.get().setExpanded(true);
 
-        selectedSynsetTreeListItem.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                RelationType rt = (RelationType) newValue.getValue().getItem();
-                relationTypeDialogScope.setRelationTypeToEdit(rt);
-                relationTypeDialogScope.publish(RelationTypeDialogScope.SHOW_RELATION);
-            }
-        });
+        showRelation(selectedSynsetTreeListItem);
 
-        selectedSenseTreeListItem.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                RelationType rt = (RelationType) newValue.getValue().getItem();
-                relationTypeDialogScope.setRelationTypeToEdit(rt);
-            }
-        });
+        showRelation(selectedSenseTreeListItem);
 
         relationTypeDialogScope.subscribe(RelationTypeDialogScope.RELOAD_RELATIONS, (s, objects) -> {
             synsetRelations.clear();
@@ -71,6 +60,16 @@ public class RelationTypesViewModel implements ViewModel {
         });
 
         loadRelations();
+    }
+
+    private void showRelation(ObjectProperty<TreeItem<TreeItemObject>> selectedSynsetTreeListItem) {
+        selectedSynsetTreeListItem.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                RelationType rt = (RelationType) newValue.getValue().getItem();
+                relationTypeDialogScope.setRelationTypeToEdit(rt);
+                relationTypeDialogScope.publish(RelationTypeDialogScope.SHOW_RELATION);
+            }
+        });
     }
 
     private void loadRelations() {

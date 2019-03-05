@@ -2,12 +2,13 @@ package pl.edu.pwr.wordnetloom.server.business.graph.entity;
 
 import pl.edu.pwr.wordnetloom.server.business.UuidAdapter;
 
+import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import java.util.List;
 import java.util.UUID;
 
-@JsonbPropertyOrder({"id", "lex", "label", "pos", "rel", "top", "right", "left", "bottom"})
+@JsonbPropertyOrder({"id", "lex","synsetMode","label", "pos", "rel", "top", "right", "left", "bottom"})
 public class NodeExpanded {
 
     @JsonbTypeAdapter(UuidAdapter.class)
@@ -18,6 +19,9 @@ public class NodeExpanded {
     private Long pos;
 
     private Long lex;
+
+    @JsonbProperty("synset_mode")
+    private boolean synsetMode;
 
     private String label;
 
@@ -40,6 +44,7 @@ public class NodeExpanded {
         }
         this.pos = head.getPos();
         this.label = head.getLabel();
+        this.synsetMode = head.isSynsetMode();
     }
 
     public void addTopExpanded(NodeExpanded n) {
@@ -132,6 +137,10 @@ public class NodeExpanded {
 
     public Long getLex() {
         return lex;
+    }
+
+    public boolean isSynsetMode() {
+        return synsetMode;
     }
 }
 

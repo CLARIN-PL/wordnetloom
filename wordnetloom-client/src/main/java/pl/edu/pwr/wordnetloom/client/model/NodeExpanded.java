@@ -1,7 +1,9 @@
 package pl.edu.pwr.wordnetloom.client.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.edu.pwr.wordnetloom.client.service.UuidAdapter;
 
+import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class NodeExpanded {
     private Long pos;
 
     private Long lex;
+
+    @JsonProperty("synset_mode")
+    private boolean synsetMode;
 
     private String label;
 
@@ -139,6 +144,10 @@ public class NodeExpanded {
 
     public Long getLex() {
         return lex;
+    }
+
+    public boolean isSynsetMode() {
+        return synsetMode;
     }
 
     @Override

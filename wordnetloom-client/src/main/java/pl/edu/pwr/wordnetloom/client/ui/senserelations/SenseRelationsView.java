@@ -3,6 +3,7 @@ package pl.edu.pwr.wordnetloom.client.ui.senserelations;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import de.saxsys.mvvmfx.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -29,7 +30,7 @@ public class SenseRelationsView implements FxmlView<SenseRelationsViewModel> {
     Stage primaryStage;
 
     @FXML
-    private Button addButton, removeButton;
+    private Button addButton, removeButton, showVisualisationButton;
 
     @FXML
     private TreeView<TreeItemObject> relationTree;
@@ -81,6 +82,7 @@ public class SenseRelationsView implements FxmlView<SenseRelationsViewModel> {
     private void initIcons() {
         AwesomeDude.setIcon(addButton, AwesomeIcon.PLUS, "11");
         AwesomeDude.setIcon(removeButton, AwesomeIcon.TRASH, "11");
+        AwesomeDude.setIcon(showVisualisationButton, AwesomeIcon.EYE, "11");
     }
 
     @FXML
@@ -116,5 +118,10 @@ public class SenseRelationsView implements FxmlView<SenseRelationsViewModel> {
                 }
             };
         });
+    }
+
+    @FXML
+    public void showVisualisation() {
+        viewModel.getShowSenseVisualisationCommand().execute();
     }
 }

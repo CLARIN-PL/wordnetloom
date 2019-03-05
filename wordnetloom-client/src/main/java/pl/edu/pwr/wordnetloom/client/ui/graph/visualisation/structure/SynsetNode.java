@@ -18,14 +18,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SynsetNode extends RootNode implements Comparable<SynsetNode> {
 
+
+
     public enum State {
-        EXPANDED, SEMI_EXPANDED, NOT_EXPANDED
+        EXPANDED, SEMI_EXPANDED, NOT_EXPANDED;
     }
 
     protected static SynsetNodeShape geom = new SynsetNodeShape();
 
     private UUID synsetId;
     private String self;
+    private boolean isSynsetMode;
 
     private NodeSet inSet;
     private boolean hasFrame = false;
@@ -101,7 +104,9 @@ public class SynsetNode extends RootNode implements Comparable<SynsetNode> {
                 .stream()
                 .filter(d -> d.getId().equals(dataEntry.getPartOfSpeech()))
                 .findFirst().orElse(null);
-
+        
+        this.isSynsetMode = dataEntry.isSynset();
+        
         this.isFullyLoaded = dataEntry.isFullyLoaded();
         addSynsetEdges(dataEntry);
         dirtyCache = false;
@@ -215,6 +220,10 @@ public class SynsetNode extends RootNode implements Comparable<SynsetNode> {
 
     public void setSelf(String self) {
         this.self = self;
+    }
+
+    public boolean isSynsetMode() {
+        return isSynsetMode;
     }
 
     @Override

@@ -59,6 +59,7 @@ public class SenseRelationsViewModel implements ViewModel {
     private Command addSenseRelationCommand;
     private Command removeSenseRelationCommand;
     private Command openInNewTabCommand;
+    private Command showSenseVisualisationCommand;
 
     private ObjectProperty<Sense> activeSense = new SimpleObjectProperty<>();
 
@@ -86,6 +87,13 @@ public class SenseRelationsViewModel implements ViewModel {
             @Override
             protected void action() throws Exception {
                 addSenseRelation();
+            }
+        });
+
+        showSenseVisualisationCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                showSenseVisualisation();
             }
         });
 
@@ -118,6 +126,12 @@ public class SenseRelationsViewModel implements ViewModel {
             publish(OPEN_ADD_SENSE_RELATION_DIALOG);
         }
     }
+
+    private  void showSenseVisualisation(){
+            URI link = activeSense.get().getLinks().getGraph();
+            loadGraphEventPublisher.fireAsync(new LoadGraphEvent(link, true));
+    }
+
 
     public ObjectProperty<TreeItem<TreeItemObject>> selectedTreeItemProperty() {
         return selectedTreeListItem;
@@ -193,15 +207,15 @@ public class SenseRelationsViewModel implements ViewModel {
     }
 
     private void openInNewTab(){
-        if(selectedTreeListItem !=null){
-        TreeItem<TreeItemObject> selectedItem = selectedTreeListItem.get();
-        if(incoming.contains(selectedItem.getParent()) || outgoing.contains(selectedItem.getParent())) {
-            // TODO: to many requests
-            Relation senseRelation = service.getSenseRelation(((SenseRelation) selectedItem.getValue().getItem()).getLinks().getSelf());
-            Sense sense = service.findSense(senseRelation.getTarget().getId());
-            Synset synset = service.findSynset(sense.getLinks().getSynset());
-            loadGraphEventPublisher.fireAsync(new LoadGraphEvent(synset.getLinks().getGraph(), true));
-        }
+        if (selectedTreeListItem != null) {
+            TreeItem<TreeItemObject> selectedItem = selectedTreeListItem.get();
+            if (incoming.contains(selectedItem.getParent()) || outgoing.contains(selectedItem.getParent())) {
+                // TODO: to many requests
+                Relation senseRelation = service.getSenseRelation(((SenseRelation) selectedItem.getValue().getItem()).getLinks().getSelf());
+                Sense sense = service.findSense(senseRelation.getTarget().getId());
+                Synset synset = service.findSynset(sense.getLinks().getSynset());
+                loadGraphEventPublisher.fireAsync(new LoadGraphEvent(synset.getLinks().getGraph(), true));
+            }
         }
     }
 
@@ -242,4 +256,7 @@ public class SenseRelationsViewModel implements ViewModel {
         return valid.not();
     }
 
+    public Command getShowSenseVisualisationCommand() {
+        return showSenseVisualisationCommand;
+    }
 }

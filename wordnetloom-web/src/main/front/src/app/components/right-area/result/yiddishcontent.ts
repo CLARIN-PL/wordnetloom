@@ -181,17 +181,26 @@ export class YiddishContent {
             };
           } else if (key === 'semantic_fields' && jsonData['semantic_fields'].length > 0) {
             newField = {
-              name: fieldNames[key].viewName, values: jsonData[key].map(function (it) {
-                return {
-                  name: it['domain'].name,
-                  searchQuery: self.getSearchFieldQuery(key, it['domain'].id)
-                };
+              name: fieldNames[key].viewName,
+              innerSeparator: ' ',
+              values: jsonData[key].map(function (it) {
+
+                let ret = [
+                  {name: it['domain'].name, searchQuery: self.getSearchFieldQuery(key, it['domain'].id)},
+                ];
+                if(it['modifier']) {
+                  ret.push({
+                    name: '(' + it['modifier'].name + ')',
+                    searchQuery: self.getSearchFieldQuery('semantic_fields_modifier', it['modifier'].id)
+                  })
+                }
+                return ret;
               })
-            };
+            }
           } else if (key === 'particles' && jsonData['particles'].length > 0) {
             newField = {
               name: fieldNames[key].viewName, values: jsonData[key]
-                .sort(YiddishContent.sortParticles)
+                // .sort(YiddishContent.sortParticles) // sort particles
                 .map(function (it) {
                   return {
                     name: it.value,

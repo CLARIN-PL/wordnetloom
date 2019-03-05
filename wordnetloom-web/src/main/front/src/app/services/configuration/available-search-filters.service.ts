@@ -41,7 +41,7 @@ export class AvailableSearchFiltersService {
       this.http.getGlobalOptions(field['apiOptions']).subscribe(
         (response) => {
           // this.searchFields[key]['searchOptions'] = response.entries;
-          this.searchFields[key]['searchOptions'] = response;
+          this.searchFields[key]['searchOptions'] = response.rows;
         },
         (error) => {
           console.log(error);

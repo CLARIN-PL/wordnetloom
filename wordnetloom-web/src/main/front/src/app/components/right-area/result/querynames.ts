@@ -8,6 +8,7 @@ export class QueryNames {
     'lexical_characteristic': 'lexical_characteristic',
     'etymological_root': 'etymological_root',
     'semantic_fields': 'yiddish_domain',
+    'semantic_fields_modifier': 'yiddish_domain_modification',
     'particle_prefix': 'particle_prefix',
     'particle_root': 'particle_root',
     'particle_suffix': 'particle_suffix',

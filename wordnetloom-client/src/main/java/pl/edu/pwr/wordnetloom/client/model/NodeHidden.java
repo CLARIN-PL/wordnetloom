@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.client.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.edu.pwr.wordnetloom.client.service.UuidAdapter;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -16,6 +17,9 @@ public class NodeHidden {
     private UUID id;
 
     private Long pos;
+
+    @JsonProperty("synset_mode")
+    private boolean synsetMode;
 
     private Long lex;
 
@@ -88,5 +92,13 @@ public class NodeHidden {
                 ", rel=" + rel +
                 ", label='" + label + '\'' +
                 '}';
+    }
+
+    public boolean isSynsetMode() {
+        return synsetMode;
+    }
+
+    public void setSynsetMode(boolean synsetMode) {
+        this.synsetMode = synsetMode;
     }
 }

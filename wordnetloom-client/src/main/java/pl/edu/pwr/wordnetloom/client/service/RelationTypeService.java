@@ -32,8 +32,20 @@ public class RelationTypeService {
                 .findFirst();
     }
 
+    public static Optional<RelationType> getSenseRelationTypeById(UUID id) {
+        return senseRelationTypes.stream()
+                .filter(rt -> rt.getId().equals(id))
+                .findFirst();
+    }
+
     public static Optional<RelationType> getSynsetRelationTypeByShortName(String sname) {
         return synsetRelationTypes.stream()
+                .filter(rt -> rt.getShortName().equals(sname))
+                .findFirst();
+    }
+
+    public static Optional<RelationType> getSenseRelationTypeByShortName(String sname) {
+        return senseRelationTypes.stream()
                 .filter(rt -> rt.getShortName().equals(sname))
                 .findFirst();
     }

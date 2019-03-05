@@ -56,7 +56,7 @@ public class SynsetEdge extends Edge {
 
     public RelationType getRelationType() {
         return RelationTypeService.getSynsetRelationTypeById(synsetRelation.getRelationType())
-                .orElse(null);
+                .orElse(RelationTypeService.getSenseRelationTypeById(synsetRelation.getRelationType()).orElse(null));
     }
 
     @Override

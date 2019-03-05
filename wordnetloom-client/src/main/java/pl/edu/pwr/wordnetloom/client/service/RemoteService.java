@@ -60,6 +60,7 @@ public class RemoteService {
     private static final String PATH_ADD_SENSE_TO_NEW_SYNSET = "/synsets/add-sense-to-new-synset/{senseId}";
     private static final String PATH_ATTACH_SENSE_TO_SYNSET = "/senses/{senseId}/attach-to-synset/{synsetId}";
     private static final String PATH_GRAPH_SYNSETS = "/synsets/{id}/graph";
+    private static final String PATH_GRAPH_SENSE = "/senses/{id}/graph";
     private static final String PATH_CORPUS_EXAMPLES = "/corpus-examples/search";
     private static final String PATH_PATH_TO_HYPERONYM = "synsets/{id}/path-to-hyperonymy";
 
@@ -280,7 +281,14 @@ public class RemoteService {
         return loadNode(target);
     }
 
-    // TODO: zmienić zwracany typ na listę
+    public NodeExpanded findSenseGraph(UUID id) {
+
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_GRAPH_SENSE).resolveTemplate("id", id);
+
+        return loadNode(target);
+    }
+
     public List<NodeExpanded> findPathToHyperonym(UUID id) {
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_PATH_TO_HYPERONYM)
@@ -307,7 +315,7 @@ public class RemoteService {
     }
 
     private NodeExpanded loadNode(WebTarget target) {
-        LOG.debug("Loading synset graph: " + target.getUri());
+        LOG.debug("Loading graph: " + target.getUri());
 
         Response response = target
                 .request()

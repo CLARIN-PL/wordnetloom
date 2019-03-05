@@ -1,13 +1,18 @@
 package pl.edu.pwr.wordnetloom.server.business;
 
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStringsQueryService;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.GlobalWordnetRelationType;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseAttributes;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseExample;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
@@ -1429,16 +1434,12 @@ public class EntityBuilder {
             builder.add("part_of_speech", sense.getPartOfSpeech().getId());
         }
 
-        if (searchMode) {
-            if (sense.getWord() != null) {
-                builder.add("lexicon", sense.getLexicon().getId());
-                builder.add("label", buildLabel(sense, false, locale));
-            }
-        } else {
-            if (sense.getWord() != null) {
-                builder.add("label", buildLabel(sense, false, locale));
-            }
+        builder.add("lexicon", sense.getLexicon().getId());
+
+        if (sense.getWord() != null) {
+            builder.add("label", buildLabel(sense, false, locale));
         }
+
         builder.add("_links", linkBuilder);
 
         return builder.build();
@@ -1531,7 +1532,6 @@ public class EntityBuilder {
         });
         return builder.build();
     }
-
 
 
     public String buildLabel(Sense sense, Boolean withLexicon, Locale locale) {

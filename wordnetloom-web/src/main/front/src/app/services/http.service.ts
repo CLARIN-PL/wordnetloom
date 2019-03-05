@@ -9,7 +9,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 @Injectable()
 export class HttpService {
   // apiBase = 'http://156.17.135.55:8080/wordnetloom-server/resources/';
-  apiBase = 'http://156.17.135.55:9070/wordnetloom-server/resources/';
+  apiBase = 'http://156.17.135.29:8888/wordnetloom-server/resources/';
 
   constructor(private http: HttpClient) {}
 

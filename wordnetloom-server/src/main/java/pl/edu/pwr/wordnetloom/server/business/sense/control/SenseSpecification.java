@@ -182,7 +182,7 @@ public class SenseSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter.getEtymologicalRoot() != null && !filter.getEtymologicalRoot().equals("")) {
-                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymologicalRoot"), filter.getEtymologicalRoot());
+                Predicate yiddishPredicate = cb.like(yiddishRoot.get("etymologicalRoot"), "%"+filter.getEtymologicalRoot()+"%");
                 predicates.add(yiddishPredicate);
             }
 
@@ -212,7 +212,7 @@ public class SenseSpecification {
             }
 
             if (filter.getEtymology() != null) {
-                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymology"), filter.getEtymology());
+                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymology"), "%"+filter.getEtymology()+"%");
                 predicates.add(yiddishPredicate);
             }
 

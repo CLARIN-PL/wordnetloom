@@ -153,10 +153,10 @@ public class Sense implements Serializable {
     @Column(name = "synset_position", columnDefinition = "int default 0")
     private Integer synsetPosition = 0;
 
-    @OneToMany(mappedBy = "child", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private final Set<SenseRelation> incomingRelations = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent",  cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "child",  cascade = CascadeType.REMOVE)
     private final Set<SenseRelation> outgoingRelations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

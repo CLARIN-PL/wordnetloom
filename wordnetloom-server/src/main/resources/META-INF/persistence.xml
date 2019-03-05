@@ -9,6 +9,7 @@
             <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hibernate.connection.useUnicode" value="true"/>
+            <property name="hibernate.connection.CharSet" value="utf8mb4"/>
             <property name="hibernate.connection.characterEncoding" value="UTF-8"/>
         </properties>
     </persistence-unit>

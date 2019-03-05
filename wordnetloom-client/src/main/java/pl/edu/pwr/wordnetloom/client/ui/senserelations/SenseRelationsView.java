@@ -106,8 +106,10 @@ public class SenseRelationsView implements FxmlView<SenseRelationsViewModel> {
                         setText(getTreeItem().getValue().getLabel());
                         if (item.getType().equals(TreeItemType.SENSE_RELATION)) {
                             tooltip.activatedProperty().addListener(observable -> {
-                                SenseRelation senseRelation = (SenseRelation) getTreeItem().getValue().getItem();
-                                tooltip.setText(viewModel.getTooltipText(senseRelation.getLinks().getSelf()));
+                                if( getTreeItem().getValue().getItem() instanceof  SenseRelation) {
+                                    SenseRelation senseRelation = (SenseRelation) getTreeItem().getValue().getItem();
+                                    tooltip.setText(viewModel.getTooltipText(senseRelation.getLinks().getSelf()));
+                                }
                             });
                             setTooltip(tooltip);
                         }

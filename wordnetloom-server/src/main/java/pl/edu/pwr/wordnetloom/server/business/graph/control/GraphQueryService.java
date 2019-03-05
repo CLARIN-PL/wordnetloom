@@ -56,7 +56,7 @@ public class GraphQueryService {
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
-        String query = "SELECT * FROM (SELECT rt1.node_position AS position," +
+        String query = "SELECT  ANY_VALUE(t.np),t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex FROM (SELECT rt1.node_position AS position," +
                 "BIN_TO_UUID(r1.child_synset_id) AS c, " +
                 "CASE WHEN r1.child_synset_id is null THEN null ELSE rt1.short_display_text_id END AS f,"+
                 "CASE WHEN r2.parent_synset_id is null THEN null ELSE rt2.short_display_text_id END AS t,"+
@@ -87,7 +87,7 @@ public class GraphQueryService {
                 "LEFT JOIN tbl_word w ON w.id = s.word_id " +
                 "LEFT JOIN tbl_domain dom1 ON  dom1.id = s.domain_id " +
                 "WHERE r1.child_synset_id = ?1 AND s.synset_position = ?2 AND rt1.node_position != 'IGNORE') AS t " +
-                "WHERE t.lex in (?3) "+
+                "WHERE t.lex in (?3) group by t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex "+
                 "ORDER BY t.position DESC, t.lemma, t.domain";
 
         return em.createNativeQuery(query)
@@ -102,7 +102,7 @@ public class GraphQueryService {
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
-        String query = "SELECT * FROM (SELECT rt1.node_position as np, BIN_TO_UUID(r1.child_sense_id) AS c," +
+        String query = "SELECT  ANY_VALUE(t.np),t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex FROM (SELECT rt1.node_position as np, BIN_TO_UUID(r1.child_sense_id) AS c," +
                 "CASE WHEN r1.parent_sense_id is null THEN null ELSE rt1.short_display_text_id END AS f,"+
                 "CASE WHEN r2.child_sense_id is null THEN null ELSE rt2.short_display_text_id END AS t,"+
                 "concat(w.word, ' ', s.variant) AS lemma,"+
@@ -139,7 +139,7 @@ public class GraphQueryService {
                 "LEFT JOIN tbl_word w ON w.id = s.word_id " +
                 "LEFT JOIN tbl_domain dom1 ON  dom1.id = s.domain_id " +
                 "WHERE r1.child_sense_id = ?1 AND rt1.node_position != 'IGNORE') t "+
-                "WHERE t.lex in (?2) ";
+                "WHERE t.lex in (?2) group by t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex";
 
         return em.createNativeQuery(query)
                 .setParameter(1, id)

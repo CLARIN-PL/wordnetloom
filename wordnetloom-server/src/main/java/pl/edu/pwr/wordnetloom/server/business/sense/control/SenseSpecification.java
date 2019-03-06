@@ -73,12 +73,12 @@ public class SenseSpecification {
         subquery.select(yiddishRoot.get("sense").get("id"));
         List<Predicate> predicates = new ArrayList<>();
 
-        Predicate latinPredicate =  cb.like(yiddishRoot.get("latinSpelling"),"%"+ lemma+"%");
-        Predicate yivoPredicate =  cb.like(yiddishRoot.get("yivoSpelling"), "%"+lemma+"%");
-        Predicate yiddishPredicate =  cb.like(yiddishRoot.get("yiddishSpelling"), "%"+lemma+"%");
+        Predicate latinPredicate =  cb.like(yiddishRoot.get("latinSpelling"),lemma+"%");
+        Predicate yivoPredicate =  cb.like(yiddishRoot.get("yivoSpelling"), lemma+"%");
+        Predicate yiddishPredicate =  cb.like(yiddishRoot.get("yiddishSpelling"), lemma+"%");
 
         Join<YiddishSenseExtension, Transcription> transJoin = yiddishRoot.join("transcriptions");
-        Predicate transPredicate =  cb.like(transJoin.get("phonography"), "%"+lemma +"%");
+        Predicate transPredicate =  cb.like(transJoin.get("phonography"), lemma +"%");
 
         Predicate orPredicate = cb.or(latinPredicate,yivoPredicate,yiddishPredicate, transPredicate);
         predicates.add(orPredicate);

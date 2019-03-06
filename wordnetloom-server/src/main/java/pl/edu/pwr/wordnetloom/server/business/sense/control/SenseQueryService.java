@@ -45,16 +45,13 @@ public class SenseQueryService {
         predicates.add(SenseSpecification.byFilter(filter, lexicons).toPredicate(sense, qc, cb));
 
         List<Order> orders = new ArrayList<>();
-        orders.add(cb.asc(sense.get("word").get("word")));
-        orders.add(cb.asc(sense.get("partOfSpeech").get("id")));
-        orders.add(cb.asc(sense.get("variant")));
-        orders.add(cb.asc(sense.get("lexicon").get("id")));
 
         if (filter.getLexicon() != null && filter.getLexicon() == 4L) {
             if (filter.getSortBy() != null && !filter.getSortBy().isEmpty()) {
                 orders = new ArrayList<>();
                 if (filter.getSortBy().equals("latin")) {
                     sense.fetch("yiddish", JoinType.LEFT);
+                    orders.add(cb.asc(sense.get("word").get("word")));
                 } else {
                     sense.fetch("yiddish", JoinType.LEFT);
                     Join<Sense, YiddishSenseExtension> join = sense.join("yiddish", JoinType.INNER);
@@ -65,9 +62,15 @@ public class SenseQueryService {
                         orders.add(cb.asc(join.get("yiddishSpelling")));
                     }
                 }
+                orders.add(cb.asc(sense.get("partOfSpeech").get("id")));
+                orders.add(cb.asc(sense.get("variant")));
+                orders.add(cb.asc(sense.get("lexicon").get("id")));
             }
         } else {
-            qc.distinct(true);
+            orders.add(cb.asc(sense.get("word").get("word")));
+            orders.add(cb.asc(sense.get("partOfSpeech").get("id")));
+            orders.add(cb.asc(sense.get("variant")));
+            orders.add(cb.asc(sense.get("lexicon").get("id")));
         }
 
         qc.select(sense);
@@ -198,6 +201,7 @@ public class SenseQueryService {
                 .setParameter("relTypeId", relationType)
                 .getResultList();
     }
+
     public List<SenseRelation> findSenseRelations(UUID source, UUID target, UUID relationType) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<SenseRelation> qc = cb.createQuery(SenseRelation.class);

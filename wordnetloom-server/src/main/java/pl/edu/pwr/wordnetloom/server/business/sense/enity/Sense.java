@@ -24,8 +24,8 @@ import java.util.UUID;
                 "LEFT JOIN FETCH s.domain " +
                 "LEFT JOIN FETCH s.incomingRelations inr " +
                 "LEFT JOIN FETCH s.outgoingRelations outr " +
-                "LEFT JOIN FETCH inr.parent p " +
-                "LEFT JOIN FETCH outr.child c " +
+                "LEFT JOIN FETCH inr.child p " +
+                "LEFT JOIN FETCH outr.parent c " +
                 "LEFT JOIN FETCH p.domain  " +
                 "LEFT JOIN FETCH c.domain  " +
                 "LEFT JOIN FETCH p.word  " +
@@ -137,10 +137,10 @@ public class Sense implements Serializable {
     @Column(name = "synset_position", columnDefinition = "int default 0")
     private Integer synsetPosition = 0;
 
-    @OneToMany(mappedBy = "child", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private final Set<SenseRelation> incomingRelations = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent",  cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "child",  cascade = CascadeType.REMOVE)
     private final Set<SenseRelation> outgoingRelations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

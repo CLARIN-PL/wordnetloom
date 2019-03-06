@@ -49,7 +49,6 @@ public class GraphQueryService {
     RelationTypeQueryService relationTypeQueryService;
 
     private static final int NUMBER_OF_EXPANDED_NODES = 4;
-
     private List<Object[]> fetchSynsetGraphNode(UUID id) {
 
         List<Long> lexicons  = userFinder.getCurrentUser()

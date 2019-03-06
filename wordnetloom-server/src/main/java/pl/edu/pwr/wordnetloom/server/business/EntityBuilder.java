@@ -1052,8 +1052,8 @@ public class EntityBuilder {
     public JsonObject buildSenseRelations(Sense sense, UriInfo uriInfo, Locale locale) {
         return Json.createObjectBuilder()
                 .add("root", buildLabel(sense, false, locale))
-                .add("outgoing", buildSenseRelations(sense.getIncomingRelations(), true, locale, uriInfo))
-                .add("incoming", buildSenseRelations(sense.getOutgoingRelations(), false, locale, uriInfo))
+                .add("outgoing", buildSenseRelations(sense.getIncomingRelations(), false, locale, uriInfo))
+                .add("incoming", buildSenseRelations(sense.getOutgoingRelations(), true, locale, uriInfo))
                 .add("_links", createObjectBuilder()
                         .add("self", linkBuilder.forSenseRelations(sense, uriInfo).toString()))
                 .build();

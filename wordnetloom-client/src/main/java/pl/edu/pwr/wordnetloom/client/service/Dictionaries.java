@@ -30,10 +30,23 @@ public class Dictionaries {
 
     public static final String PART_OF_SPEECH_DICTIONARY = "parts_of_speech";
     public static final String DOMAIN_DICTIONARY = "domains";
-    public static final String ASPECT_DICTIONARY = "aspects";
     public static final String STATUS_DICTIONARY = "statuses";
-    public static final String REGISTER_DICTIONARY = "register";
+    public static final String REGISTER_DICTIONARY = "registers";
     public static final String LEXICON_DICTIONARY = "lexicon";
+    public static final String AGES_DICTIONARY = "ages";
+    public static final String SOURCES_DICTIONARY = "sources";
+    public static final String TRANSCRIPTIONS_DICTIONARY = "transcriptions";
+    public static final String STYLES_DICTIONARY = "styles";
+    public static final String SUFFIXES_DICTIONARY = "suffixes";
+    public static final String PREFIXES_DICTIONARY = "prefixes";
+    public static final String INTERFIXES_DICTIONARY = "interfixes";
+    public static final String INFLECTIONS_DICTIONARY = "inflections";
+    public static final String DIALECTALS_DICTIONARY = "dialectals";
+    public static final String YIDDISH_STATUSES_DICTIONARY = "yiddish_statuses";
+    public static final String YIDDISH_DOMAINS_DICTIONARY = "yiddish_domains";
+    public static final String YIDDISH_DOMAIN_MODIFIERS_DICTIONARY = "yiddish_domain_modifiers";
+    public static final String LEXICAL_CHARACTERISTICS_DICTIONARY = "lexical_characteristics";
+    public static final String GRAMMATICAL_GENDERS_DICTIONARY = "grammatical_genders";
 
     private static final Map<String, ObservableList<Dictionary>> dictionaries = new ConcurrentHashMap<>();
     private static final ObservableList<Dictionary> userChosenLexicon = FXCollections.observableArrayList();

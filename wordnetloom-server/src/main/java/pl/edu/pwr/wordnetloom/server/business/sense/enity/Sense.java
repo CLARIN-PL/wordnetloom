@@ -21,8 +21,8 @@ import java.util.*;
                 "LEFT JOIN FETCH s.domain " +
                 "LEFT JOIN FETCH s.incomingRelations inr " +
                 "LEFT JOIN FETCH s.outgoingRelations outr " +
-                "LEFT JOIN FETCH inr.parent p " +
-                "LEFT JOIN FETCH outr.child c " +
+                "LEFT JOIN FETCH inr.child p " +
+                "LEFT JOIN FETCH outr.parent c " +
                 "LEFT JOIN FETCH p.domain  " +
                 "LEFT JOIN FETCH c.domain  " +
                 "LEFT JOIN FETCH p.word  " +

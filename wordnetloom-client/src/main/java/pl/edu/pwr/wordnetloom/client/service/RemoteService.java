@@ -199,10 +199,24 @@ public class RemoteService {
             JsonObject jsonObject = reader.readObject();
 
             JsonObject _links = jsonObject.getJsonObject("_links");
-            dic.put(PART_OF_SPEECH_DICTIONARY, _links.getString("parts_of_speech"));
-            dic.put(DOMAIN_DICTIONARY, _links.getString("domains"));
-            dic.put(STATUS_DICTIONARY, _links.getString("statuses"));
-            dic.put(REGISTER_DICTIONARY, _links.getString("registers"));
+            dic.put(PART_OF_SPEECH_DICTIONARY, _links.getString(PART_OF_SPEECH_DICTIONARY));
+            dic.put(DOMAIN_DICTIONARY, _links.getString(DOMAIN_DICTIONARY));
+            dic.put(STATUS_DICTIONARY, _links.getString(STATUS_DICTIONARY));
+            dic.put(REGISTER_DICTIONARY, _links.getString(REGISTER_DICTIONARY));
+            dic.put(AGES_DICTIONARY, _links.getString(AGES_DICTIONARY));
+            dic.put(SOURCES_DICTIONARY, _links.getString(SOURCES_DICTIONARY));
+            dic.put(TRANSCRIPTIONS_DICTIONARY, _links.getString(TRANSCRIPTIONS_DICTIONARY));
+            dic.put(STYLES_DICTIONARY, _links.getString(STYLES_DICTIONARY));
+            dic.put(SUFFIXES_DICTIONARY, _links.getString(SUFFIXES_DICTIONARY));
+            dic.put(PREFIXES_DICTIONARY, _links.getString(PREFIXES_DICTIONARY));
+            dic.put(INTERFIXES_DICTIONARY, _links.getString(INTERFIXES_DICTIONARY));
+            dic.put(INFLECTIONS_DICTIONARY, _links.getString(INFLECTIONS_DICTIONARY));
+            dic.put(DIALECTALS_DICTIONARY, _links.getString(DIALECTALS_DICTIONARY));
+            dic.put(YIDDISH_STATUSES_DICTIONARY, _links.getString(YIDDISH_STATUSES_DICTIONARY));
+            dic.put(YIDDISH_DOMAINS_DICTIONARY, _links.getString(YIDDISH_DOMAINS_DICTIONARY));
+            dic.put(YIDDISH_DOMAIN_MODIFIERS_DICTIONARY, _links.getString(YIDDISH_DOMAIN_MODIFIERS_DICTIONARY));
+            dic.put(LEXICAL_CHARACTERISTICS_DICTIONARY, _links.getString(LEXICAL_CHARACTERISTICS_DICTIONARY));
+            dic.put(GRAMMATICAL_GENDERS_DICTIONARY, _links.getString(GRAMMATICAL_GENDERS_DICTIONARY));
             dic.put(LEXICON_DICTIONARY, SERVER_TARGET_URL + PATH_LEXICONS);
         }
         response.close();

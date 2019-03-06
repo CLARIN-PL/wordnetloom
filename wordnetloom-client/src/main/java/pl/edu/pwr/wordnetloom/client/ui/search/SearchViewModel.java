@@ -382,7 +382,7 @@ public class SearchViewModel implements ViewModel {
         }
         if (example.get() != null &&
                 !example.get().isEmpty()) {
-            filter.setComment(example.getValue());
+            filter.setExample(example.getValue());
         } else {
             filter.setExample(null);
         }

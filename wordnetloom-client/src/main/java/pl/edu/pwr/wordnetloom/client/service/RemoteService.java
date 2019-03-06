@@ -303,6 +303,55 @@ public class RemoteService {
         if (filter.getRelationTypeId() != null) {
             target = target.queryParam("relation_type", filter.getRelationTypeId());
         }
+
+        if (filter.getYiddishDomainId() != null) {
+            target = target.queryParam("yiddish_domain", filter.getYiddishDomainId());
+        }
+
+        if (filter.getYiddishDomainModificationId() != null) {
+            target = target.queryParam("yiddish_domain_modification", filter.getYiddishDomainModificationId());
+        }
+
+        if (filter.getStyleId() != null) {
+            target = target.queryParam("style", filter.getStyleId());
+        }
+
+        if (filter.getYiddishStatusId()!= null) {
+            target = target.queryParam("yiddish_status", filter.getYiddishStatusId());
+        }
+
+        if (filter.getLexicalCharacteristicId()!= null) {
+            target = target.queryParam("lexical_characteristic", filter.getLexicalCharacteristicId());
+        }
+
+        if (filter.getAgeId() != null) {
+            target = target.queryParam("age", filter.getAgeId());
+        }
+
+        if (filter.getSourceId() != null) {
+            target = target.queryParam("source", filter.getSourceId());
+        }
+
+        if (filter.getInflectionId() != null) {
+            target = target.queryParam("inflection", filter.getInflectionId());
+        }
+
+        if (filter.getParticlePrefix() != null) {
+            target = target.queryParam("particle_prefix", filter.getParticlePrefix());
+        }
+
+        if (filter.getParticleSuffix() != null) {
+            target = target.queryParam("particle_suffix", filter.getParticleSuffix());
+        }
+
+        if (filter.getEtymologicalRoot() != null && !filter.getEtymologicalRoot().isEmpty()) {
+            target = target.queryParam("etymological_root", filter.getEtymologicalRoot());
+        }
+
+        if (filter.getEtymology() != null && !filter.getEtymology().isEmpty()) {
+            target = target.queryParam("etymology", filter.getEtymology());
+        }
+
         if (filter.getStart() != null) {
             target = target.queryParam("start", filter.getStart());
         }

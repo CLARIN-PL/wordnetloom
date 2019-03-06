@@ -47,6 +47,13 @@ public class SearchViewModel implements ViewModel {
     private static final String LEXICON_NOTHING_SELECTED_MARKER = "Lexicon";
     private static final String SENSE_RELATION_TYPE_NOTHING_SELECTED_MARKER = "Sense Relation Type";
     private static final String SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER = "Synset Relation Type";
+    private static final String GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER = "Grammatical Gender";
+    private static final String AGE_NOTHING_SELECTED_MARKER = "Age";
+    private static final String SOURCE_NOTHING_SELECTED_MARKER = "Source";
+    private static final String LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER = "Lexical Characteristic";
+    private static final String SEMANTIC_FIELD_NOTHING_SELECTED_MARKER = "Semantic Field";
+    private static final String SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER = "Semantic Field Modifier";
+    private static final String YIDDISH_STATUSES_NOTHING_SELECTED_MARKER = "Status";
 
     private final StringProperty fieldSearch = new SimpleStringProperty();
     private final StringProperty definition = new SimpleStringProperty();
@@ -56,8 +63,10 @@ public class SearchViewModel implements ViewModel {
     private final BooleanProperty progressOverlay = new SimpleBooleanProperty();
     private final StringProperty unitsCount = new SimpleStringProperty();
 
-    private final Property<Boolean> selectedSenseMode = new SimpleBooleanProperty();
-    private final Property<Boolean> selectedSynsetMode = new SimpleBooleanProperty();
+    private final StringProperty etymology = new SimpleStringProperty();
+
+    private final BooleanProperty selectedSenseMode = new SimpleBooleanProperty();
+    private final BooleanProperty selectedSynsetMode = new SimpleBooleanProperty();
 
     private final BooleanProperty senseOnlyWithoutSynset = new SimpleBooleanProperty();
 
@@ -89,6 +98,33 @@ public class SearchViewModel implements ViewModel {
     private final ObjectProperty<RelationType> synsetRelationType = new SimpleObjectProperty<>();
     private final StringProperty selectedSynsetRelation = new SimpleStringProperty(SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER);
 
+    private ObservableList<String> grammaticalGenders;
+    private final ObjectProperty<Dictionary> grammaticalGender = new SimpleObjectProperty<>();
+    private final StringProperty selectedGrammaticalGender = new SimpleStringProperty(GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> semanticFields;
+    private final ObjectProperty<Dictionary> semanticField = new SimpleObjectProperty<>();
+    private final StringProperty selectedSemanticField = new SimpleStringProperty(SEMANTIC_FIELD_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> semanticFieldMods;
+    private final ObjectProperty<Dictionary> semanticFieldMod = new SimpleObjectProperty<>();
+    private final StringProperty selectedSemanticFieldMod = new SimpleStringProperty(SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> yiddishStatuses;
+    private final ObjectProperty<Dictionary> yiddishStatus = new SimpleObjectProperty<>();
+    private final StringProperty selectedYiddishStatus = new SimpleStringProperty(YIDDISH_STATUSES_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> ages;
+    private final ObjectProperty<Dictionary> age = new SimpleObjectProperty<>();
+    private final StringProperty selectedAge = new SimpleStringProperty(AGE_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> sources;
+    private final ObjectProperty<Dictionary> source = new SimpleObjectProperty<>();
+    private final StringProperty selectedSource = new SimpleStringProperty(SOURCE_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> lexicalCharacteristics;
+    private final ObjectProperty<Dictionary> lexicalCharacteristic = new SimpleObjectProperty<>();
+    private final StringProperty selectedLexicalCharacteristic = new SimpleStringProperty(LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER);
 
     // Don't inline this field. It's needed to prevent the list mapping from being garbage collected.
     private ItemList<Dictionary> lexiconItemList;
@@ -98,6 +134,15 @@ public class SearchViewModel implements ViewModel {
     private ItemList<Dictionary> registerItemList;
     private ItemList<RelationType> synsetRelationTypeItemList;
     private ItemList<RelationType> senseRelationTypeItemList;
+
+    private ItemList<Dictionary> grammaticalGenderItemList;
+    private ItemList<Dictionary> semanticFieldItemList;
+    private ItemList<Dictionary> semanticFieldModItemList;
+    private ItemList<Dictionary> yiddishStatusesItemList;
+    private ItemList<Dictionary> agesItemList;
+    private ItemList<Dictionary> sourcesItemList;
+    private ItemList<Dictionary> lexicalCharacteristicsItemList;
+
 
     private SearchFilter filter = new SearchFilter();
 
@@ -129,7 +174,7 @@ public class SearchViewModel implements ViewModel {
         return searchCommand;
     }
 
-    public void clearList(){
+    public void clearList() {
         searchList.clear();
     }
 
@@ -173,6 +218,15 @@ public class SearchViewModel implements ViewModel {
         initSynsetRelationTypeList();
         initSenseRelationTypeList();
 
+        initAgeItemList();
+        initGrammaticalGenderList();
+        initLexicalCharacteristicsItemList();
+        initSemanticFieldItemList();
+        initSemanticFieldModItemList();
+        initSourcesItemList();
+        initYiddishStatusesItemList();
+
+
         scrollCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
@@ -214,7 +268,7 @@ public class SearchViewModel implements ViewModel {
         addSenseToNewSynsetCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-               addSenseToNewSynset();
+                addSenseToNewSynset();
             }
         });
 
@@ -239,6 +293,40 @@ public class SearchViewModel implements ViewModel {
 
         selectedRegister.addListener((obs, oldV, newV) -> {
             Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.REGISTER_DICTIONARY, REGISTER_NOTHING_SELECTED_MARKER, register);
+        });
+
+        selectedAge.addListener((obs, oldV, newV) -> {
+            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.AGES_DICTIONARY, AGE_NOTHING_SELECTED_MARKER, age);
+        });
+
+        selectedGrammaticalGender.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.GRAMMATICAL_GENDERS_DICTIONARY,
+                    GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER, grammaticalGender);
+        });
+
+        selectedLexicalCharacteristic.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.LEXICAL_CHARACTERISTICS_DICTIONARY,
+                    LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER, lexicalCharacteristic);
+        });
+
+        selectedYiddishStatus.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.YIDDISH_STATUSES_DICTIONARY,
+                    YIDDISH_STATUSES_NOTHING_SELECTED_MARKER, yiddishStatus);
+        });
+
+        selectedSemanticField.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.YIDDISH_DOMAINS_DICTIONARY,
+                    SEMANTIC_FIELD_NOTHING_SELECTED_MARKER, semanticField);
+        });
+
+        selectedSemanticFieldMod.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.YIDDISH_DOMAIN_MODIFIERS_DICTIONARY,
+                    SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER, semanticFieldMod);
+        });
+
+        selectedSource.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.SOURCES_DICTIONARY,
+                    SOURCE_NOTHING_SELECTED_MARKER, source);
         });
 
 
@@ -380,9 +468,10 @@ public class SearchViewModel implements ViewModel {
         } else {
             filter.setComment(null);
         }
+
         if (example.get() != null &&
                 !example.get().isEmpty()) {
-            filter.setComment(example.getValue());
+            filter.setExample(example.getValue());
         } else {
             filter.setExample(null);
         }
@@ -399,6 +488,54 @@ public class SearchViewModel implements ViewModel {
             filter.setRelationTypeId(synsetRelationType.get().getId());
         } else {
             filter.setRelationTypeId(null);
+        }
+
+        if (selectedAge.get() != null && !AGE_NOTHING_SELECTED_MARKER.equals(selectedAge.get())) {
+            filter.setAgeId(age.get().getId());
+        } else {
+            filter.setAgeId(null);
+        }
+
+        if (selectedSemanticField.get() != null && !SEMANTIC_FIELD_NOTHING_SELECTED_MARKER
+                .equals(selectedSemanticField.get())) {
+            filter.setYiddishDomainId(semanticField.get().getId());
+        } else {
+            filter.setYiddishDomainId(null);
+        }
+
+        if (selectedSemanticFieldMod.get() != null && !SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER
+                .equals(selectedSemanticFieldMod.get())) {
+            filter.setYiddishDomainModificationId(semanticFieldMod.get().getId());
+        } else {
+            filter.setYiddishDomainModificationId(null);
+        }
+
+        if (selectedYiddishStatus.get() != null && !YIDDISH_STATUSES_NOTHING_SELECTED_MARKER
+                .equals(selectedYiddishStatus.get())) {
+            filter.setYiddishStatusId(yiddishStatus.get().getId());
+        } else {
+            filter.setYiddishStatusId(null);
+        }
+
+        if (selectedLexicalCharacteristic.get() != null && !LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER
+                .equals(selectedLexicalCharacteristic.get())) {
+            filter.setLexicalCharacteristicId(lexicalCharacteristic.get().getId());
+        } else {
+            filter.setLexicalCharacteristicId(null);
+        }
+
+        if (selectedGrammaticalGender.get() != null && !GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER
+                .equals(selectedGrammaticalGender.get())) {
+            filter.setGrammaticalGenderId(grammaticalGender.get().getId());
+        } else {
+            filter.setGrammaticalGenderId(null);
+        }
+
+        if (etymology.get() != null &&
+                !etymology.get().isEmpty()) {
+            filter.setEtymology(etymology.getValue());
+        } else {
+            filter.setEtymology(null);
         }
     }
 
@@ -450,7 +587,7 @@ public class SearchViewModel implements ViewModel {
     public synchronized void load(SearchFilter searchFilter) {
         progressOverlay.setValue(true);
 
-         listLoader = new Task<SearchList>() {
+        listLoader = new Task<SearchList>() {
 
             {
                 setOnSucceeded(workerStateEvent -> {
@@ -524,11 +661,32 @@ public class SearchViewModel implements ViewModel {
         synsetId.set("");
         filter.setSynsetId(null);
 
+        selectedAge.set(null);
+        filter.setAgeId(null);
+
+        selectedSemanticField.set(null);
+        filter.setYiddishDomainId(null);
+
+        selectedSemanticFieldMod.set(null);
+        filter.setYiddishDomainModificationId(null);
+
+        selectedYiddishStatus.set(null);
+        filter.setYiddishStatusId(null);
+
+        selectedLexicalCharacteristic.set(null);
+        filter.setLexicalCharacteristicId(null);
+
+        selectedGrammaticalGender.set(null);
+        filter.setGrammaticalGenderId(null);
+
+        etymology.set("");
+        filter.setEtymology(null);
+
         senseOnlyWithoutSynset.set(false);
         filter.setSensesWithoutSynset(false);
     }
 
-    public void onUserLexiconLiseUpdated(@Observes(notifyObserver = Reception.ALWAYS) UserLexiconUpdatedEvent event){
+    public void onUserLexiconLiseUpdated(@Observes(notifyObserver = Reception.ALWAYS) UserLexiconUpdatedEvent event) {
         initLexiconList();
     }
 
@@ -551,6 +709,57 @@ public class SearchViewModel implements ViewModel {
         ObservableList<String> mappedList = domainItemList.getTargetList();
         domains = Dictionaries.createListWithNothingSelectedMarker(mappedList, DOMAIN_NOTHING_SELECTED_MARKER);
         domains.addListener((ListChangeListener<String>) p -> selectedDomain.set(DOMAIN_NOTHING_SELECTED_MARKER));
+    }
+
+
+    private void initLexicalCharacteristicsItemList() {
+        lexicalCharacteristicsItemList = Dictionaries.initDictionaryItemList(Dictionaries.LEXICAL_CHARACTERISTICS_DICTIONARY);
+        ObservableList<String> mappedList = lexicalCharacteristicsItemList.getTargetList();
+        lexicalCharacteristics = Dictionaries.createListWithNothingSelectedMarker(mappedList, LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER);
+        lexicalCharacteristics.addListener((ListChangeListener<String>) p -> selectedLexicalCharacteristic.set(LEXICAL_CHARACTERISTIC_NOTHING_SELECTED_MARKER));
+    }
+
+
+    private void initSourcesItemList() {
+        sourcesItemList = Dictionaries.initDictionaryItemList(Dictionaries.SOURCES_DICTIONARY);
+        ObservableList<String> mappedList = sourcesItemList.getTargetList();
+        sources = Dictionaries.createListWithNothingSelectedMarker(mappedList, SOURCE_NOTHING_SELECTED_MARKER);
+        sources.addListener((ListChangeListener<String>) p -> selectedSource.set(SOURCE_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initAgeItemList() {
+        agesItemList = Dictionaries.initDictionaryItemList(Dictionaries.AGES_DICTIONARY);
+        ObservableList<String> mappedList = agesItemList.getTargetList();
+        ages = Dictionaries.createListWithNothingSelectedMarker(mappedList, AGE_NOTHING_SELECTED_MARKER);
+        ages.addListener((ListChangeListener<String>) p -> selectedAge.set(AGE_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initYiddishStatusesItemList() {
+        yiddishStatusesItemList = Dictionaries.initDictionaryItemList(Dictionaries.YIDDISH_STATUSES_DICTIONARY);
+        ObservableList<String> mappedList = yiddishStatusesItemList.getTargetList();
+        yiddishStatuses = Dictionaries.createListWithNothingSelectedMarker(mappedList, YIDDISH_STATUSES_NOTHING_SELECTED_MARKER);
+        yiddishStatuses.addListener((ListChangeListener<String>) p -> selectedYiddishStatus.set(YIDDISH_STATUSES_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initSemanticFieldModItemList() {
+        semanticFieldModItemList = Dictionaries.initDictionaryItemList(Dictionaries.YIDDISH_DOMAIN_MODIFIERS_DICTIONARY);
+        ObservableList<String> mappedList = semanticFieldModItemList.getTargetList();
+        semanticFieldMods = Dictionaries.createListWithNothingSelectedMarker(mappedList, SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER);
+        semanticFieldMods.addListener((ListChangeListener<String>) p -> selectedSemanticFieldMod.set(SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initSemanticFieldItemList() {
+        semanticFieldItemList = Dictionaries.initDictionaryItemList(Dictionaries.YIDDISH_DOMAINS_DICTIONARY);
+        ObservableList<String> mappedList = semanticFieldItemList.getTargetList();
+        semanticFields = Dictionaries.createListWithNothingSelectedMarker(mappedList, SEMANTIC_FIELD_NOTHING_SELECTED_MARKER);
+        semanticFields.addListener((ListChangeListener<String>) p -> selectedSemanticField.set(SEMANTIC_FIELD_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initGrammaticalGenderList() {
+        grammaticalGenderItemList = Dictionaries.initDictionaryItemList(Dictionaries.GRAMMATICAL_GENDERS_DICTIONARY);
+        ObservableList<String> mappedList = grammaticalGenderItemList.getTargetList();
+        grammaticalGenders = Dictionaries.createListWithNothingSelectedMarker(mappedList, GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER);
+        grammaticalGenders.addListener((ListChangeListener<String>) p -> selectedGrammaticalGender.set(GRAMMATICAL_GENDER_NOTHING_SELECTED_MARKER));
     }
 
     private void initStatusList() {
@@ -685,5 +894,581 @@ public class SearchViewModel implements ViewModel {
 
     public Property<Boolean> senseOnlyWithoutSynsetProperty() {
         return senseOnlyWithoutSynset;
+    }
+
+    public String getEtymology() {
+        return etymology.get();
+    }
+
+    public StringProperty etymologyProperty() {
+        return etymology;
+    }
+
+    public void setEtymology(String etymology) {
+        this.etymology.set(etymology);
+    }
+
+    public Boolean getSelectedSenseMode() {
+        return selectedSenseMode.get();
+    }
+
+    public void setSelectedSenseMode(Boolean selectedSenseMode) {
+        this.selectedSenseMode.set(selectedSenseMode);
+    }
+
+    public Boolean getSelectedSynsetMode() {
+        return selectedSynsetMode.get();
+    }
+
+    public void setSelectedSynsetMode(Boolean selectedSynsetMode) {
+        this.selectedSynsetMode.set(selectedSynsetMode);
+    }
+
+    public boolean isSenseOnlyWithoutSynset() {
+        return senseOnlyWithoutSynset.get();
+    }
+
+    public void setSenseOnlyWithoutSynset(boolean senseOnlyWithoutSynset) {
+        this.senseOnlyWithoutSynset.set(senseOnlyWithoutSynset);
+    }
+
+    public ObservableList<String> getPartsOfSpeech() {
+        return partsOfSpeech;
+    }
+
+    public void setPartsOfSpeech(ObservableList<String> partsOfSpeech) {
+        this.partsOfSpeech = partsOfSpeech;
+    }
+
+    public Dictionary getPartOfSpeech() {
+        return partOfSpeech.get();
+    }
+
+    public ObjectProperty<Dictionary> partOfSpeechProperty() {
+        return partOfSpeech;
+    }
+
+    public void setPartOfSpeech(Dictionary partOfSpeech) {
+        this.partOfSpeech.set(partOfSpeech);
+    }
+
+    public String getSelectedPartOfSpeech() {
+        return selectedPartOfSpeech.get();
+    }
+
+    public void setSelectedPartOfSpeech(String selectedPartOfSpeech) {
+        this.selectedPartOfSpeech.set(selectedPartOfSpeech);
+    }
+
+    public ObservableList<String> getDomains() {
+        return domains;
+    }
+
+    public void setDomains(ObservableList<String> domains) {
+        this.domains = domains;
+    }
+
+    public Dictionary getDomain() {
+        return domain.get();
+    }
+
+    public ObjectProperty<Dictionary> domainProperty() {
+        return domain;
+    }
+
+    public void setDomain(Dictionary domain) {
+        this.domain.set(domain);
+    }
+
+    public String getSelectedDomain() {
+        return selectedDomain.get();
+    }
+
+    public void setSelectedDomain(String selectedDomain) {
+        this.selectedDomain.set(selectedDomain);
+    }
+
+    public ObservableList<String> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(ObservableList<String> statuses) {
+        this.statuses = statuses;
+    }
+
+    public Dictionary getStatus() {
+        return status.get();
+    }
+
+    public ObjectProperty<Dictionary> statusProperty() {
+        return status;
+    }
+
+    public void setStatus(Dictionary status) {
+        this.status.set(status);
+    }
+
+    public String getSelectedStatus() {
+        return selectedStatus.get();
+    }
+
+    public void setSelectedStatus(String selectedStatus) {
+        this.selectedStatus.set(selectedStatus);
+    }
+
+    public ObservableList<String> getRegisters() {
+        return registers;
+    }
+
+    public void setRegisters(ObservableList<String> registers) {
+        this.registers = registers;
+    }
+
+    public Dictionary getRegister() {
+        return register.get();
+    }
+
+    public ObjectProperty<Dictionary> registerProperty() {
+        return register;
+    }
+
+    public void setRegister(Dictionary register) {
+        this.register.set(register);
+    }
+
+    public String getSelectedRegister() {
+        return selectedRegister.get();
+    }
+
+    public void setSelectedRegister(String selectedRegister) {
+        this.selectedRegister.set(selectedRegister);
+    }
+
+    public ObservableList<String> getLexicons() {
+        return lexicons;
+    }
+
+    public void setLexicons(ObservableList<String> lexicons) {
+        this.lexicons = lexicons;
+    }
+
+    public Dictionary getLexicon() {
+        return lexicon.get();
+    }
+
+    public ObjectProperty<Dictionary> lexiconProperty() {
+        return lexicon;
+    }
+
+    public void setLexicon(Dictionary lexicon) {
+        this.lexicon.set(lexicon);
+    }
+
+    public String getSelectedLexicon() {
+        return selectedLexicon.get();
+    }
+
+    public void setSelectedLexicon(String selectedLexicon) {
+        this.selectedLexicon.set(selectedLexicon);
+    }
+
+    public ObservableList<String> getSenseRelationsTypes() {
+        return senseRelationsTypes;
+    }
+
+    public void setSenseRelationsTypes(ObservableList<String> senseRelationsTypes) {
+        this.senseRelationsTypes = senseRelationsTypes;
+    }
+
+    public RelationType getSenseRelationType() {
+        return senseRelationType.get();
+    }
+
+    public ObjectProperty<RelationType> senseRelationTypeProperty() {
+        return senseRelationType;
+    }
+
+    public void setSenseRelationType(RelationType senseRelationType) {
+        this.senseRelationType.set(senseRelationType);
+    }
+
+    public String getSelectedSenseRelation() {
+        return selectedSenseRelation.get();
+    }
+
+    public StringProperty selectedSenseRelationProperty() {
+        return selectedSenseRelation;
+    }
+
+    public void setSelectedSenseRelation(String selectedSenseRelation) {
+        this.selectedSenseRelation.set(selectedSenseRelation);
+    }
+
+    public ObservableList<String> getSynsetRelationsTypes() {
+        return synsetRelationsTypes;
+    }
+
+    public void setSynsetRelationsTypes(ObservableList<String> synsetRelationsTypes) {
+        this.synsetRelationsTypes = synsetRelationsTypes;
+    }
+
+    public RelationType getSynsetRelationType() {
+        return synsetRelationType.get();
+    }
+
+    public ObjectProperty<RelationType> synsetRelationTypeProperty() {
+        return synsetRelationType;
+    }
+
+    public void setSynsetRelationType(RelationType synsetRelationType) {
+        this.synsetRelationType.set(synsetRelationType);
+    }
+
+    public String getSelectedSynsetRelation() {
+        return selectedSynsetRelation.get();
+    }
+
+    public StringProperty selectedSynsetRelationProperty() {
+        return selectedSynsetRelation;
+    }
+
+    public void setSelectedSynsetRelation(String selectedSynsetRelation) {
+        this.selectedSynsetRelation.set(selectedSynsetRelation);
+    }
+
+    public ObservableList<String> getGrammaticalGenders() {
+        return grammaticalGenders;
+    }
+
+    public void setGrammaticalGenders(ObservableList<String> grammaticalGenders) {
+        this.grammaticalGenders = grammaticalGenders;
+    }
+
+    public Dictionary getGrammaticalGender() {
+        return grammaticalGender.get();
+    }
+
+    public ObjectProperty<Dictionary> grammaticalGenderProperty() {
+        return grammaticalGender;
+    }
+
+    public void setGrammaticalGender(Dictionary grammaticalGender) {
+        this.grammaticalGender.set(grammaticalGender);
+    }
+
+    public String getSelectedGrammaticalGender() {
+        return selectedGrammaticalGender.get();
+    }
+
+    public StringProperty selectedGrammaticalGenderProperty() {
+        return selectedGrammaticalGender;
+    }
+
+    public void setSelectedGrammaticalGender(String selectedGrammaticalGender) {
+        this.selectedGrammaticalGender.set(selectedGrammaticalGender);
+    }
+
+    public ObservableList<String> getSemanticFields() {
+        return semanticFields;
+    }
+
+    public void setSemanticFields(ObservableList<String> semanticFields) {
+        this.semanticFields = semanticFields;
+    }
+
+    public Dictionary getSemanticField() {
+        return semanticField.get();
+    }
+
+    public ObjectProperty<Dictionary> semanticFieldProperty() {
+        return semanticField;
+    }
+
+    public void setSemanticField(Dictionary semanticField) {
+        this.semanticField.set(semanticField);
+    }
+
+    public String getSelectedSemanticField() {
+        return selectedSemanticField.get();
+    }
+
+    public StringProperty selectedSemanticFieldProperty() {
+        return selectedSemanticField;
+    }
+
+    public void setSelectedSemanticField(String selectedSemanticField) {
+        this.selectedSemanticField.set(selectedSemanticField);
+    }
+
+    public ObservableList<String> getSemanticFieldMods() {
+        return semanticFieldMods;
+    }
+
+    public void setSemanticFieldMods(ObservableList<String> semanticFieldMods) {
+        this.semanticFieldMods = semanticFieldMods;
+    }
+
+    public Dictionary getSemanticFieldMod() {
+        return semanticFieldMod.get();
+    }
+
+    public ObjectProperty<Dictionary> semanticFieldModProperty() {
+        return semanticFieldMod;
+    }
+
+    public void setSemanticFieldMod(Dictionary semanticFieldMod) {
+        this.semanticFieldMod.set(semanticFieldMod);
+    }
+
+    public String getSelectedSemanticFieldMod() {
+        return selectedSemanticFieldMod.get();
+    }
+
+    public StringProperty selectedSemanticFieldModProperty() {
+        return selectedSemanticFieldMod;
+    }
+
+    public void setSelectedSemanticFieldMod(String selectedSemanticFieldMod) {
+        this.selectedSemanticFieldMod.set(selectedSemanticFieldMod);
+    }
+
+    public ObservableList<String> getYiddishStatuses() {
+        return yiddishStatuses;
+    }
+
+    public void setYiddishStatuses(ObservableList<String> yiddishStatuses) {
+        this.yiddishStatuses = yiddishStatuses;
+    }
+
+    public Dictionary getYiddishStatus() {
+        return yiddishStatus.get();
+    }
+
+    public ObjectProperty<Dictionary> yiddishStatusProperty() {
+        return yiddishStatus;
+    }
+
+    public void setYiddishStatus(Dictionary yiddishStatus) {
+        this.yiddishStatus.set(yiddishStatus);
+    }
+
+    public String getSelectedYiddishStatus() {
+        return selectedYiddishStatus.get();
+    }
+
+    public StringProperty selectedYiddishStatusProperty() {
+        return selectedYiddishStatus;
+    }
+
+    public void setSelectedYiddishStatus(String selectedYiddishStatus) {
+        this.selectedYiddishStatus.set(selectedYiddishStatus);
+    }
+
+    public ObservableList<String> getAges() {
+        return ages;
+    }
+
+    public void setAges(ObservableList<String> ages) {
+        this.ages = ages;
+    }
+
+    public Dictionary getAge() {
+        return age.get();
+    }
+
+    public ObjectProperty<Dictionary> ageProperty() {
+        return age;
+    }
+
+    public void setAge(Dictionary age) {
+        this.age.set(age);
+    }
+
+    public String getSelectedAge() {
+        return selectedAge.get();
+    }
+
+    public StringProperty selectedAgeProperty() {
+        return selectedAge;
+    }
+
+    public void setSelectedAge(String selectedAge) {
+        this.selectedAge.set(selectedAge);
+    }
+
+    public ObservableList<String> getSources() {
+        return sources;
+    }
+
+    public void setSources(ObservableList<String> sources) {
+        this.sources = sources;
+    }
+
+    public Dictionary getSource() {
+        return source.get();
+    }
+
+    public ObjectProperty<Dictionary> sourceProperty() {
+        return source;
+    }
+
+    public void setSource(Dictionary source) {
+        this.source.set(source);
+    }
+
+    public String getSelectedSource() {
+        return selectedSource.get();
+    }
+
+    public StringProperty selectedSourceProperty() {
+        return selectedSource;
+    }
+
+    public void setSelectedSource(String selectedSource) {
+        this.selectedSource.set(selectedSource);
+    }
+
+    public ObservableList<String> getLexicalCharacteristics() {
+        return lexicalCharacteristics;
+    }
+
+    public void setLexicalCharacteristics(ObservableList<String> lexicalCharacteristics) {
+        this.lexicalCharacteristics = lexicalCharacteristics;
+    }
+
+    public Dictionary getLexicalCharacteristic() {
+        return lexicalCharacteristic.get();
+    }
+
+    public ObjectProperty<Dictionary> lexicalCharacteristicProperty() {
+        return lexicalCharacteristic;
+    }
+
+    public void setLexicalCharacteristic(Dictionary lexicalCharacteristic) {
+        this.lexicalCharacteristic.set(lexicalCharacteristic);
+    }
+
+    public String getSelectedLexicalCharacteristic() {
+        return selectedLexicalCharacteristic.get();
+    }
+
+    public StringProperty selectedLexicalCharacteristicProperty() {
+        return selectedLexicalCharacteristic;
+    }
+
+    public void setSelectedLexicalCharacteristic(String selectedLexicalCharacteristic) {
+        this.selectedLexicalCharacteristic.set(selectedLexicalCharacteristic);
+    }
+
+    public ItemList<Dictionary> getLexiconItemList() {
+        return lexiconItemList;
+    }
+
+    public void setLexiconItemList(ItemList<Dictionary> lexiconItemList) {
+        this.lexiconItemList = lexiconItemList;
+    }
+
+    public ItemList<Dictionary> getPartOfSpeechItemList() {
+        return partOfSpeechItemList;
+    }
+
+    public void setPartOfSpeechItemList(ItemList<Dictionary> partOfSpeechItemList) {
+        this.partOfSpeechItemList = partOfSpeechItemList;
+    }
+
+    public ItemList<Dictionary> getDomainItemList() {
+        return domainItemList;
+    }
+
+    public void setDomainItemList(ItemList<Dictionary> domainItemList) {
+        this.domainItemList = domainItemList;
+    }
+
+    public ItemList<Dictionary> getStatusItemList() {
+        return statusItemList;
+    }
+
+    public void setStatusItemList(ItemList<Dictionary> statusItemList) {
+        this.statusItemList = statusItemList;
+    }
+
+    public ItemList<Dictionary> getRegisterItemList() {
+        return registerItemList;
+    }
+
+    public void setRegisterItemList(ItemList<Dictionary> registerItemList) {
+        this.registerItemList = registerItemList;
+    }
+
+    public ItemList<RelationType> getSynsetRelationTypeItemList() {
+        return synsetRelationTypeItemList;
+    }
+
+    public void setSynsetRelationTypeItemList(ItemList<RelationType> synsetRelationTypeItemList) {
+        this.synsetRelationTypeItemList = synsetRelationTypeItemList;
+    }
+
+    public ItemList<RelationType> getSenseRelationTypeItemList() {
+        return senseRelationTypeItemList;
+    }
+
+    public void setSenseRelationTypeItemList(ItemList<RelationType> senseRelationTypeItemList) {
+        this.senseRelationTypeItemList = senseRelationTypeItemList;
+    }
+
+    public ItemList<Dictionary> getGrammaticalGenderItemList() {
+        return grammaticalGenderItemList;
+    }
+
+    public void setGrammaticalGenderItemList(ItemList<Dictionary> grammaticalGenderItemList) {
+        this.grammaticalGenderItemList = grammaticalGenderItemList;
+    }
+
+    public ItemList<Dictionary> getSemanticFieldItemList() {
+        return semanticFieldItemList;
+    }
+
+    public void setSemanticFieldItemList(ItemList<Dictionary> semanticFieldItemList) {
+        this.semanticFieldItemList = semanticFieldItemList;
+    }
+
+    public ItemList<Dictionary> getSemanticFieldModItemList() {
+        return semanticFieldModItemList;
+    }
+
+    public void setSemanticFieldModItemList(ItemList<Dictionary> semanticFieldModItemList) {
+        this.semanticFieldModItemList = semanticFieldModItemList;
+    }
+
+    public ItemList<Dictionary> getYiddishStatusesItemList() {
+        return yiddishStatusesItemList;
+    }
+
+    public void setYiddishStatusesItemList(ItemList<Dictionary> yiddishStatusesItemList) {
+        this.yiddishStatusesItemList = yiddishStatusesItemList;
+    }
+
+    public ItemList<Dictionary> getAgesItemList() {
+        return agesItemList;
+    }
+
+    public void setAgesItemList(ItemList<Dictionary> agesItemList) {
+        this.agesItemList = agesItemList;
+    }
+
+    public ItemList<Dictionary> getSourcesItemList() {
+        return sourcesItemList;
+    }
+
+    public void setSourcesItemList(ItemList<Dictionary> sourcesItemList) {
+        this.sourcesItemList = sourcesItemList;
+    }
+
+    public ItemList<Dictionary> getLexicalCharacteristicsItemList() {
+        return lexicalCharacteristicsItemList;
+    }
+
+    public void setLexicalCharacteristicsItemList(ItemList<Dictionary> lexicalCharacteristicsItemList) {
+        this.lexicalCharacteristicsItemList = lexicalCharacteristicsItemList;
     }
 }

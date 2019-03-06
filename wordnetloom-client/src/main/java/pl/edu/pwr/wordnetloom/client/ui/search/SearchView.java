@@ -23,6 +23,18 @@ import javax.swing.event.ChangeEvent;
 
 public class SearchView implements FxmlView<SearchViewModel> {
 
+    @FXML
+    public ComboBox<String> grammaticalGenderCombo, semanticFieldCombo;
+
+    @FXML
+    public ComboBox<String> semanticFieldModCombo, yiddishStatusCombo;
+
+    @FXML
+    public ComboBox<String> ageCombo,sourceCombo,lexicalCharacteristicCombo;
+
+    @FXML
+    public TextField etymologyFiled;
+
     @InjectViewModel
     private SearchViewModel viewModel;
 
@@ -46,7 +58,7 @@ public class SearchView implements FxmlView<SearchViewModel> {
     public CheckBox onlyWithoutSynset;
 
     @FXML
-    public TitledPane generalPanel, sensePanel, synsetPanel;
+    public TitledPane generalPanel,yiddishPanel, sensePanel, synsetPanel;
 
     public ComboBox synsetType;
 
@@ -160,7 +172,6 @@ public class SearchView implements FxmlView<SearchViewModel> {
         exampleInput.textProperty().bindBidirectional(viewModel.exampleProperty());
         synsetIdInput.textProperty().bindBidirectional(viewModel.synsetIdProperty());
         unitsCount.textProperty().bindBidirectional(viewModel.unitsCount());
-
         lexiconInput.setItems(viewModel.lexiconList());
         lexiconInput.valueProperty().bindBidirectional(viewModel.selectedLexiconProperty());
 
@@ -183,6 +194,29 @@ public class SearchView implements FxmlView<SearchViewModel> {
         synsetRelationTypeInput.valueProperty().bindBidirectional(viewModel.selectedSynsetRelationTypeProperty());
 
         onlyWithoutSynset.selectedProperty().bindBidirectional(viewModel.senseOnlyWithoutSynsetProperty());
+
+        etymologyFiled.textProperty().bindBidirectional(viewModel.etymologyProperty());
+
+        ageCombo.setItems(viewModel.getAges());
+        ageCombo.valueProperty().bindBidirectional(viewModel.selectedAgeProperty());
+
+        yiddishStatusCombo.setItems(viewModel.getYiddishStatuses());
+        yiddishStatusCombo.valueProperty().bindBidirectional(viewModel.selectedYiddishStatusProperty());
+
+        grammaticalGenderCombo.setItems(viewModel.getGrammaticalGenders());
+        grammaticalGenderCombo.valueProperty().bindBidirectional(viewModel.selectedGrammaticalGenderProperty());
+
+        semanticFieldCombo.setItems(viewModel.getSemanticFields());
+        semanticFieldCombo.valueProperty().bindBidirectional(viewModel.selectedSemanticFieldProperty());
+
+        semanticFieldModCombo.setItems(viewModel.getSemanticFieldMods());
+        semanticFieldModCombo.valueProperty().bindBidirectional(viewModel.selectedSemanticFieldModProperty());
+
+        sourceCombo.setItems(viewModel.getSources());
+        sourceCombo.valueProperty().bindBidirectional(viewModel.selectedSourceProperty());
+
+        lexicalCharacteristicCombo.setItems(viewModel.getLexicalCharacteristics());
+        lexicalCharacteristicCombo.valueProperty().bindBidirectional(viewModel.selectedLexicalCharacteristicProperty());
 
         addChangeModeListener(senseMode);
         addChangeModeListener(synsetMode);

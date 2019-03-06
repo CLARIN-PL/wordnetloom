@@ -4,7 +4,6 @@ import pl.edu.pwr.wordnetloom.client.model.*;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -47,7 +46,7 @@ public class SenseTooltipCreator {
     }
 
     private static void createExamplesText(Sense sense, RemoteService remoteService, TooltipBuilder tooltipBuilder) {
-        final List<Example> examplesList = remoteService.getExamples(sense.getLinks().getExamples());
+        final List<Example> examplesList = remoteService.findExamples(sense.getLinks().getExamples());
         if(examplesList != null && !examplesList.isEmpty()) {
             tooltipBuilder.setLevel(0);
             tooltipBuilder.addTitle(examples_label).

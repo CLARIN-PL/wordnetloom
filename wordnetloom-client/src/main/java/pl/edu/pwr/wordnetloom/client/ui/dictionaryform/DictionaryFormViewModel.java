@@ -66,8 +66,8 @@ public class DictionaryFormViewModel implements ViewModel {
                 try {
                     Dictionary d = service.findDictionary(newValue.getDictionaryItem().getLinks().getSelf());
                     mapDictionary(d);
-                } catch (IOException e) {
-                    dialogHandler.onShowErrorMsg(e);
+                } catch (Exception e) {
+                    dialogHandler.handleErrors(e);
                 }
             }
         });

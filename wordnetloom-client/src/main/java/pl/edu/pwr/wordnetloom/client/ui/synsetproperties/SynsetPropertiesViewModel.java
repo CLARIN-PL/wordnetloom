@@ -1,7 +1,6 @@
 package pl.edu.pwr.wordnetloom.client.ui.synsetproperties;
 
 import de.saxsys.mvvmfx.InjectScope;
-import de.saxsys.mvvmfx.ScopeProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -21,7 +20,6 @@ import pl.edu.pwr.wordnetloom.client.model.Synset;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
-import pl.edu.pwr.wordnetloom.client.ui.scopes.ExampleDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SensePropertiesDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynonymyRelationDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynsetPropertiesDialogScope;
@@ -221,7 +219,7 @@ public class SynsetPropertiesViewModel implements ViewModel {
     }
 
     private List<Example> fetchExamples(URI link) {
-        return service.getExamples(link);
+        return service.findExamples(link);
     }
 
     private void initWithSynset(Synset synset) {

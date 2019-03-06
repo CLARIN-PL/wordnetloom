@@ -137,7 +137,7 @@ public class SenseRelationFormViewModel implements ViewModel {
                     }else {
                         subRelationTypeItemList.getSourceList().clear();
                     }
-                    List<RelationTest> tests = service.getRelationTests(matching.get().getLinks().getTests());
+                    List<RelationTest> tests = service.findRelationTests(matching.get().getLinks().getTests());
                     testList.clear();
                     testList.addAll(tests.stream()
                             .map(rt -> new TestListItemViewModel(rt,
@@ -163,7 +163,7 @@ public class SenseRelationFormViewModel implements ViewModel {
                     subRelationType.set(subdivisionOptional.get());
                     description.set(subdivisionOptional.get().getDescription());
                     senseRelationDialogScope.setRelationType(subdivisionOptional.get());
-                    List<RelationTest> tests = service.getRelationTests(subdivisionOptional.get().getLinks().getTests());
+                    List<RelationTest> tests = service.findRelationTests(subdivisionOptional.get().getLinks().getTests());
                     testList.clear();
                     testList.addAll(tests.stream()
                             .map(rt -> new TestListItemViewModel(rt,
@@ -192,14 +192,14 @@ public class SenseRelationFormViewModel implements ViewModel {
         testList.clear();
         if(topRelationType.get() != null){
             if(subRelationType.get() != null){
-                List<RelationTest> tests = service.getRelationTests(subRelationType.get().getLinks().getTests());
+                List<RelationTest> tests = service.findRelationTests(subRelationType.get().getLinks().getTests());
                 testList.addAll(tests.stream()
                         .map(rt -> new TestListItemViewModel(rt,
                                 senseRelationDialogScope.getParentSense(),
                                 senseRelationDialogScope.getChildSense()))
                         .collect(Collectors.toList()));
             }else{
-                List<RelationTest> tests = service.getRelationTests(topRelationType.get().getLinks().getTests());
+                List<RelationTest> tests = service.findRelationTests(topRelationType.get().getLinks().getTests());
                 testList.addAll(tests.stream()
                         .map(rt -> new TestListItemViewModel(rt,
                                 senseRelationDialogScope.getParentSense(),

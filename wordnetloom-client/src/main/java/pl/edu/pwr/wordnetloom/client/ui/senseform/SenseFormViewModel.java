@@ -236,10 +236,8 @@ public class SenseFormViewModel implements ViewModel {
     private void updateExample(Example e, Set<Example> ex) {
         try {
             service.updateExample(e);
-        } catch (IOException e1) {
-            dialogHandler.onShowErrorMsg(e1);
-        } catch (ValidationException ve) {
-            dialogHandler.onShowValidationErrorMsg(ve);
+        } catch (Exception err) {
+            dialogHandler.handleErrors(err);
         }
         ex.stream()
                 .filter(egz -> egz.getLinks().getSelf().equals(e.getLinks().getSelf()))
@@ -254,10 +252,8 @@ public class SenseFormViewModel implements ViewModel {
             try {
                 Example egz = service.addExample(sense.getLinks().getExamples(), e);
                 ex.add(egz);
-            } catch (IOException e1) {
-                dialogHandler.onShowErrorMsg(e1);
-            } catch (ValidationException ve) {
-                dialogHandler.onShowValidationErrorMsg(ve);
+            } catch (Exception e1) {
+                dialogHandler.handleErrors(e1);
             }
         } else {
             ex.add(e);

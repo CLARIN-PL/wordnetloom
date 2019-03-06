@@ -150,10 +150,8 @@ public class SynsetFormViewModel implements ViewModel {
             try {
                 Example savedExample = remoteService.addExample(synset.getLinks().getExamples(), e);
                 examplesList.add(savedExample);
-            } catch (IOException e1) {
-                dialogHandler.onShowErrorMsg(e1);
-            } catch (ValidationException ve) {
-                dialogHandler.onShowValidationErrorMsg(ve);
+            } catch (Exception e1) {
+                dialogHandler.handleErrors(e1);
             }
         }
     }
@@ -161,11 +159,10 @@ public class SynsetFormViewModel implements ViewModel {
     private void updateExample(Example e, Set<Example> examplesList) {
         try {
             remoteService.updateExample(e);
-        } catch (IOException e1) {
-            dialogHandler.onShowErrorMsg(e1);
-        } catch (ValidationException ve) {
-            dialogHandler.onShowValidationErrorMsg(ve);
+        } catch (Exception e1) {
+            dialogHandler.handleErrors(e1);
         }
+
         examplesList.stream()
                 .filter(egz -> egz.getLinks().getSelf().equals(e.getLinks().getSelf()))
                 .findFirst().ifPresent(ee -> {

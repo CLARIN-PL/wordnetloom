@@ -77,10 +77,8 @@ public class SynsetRelationDialogViewModel implements ViewModel {
                     synsetRelationScope.getRelationType().getId()));
             eventPublisher.fire(new ShowSynsetRelationsEvent(sr));
             publish(CLOSE_DIALOG_NOTIFICATION);
-        } catch (ValidationException ve ) {
-            dialogHandler.onShowValidationErrorMsg(ve);
-        }catch (IOException ioe){
-            dialogHandler.onShowErrorMsg(ioe);
+        } catch (Exception e) {
+            dialogHandler.handleErrors(e);
         }
     }
 

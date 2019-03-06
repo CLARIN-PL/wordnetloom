@@ -80,7 +80,7 @@ public class RelationTestsViewModel implements ViewModel {
         this.relationType = relationType;
         testList.clear();
         if (relationType.getLinks() != null && relationType.getLinks().getTests() != null) {
-            List<RelationTest> tests = service.getRelationTests(relationType.getLinks().getTests());
+            List<RelationTest> tests = service.findRelationTests(relationType.getLinks().getTests());
             testList.addAll(tests.stream()
                     .map(TestListItemViewModel::new)
                     .collect(Collectors.toList()));

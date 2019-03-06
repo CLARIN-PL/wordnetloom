@@ -111,12 +111,15 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
                 // addCreateRelationWithOption(menu);
 
             } else if (vertex instanceof SynsetNode) {
-                createSynsetNodeMenu(vertex, pickedVertexState);
-
+                if(((SynsetNode) vertex).isSynsetMode()) {
+                    createSynsetNodeMenu(vertex, pickedVertexState);
+                }
             } else if (vertex instanceof NodeSet) {
                 createNodeSetMenu(vertex);
             } else if (edge != null) {
-                createEdgeMenu(vv, graph, edge);
+                if(((SynsetNode) vertex).isSynsetMode()) {
+                    createEdgeMenu(vv, graph, edge);
+                }
             }
         }
         Platform.runLater(

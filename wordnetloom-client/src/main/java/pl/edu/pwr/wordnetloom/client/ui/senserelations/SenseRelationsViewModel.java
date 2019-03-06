@@ -139,7 +139,7 @@ public class SenseRelationsViewModel implements ViewModel {
 
     private void deleteSenseRelation() {
         if(selectedNode.getType().equals(TreeItemType.SENSE_RELATION)){
-            Relation sr = service.getRelation(((SenseRelation) selectedNode.getItem()).getLinks().getSelf());
+            Relation sr = service.findRelation(((SenseRelation) selectedNode.getItem()).getLinks().getSelf());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + sr.getRelationType().getLabel()
                     + " relation between "+sr.getSource().getLabel()+" and "+ sr.getTarget().getLabel()+"?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
@@ -154,7 +154,7 @@ public class SenseRelationsViewModel implements ViewModel {
     private void loadRelations(Sense s) {
 
         Platform.runLater(this::clearRelations);
-        SenseRelations relations = service.getSenseRelations(s.getLinks().getRelations());
+        SenseRelations relations = service.findSenseRelations(s.getLinks().getRelations());
 
         Platform.runLater(() -> {
             root.set(relations.getRoot());
@@ -211,7 +211,7 @@ public class SenseRelationsViewModel implements ViewModel {
             TreeItem<TreeItemObject> selectedItem = selectedTreeListItem.get();
             if (incoming.contains(selectedItem.getParent()) || outgoing.contains(selectedItem.getParent())) {
                 // TODO: to many requests
-                Relation senseRelation = service.getSenseRelation(((SenseRelation) selectedItem.getValue().getItem()).getLinks().getSelf());
+                Relation senseRelation = service.findSenseRelation(((SenseRelation) selectedItem.getValue().getItem()).getLinks().getSelf());
                 Sense sense = service.findSense(senseRelation.getTarget().getId());
                 Synset synset = service.findSynset(sense.getLinks().getSynset());
                 loadGraphEventPublisher.fireAsync(new LoadGraphEvent(synset.getLinks().getGraph(), true));
@@ -220,7 +220,7 @@ public class SenseRelationsViewModel implements ViewModel {
     }
 
     public String getTooltipText(URI senseRelationURI) {
-        Relation senseRelation = service.getSenseRelation(senseRelationURI);
+        Relation senseRelation = service.findSenseRelation(senseRelationURI);
         return SenseTooltipCreator.create(senseRelation.getTarget().getId(), service);
     }
 

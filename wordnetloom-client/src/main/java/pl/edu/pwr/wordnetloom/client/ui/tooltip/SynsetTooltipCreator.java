@@ -4,8 +4,6 @@ import pl.edu.pwr.wordnetloom.client.model.*;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,8 +26,8 @@ public class SynsetTooltipCreator {
 
     public static String create(SearchListItem item, RemoteService remoteService) {
         Synset synset = remoteService.findSynset(item.getLinks().getSelf());
-        SenseRelations synsetRelations = remoteService.getSenseRelations(synset.getLinks().getRelations());
-        List<Example> examples = remoteService.getExamples(synset.getLinks().getExamples());
+        SenseRelations synsetRelations = remoteService.findSenseRelations(synset.getLinks().getRelations());
+        List<Example> examples = remoteService.findExamples(synset.getLinks().getExamples());
 
         TooltipBuilder tooltipBuilder = new TooltipBuilder();
 

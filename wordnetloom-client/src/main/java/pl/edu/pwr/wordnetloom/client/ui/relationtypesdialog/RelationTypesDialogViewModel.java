@@ -17,6 +17,7 @@ import pl.edu.pwr.wordnetloom.client.model.Links;
 import pl.edu.pwr.wordnetloom.client.model.RelationArgument;
 import pl.edu.pwr.wordnetloom.client.model.RelationType;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
+import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.structure.NodeDirection;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.RelationTestDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.RelationTypeDialogScope;
@@ -51,6 +52,8 @@ public class RelationTypesDialogViewModel implements ViewModel {
     @InjectScope
     RelationTypeDialogScope dialogScope;
 
+    @Inject
+    AlertDialogHandler dialogHandler;
 
     public void initialize() {
         title.set(defaultResourceBundle.getString(TITLE_LABEL_KEY));
@@ -88,7 +91,8 @@ public class RelationTypesDialogViewModel implements ViewModel {
                     service.updateRelationType(rt);
                     publish(SUCCESS_NOTIFICATION);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
+                dialogHandler.handleErrors(e);
                 LOG.error("Error saving relation type", e);
             }
             dialogScope.publish(RelationTypeDialogScope.RELOAD_RELATIONS, rt);

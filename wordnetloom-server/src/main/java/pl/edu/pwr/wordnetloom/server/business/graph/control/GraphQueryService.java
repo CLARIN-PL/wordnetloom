@@ -55,7 +55,7 @@ public class GraphQueryService {
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
-        String query = "SELECT ANY_VALUE(t.position),t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex FROM (SELECT rt1.node_position AS position," +
+        String query = "SELECT  ANY_VALUE(t.position),t.c,t.f,t.t,t.lemma,t.domain,t.pos,t.lex FROM (SELECT rt1.node_position AS position," +
                 "BIN_TO_UUID(r1.child_synset_id) AS c, " +
                 "CASE WHEN r1.child_synset_id is null THEN null ELSE rt1.short_display_text_id END AS f,"+
                 "CASE WHEN r2.parent_synset_id is null THEN null ELSE rt2.short_display_text_id END AS t,"+

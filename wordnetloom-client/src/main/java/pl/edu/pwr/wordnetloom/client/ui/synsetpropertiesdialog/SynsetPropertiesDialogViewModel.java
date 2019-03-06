@@ -83,10 +83,8 @@ public class SynsetPropertiesDialogViewModel implements ViewModel {
         try {
             remoteService.updateSynset(synset);
             dialogHandler.onShowSuccessNotification("Synset saved!");
-        } catch (ValidationException ve) {
-            dialogHandler.onShowValidationErrorMsg(ve);
-        } catch (IOException ioe) {
-            dialogHandler.onShowErrorMsg(ioe);
+        } catch (Exception e) {
+            dialogHandler.handleErrors(e);
         }
     }
 

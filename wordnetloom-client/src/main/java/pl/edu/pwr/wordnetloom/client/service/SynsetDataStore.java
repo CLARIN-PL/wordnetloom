@@ -107,9 +107,6 @@ public class SynsetDataStore {
 
     private void addData(DataEntry entry) {
         if (data.containsKey(entry.getId())) {
-//            data.replace(entry.getId(), entry);
-            // TODO: odkomentować to i sprawić by działało poprawnie
-            // TODO: jakoś to pozmieniać, aby wierzchołki mogły być podmieniane na grafie
             if (!data.get(entry.getId()).isFullyLoaded() && entry.isFullyLoaded()) {
                 data.replace(entry.getId(), entry);
             }
@@ -119,11 +116,6 @@ public class SynsetDataStore {
     }
 
     public void insertData(DataEntry entry){
-//        if(data.containsKey(entry.getId())){
-//            data.replace(entry.getId(), entry);
-//        } else {
-//            data.put(entry.getId(), entry);
-//        }
         data.put(entry.getId(), entry);
     }
 
@@ -191,6 +183,7 @@ public class SynsetDataStore {
     private DataEntry mapExpanded(NodeExpanded node) {
         return new DataEntry()
                 .withSynsetId(node.getId())
+                .withSynsetMode(node.isSynsetMode())
                 .withLabel(node.getLabel())
                 .withPartOfSpeech(node.getPos())
                 .withLexicon(node.getLex());
@@ -199,6 +192,7 @@ public class SynsetDataStore {
     private DataEntry mapHidden(NodeHidden node) {
         return new DataEntry()
                 .withSynsetId(node.getId())
+                .withSynsetMode(node.isSynsetMode())
                 .withLabel(node.getLabel())
                 .withPartOfSpeech(node.getPos())
                 .withLexicon(node.getLex());

@@ -13,9 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -94,6 +92,41 @@ public class RemoteService {
         client.close();
     }
 
+    private boolean isOkStatus(Response response) {
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    private boolean isBadRequestStatus(Response response) {
+        return response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode();
+    }
+
+    private boolean isServerErrorRequestStatus(Response response) {
+        return response.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+    }
+
+    private boolean isCreatedStatus(Response response) {
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
+    private boolean isForbiddenStatus(Response response){
+        if(response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()){
+            throw new ForbiddenException();
+
+        }
+        return false;
+    }
+
+
+    private void validationErrorRequestHandler(Response response,String name, Object obj) throws IOException, ValidationException {
+        LOG.debug(name + " validation errors: " + obj);
+        if(isBadRequestStatus(response)){
+            String map = response.readEntity(String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {});
+            throw new ValidationException(errors);
+        }
+    }
+
     public void authorize(User user) throws Exception {
         this.user = user;
 
@@ -128,7 +161,7 @@ public class RemoteService {
         Response response = webTarget.request()
                 .header(HEADER_AUTHORIZATION, user.getToken()).get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             String json = response.readEntity(String.class);
             JsonReader reader = Json.createReader(new StringReader(json));
             JsonObject jsonObject = reader.readObject();
@@ -138,7 +171,11 @@ public class RemoteService {
             activeUser().setLexicons(jsonObject.getString("lexicons"));
             activeUser().setShowMarkers(jsonObject.getBoolean("show_marker"));
             activeUser().setShowTooltips(jsonObject.getBoolean("show_tooltips"));
-            activeUser().setRole(jsonObject.getString("role"));
+            String array = jsonObject.getString("groups");
+            String role = array.replace("[","")
+                    .replace("]","")
+                    .replace("\"","");
+            activeUser().setRole(role);
         }
         response.close();
     }
@@ -156,7 +193,7 @@ public class RemoteService {
 
         Map<String, String> dic = new HashMap<>();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             String json = response.readEntity(String.class);
             JsonReader reader = Json.createReader(new StringReader(json));
             JsonObject jsonObject = reader.readObject();
@@ -183,7 +220,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             pl.edu.pwr.wordnetloom.client.model.Dictionaries jsonArray = response.readEntity(pl.edu.pwr.wordnetloom.client.model.Dictionaries.class);
             dictionary.addAll(jsonArray.getRows());
         }
@@ -201,7 +238,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Dictionary.class);
         }
         response.close();
@@ -266,7 +303,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(SearchList.class);
         }
         return new SearchList();
@@ -302,7 +339,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if(response.getStatus() == 200) {
+        if(isOkStatus(response)) {
             return response.readEntity(new GenericType<List<NodeExpanded>>(){});
         }
         // TODO: obsłużyć błędy
@@ -323,7 +360,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(NodeExpanded.class);
         }
         return new NodeExpanded();
@@ -342,7 +379,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Synset.class);
         }
         return new Synset();
@@ -358,7 +395,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if(response.getStatus() == 200){
+        if(isOkStatus(response)){
             return response.readEntity(Synset.class);
         }
 
@@ -378,7 +415,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Sense.class);
         }
         return new Sense();
@@ -395,7 +432,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Sense.class);
         }
         return new Sense();
@@ -414,7 +451,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(RelationTypes.class);
         }
         return new RelationTypes();
@@ -434,13 +471,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Relations.class);
         }
         return new Relations();
     }
 
-    public List<RelationTest> getRelationTests(URI link) {
+    public List<RelationTest> findRelationTests(URI link) {
         WebTarget target = client.target(link);
 
         LOG.debug("Loading relation tests: " + target.getUri());
@@ -451,7 +488,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             RelationTests tests = response.readEntity(RelationTests.class);
             if(tests.getRows().isEmpty()) {
                 return new ArrayList<>();
@@ -461,7 +498,7 @@ public class RemoteService {
         return new ArrayList<>();
     }
 
-    public List<Example> getExamples(URI link){
+    public List<Example> findExamples(URI link){
         WebTarget target = client.target(link);
 
         LOG.debug("Loading examples: " + target.getUri());
@@ -472,7 +509,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             Examples examples = response.readEntity(Examples.class);
             if(examples.getRows().isEmpty()) {
                 return new ArrayList<>();
@@ -482,7 +519,7 @@ public class RemoteService {
         return new ArrayList<>();
     }
 
-    public SenseRelations getSenseRelations(URI link) {
+    public SenseRelations findSenseRelations(URI link) {
         WebTarget target = client.target(link);
 
         LOG.debug("Loading sense relations: " + target.getUri());
@@ -493,13 +530,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(SenseRelations.class);
         }
         return new SenseRelations();
     }
 
-    public Relation getRelation(URI link) {
+    public Relation findRelation(URI link) {
         WebTarget target = client.target(link);
 
         LOG.debug("Loading synset relation: " + target.getUri());
@@ -510,7 +547,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Relation.class);
         }
         return new Relation();
@@ -528,13 +565,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(RelationType.class);
         }
         return new RelationType();
     }
 
-    public Relation getSenseRelation(URI link) {
+    public Relation findSenseRelation(URI link) {
         WebTarget target = client.target(link);
 
         LOG.debug("Loading sense relation: " + target.getUri());
@@ -545,13 +582,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(Relation.class);
         }
         return new Relation();
     }
 
-    public Relation addSenseRelation(SenseRelation relation) throws IOException, ValidationException {
+    public Relation addSenseRelation(SenseRelation relation) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ADD_SENSE_RELATION);
@@ -564,23 +601,18 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(relation, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+
         if (isCreatedStatus(response)) {
             LOG.debug("Sense relation created: " + response.getLocation());
-            return  getSenseRelation(response.getLocation());
+            return  findSenseRelation(response.getLocation());
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Sense relation validation failed: " + relation);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
+        validationErrorRequestHandler(response, "Sense",relation);
         return null;
     }
 
-    public Relation addSynsetRelation(SynsetRelation relation) throws IOException, ValidationException {
+    public Relation addSynsetRelation(SynsetRelation relation) throws IOException, ValidationException, ForbiddenException{
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ADD_SYNSET_RELATION);
@@ -593,26 +625,20 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(relation, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response, "Synset",relation);
+
         if (isCreatedStatus(response)) {
             LOG.debug("Synset relation created: " + response.getLocation());
-            Relation r = getRelation(response.getLocation());
-            System.out.println(r);
+            Relation r = findRelation(response.getLocation());
             return r;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Synset relation validation failed: " + relation);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
 
-    public Synset addSenseToNewSynset(UUID senseId) throws IOException {
+    public Synset addSenseToNewSynset(UUID senseId) throws IOException,ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ADD_SENSE_TO_NEW_SYNSET)
@@ -626,24 +652,17 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .method("PUT");
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Sense", response.getEntity());
+
         if(isCreatedStatus(response)){
             LOG.debug("Sense moved to new synset: " + response.getEntity());
             return findSynset(response.getLocation());
         }
-        badRequestHandler(response);
         throw null;
     }
 
-    private void badRequestHandler(Response response) throws IOException {
-        if(isBadRequestStatus(response)){
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {});
-            throw new ValidationException(errors);
-        }
-    }
-
-    public Sense attachSenseToSynset(UUID senseId, UUID synsetId) throws ValidationException, IOException{
+    public Sense attachSenseToSynset(UUID senseId, UUID synsetId) throws ValidationException, IOException, ForbiddenException{
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ATTACH_SENSE_TO_SYNSET)
@@ -657,13 +676,14 @@ public class RemoteService {
                 .header(HEADER_AUTHORIZATION, user.getToken())
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .method("PUT");
-        System.out.println(response.getStatus());
+
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response, "Sense", response.getEntity());
+
         if(isOkStatus(response)){
             LOG.debug("Sense moved to new synset: " + response.getEntity());
             return findSense(response.getLocation());
         }
-
-        badRequestHandler(response);
 
         throw null;
     }
@@ -682,13 +702,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             return response.readEntity(CorpusExamples.class);
         }
         return new CorpusExamples();
     }
 
-    public Sense saveSense(Sense sense) throws IOException, ValidationException {
+    public Sense saveSense(Sense sense) throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SENSES);
@@ -701,23 +721,16 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(sense, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Sense", sense);
         if (isCreatedStatus(response)) {
             LOG.debug("Sense created: " + sense);
             return findSense(response.getLocation());
         }
-
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Sense validation failed: " + sense);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public Sense updateSense(Sense sense) throws IOException, ValidationException {
+    public Sense updateSense(Sense sense) throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(sense.getLinks().getSelf());
 
@@ -729,23 +742,18 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(sense, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Sense", sense);
+
         if (isOkStatus(response)) {
             LOG.debug("Sense updated: " + sense);
             return findSense(response.getLocation());
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Sense validation failed: " + sense);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public Synset updateSynset(Synset synset) throws IOException {
+    public Synset updateSynset(Synset synset) throws IOException, ValidationException,ForbiddenException {
         WebTarget target = client.target(synset.getLinks().getSelf());
 
         LOG.debug("Updating synset " + synset);
@@ -756,23 +764,18 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(synset, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Synset", synset);
+
         if(isOkStatus(response)){
             LOG.debug("Synset updated " + synset);
             return findSynset(response.getLocation());
         }
 
-        if(isBadRequestStatus(response)){
-            LOG.debug("Synset validation failed: " + synset);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public boolean updateUser() throws IOException, ValidationException {
+    public boolean updateUser() throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SECURITY_USER);
@@ -785,23 +788,18 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(activeUser(), MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"User", activeUser());
+
         if (isOkStatus(response)) {
             LOG.debug("User updated: " + activeUser());
             return true;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("User validation failed: " + activeUser());
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return false;
     }
 
-    public Example updateExample(Example example) throws IOException, ValidationException {
+    public Example updateExample(Example example) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(example.getLinks().getSelf());
 
@@ -813,24 +811,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(example, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Example", example);
+
         if (isOkStatus(response)) {
             Example ee = findExample(response.getLocation());
             LOG.debug("Example updated: " + ee);
             return ee;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Example validation failed: " + example);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public Example addExample(URI link, Example example) throws IOException, ValidationException {
+    public Example addExample(URI link, Example example) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(link);
 
@@ -842,30 +835,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(example, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Example", example);
+
         if (isCreatedStatus(response)) {
             Example se = findExample(response.getLocation());
             LOG.debug("Example created: " + se);
             return se;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Example validation failed: " + example);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    private boolean isBadRequestStatus(Response response) {
-        return response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode();
-    }
 
-    private boolean isCreatedStatus(Response response) {
-        return response.getStatus() == Response.Status.CREATED.getStatusCode();
-    }
 
     public Example findExample(URI link) {
 
@@ -877,7 +859,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             Example ex = response.readEntity(Example.class);
             LOG.debug("Example found: " + ex);
             return ex;
@@ -895,7 +877,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             Lexicon lx = response.readEntity(Lexicon.class);
             LOG.debug("Lexicon found: " + link.toString());
             return lx;
@@ -913,7 +895,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             RelationType lx = response.readEntity(RelationType.class);
             LOG.debug("Relation type found: " + link.toString());
             return lx;
@@ -922,7 +904,7 @@ public class RemoteService {
     }
 
 
-    public Lexicon addLexicon(Lexicon lexicon) throws IOException, ValidationException {
+    public Lexicon addLexicon(Lexicon lexicon) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(lexicon.getLinks().getSelf());
 
@@ -934,24 +916,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(lexicon, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Lexicon", lexicon);
+
         if (isOkStatus(response)) {
             Lexicon lx = findLexicon(response.getLocation());
             LOG.debug("Adding lexicon: " + lx);
             return lx;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Lexicon validation failed: " + lexicon);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public RelationType addRelationType(RelationType rt) throws IOException, ValidationException {
+    public RelationType addRelationType(RelationType rt) throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_RELATION_TYPES);
@@ -964,19 +941,13 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"RelationType", rt);
+
         if (isOkStatus(response)) {
             RelationType res = findRelationType(response.getLocation());
             LOG.debug("Adding relation type: " + rt);
             return res;
-        }
-
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Relation type validation: " + rt);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
         }
         return null;
     }
@@ -991,7 +962,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if (response.getStatus() == 200) {
+        if (isOkStatus(response)) {
             RelationTest lx = response.readEntity(RelationTest.class);
             LOG.debug("Relation test found: " + link.toString());
             return lx;
@@ -999,7 +970,7 @@ public class RemoteService {
         return new RelationTest();
     }
 
-    public RelationTest addRelationTest(RelationTest rt) throws IOException, ValidationException {
+    public RelationTest addRelationTest(RelationTest rt) throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(rt.getLinks().getTests());
 
@@ -1011,24 +982,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .post(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Relation test", rt);
+
         if (isOkStatus(response)) {
             RelationTest res = findRelationTest(response.getLocation());
             LOG.debug("Adding relation test: " + rt);
             return res;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Relation test validation: " + rt);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public RelationTest updateRelationTest(RelationTest rt) throws IOException, ValidationException {
+    public RelationTest updateRelationTest(RelationTest rt) throws IOException, ValidationException, ForbiddenException{
 
         WebTarget target = client.target(rt.getLinks().getSelf());
 
@@ -1040,24 +1006,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Relation test", rt);
+
         if (isOkStatus(response)) {
             RelationTest res = findRelationTest(response.getLocation());
             LOG.debug("Updating relation test: " + rt);
             return res;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Relation test validation: " + rt);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public RelationType updateRelationType(RelationType rt) throws IOException, ValidationException {
+    public RelationType updateRelationType(RelationType rt) throws Exception {
 
         WebTarget target = client.target(rt.getLinks().getSelf());
 
@@ -1069,24 +1030,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Relation type", rt);
+
         if (isOkStatus(response)) {
             RelationType res = findRelationType(response.getLocation());
             LOG.debug("Relation updated type");
             return res;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Relation type validation: " + rt);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public Lexicon updateLexicon(Lexicon lexicon) throws IOException, ValidationException {
+    public Lexicon updateLexicon(Lexicon lexicon) throws IOException, ValidationException,ForbiddenException {
 
         WebTarget target = client.target(lexicon.getLinks().getSelf());
 
@@ -1098,24 +1054,19 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(lexicon, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Lexicon", lexicon);
+
         if (isOkStatus(response)) {
             Lexicon lx = findLexicon(response.getLocation());
             LOG.debug("Lexicon updated: " + lx);
             return lx;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Lexicon validation failed: " + lexicon);
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return null;
     }
 
-    public boolean executeAction(Action a, Response.Status expectedStatus) {
+    public boolean executeAction(Action a, Response.Status expectedStatus) throws ForbiddenException {
 
         WebTarget target = client.target(a.getHref());
 
@@ -1125,6 +1076,8 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .method(a.getMethod());
 
+        isForbiddenStatus(response);
+
         if (response.getStatus() == expectedStatus.getStatusCode()) {
             LOG.debug("Executing action: " + a);
             return true;
@@ -1132,7 +1085,7 @@ public class RemoteService {
         return false;
     }
 
-    public void delete(URI link) {
+    public void delete(URI link) throws ForbiddenException {
 
         WebTarget target = client.target(link);
 
@@ -1144,12 +1097,14 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .delete();
 
+        isForbiddenStatus(response);
+
         if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
             LOG.debug("Entity removed: " + link);
         }
     }
 
-    public boolean changePassword(String ps) throws IOException, ValidationException {
+    public boolean changePassword(String ps) throws IOException, ValidationException, ForbiddenException{
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SECURITY_CHANGE_PASSWORD);
 
@@ -1164,23 +1119,16 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .put(Entity.entity(json, MediaType.APPLICATION_JSON));
 
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Password", activeUser());
+
         if (isOkStatus(response)) {
             LOG.debug("Password changed ");
             return true;
         }
 
-        if (isBadRequestStatus(response)) {
-            LOG.debug("Password validation failed: " + activeUser());
-            String map = response.readEntity(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
-            });
-            throw new ValidationException(errors);
-        }
         return false;
     }
 
-    private boolean isOkStatus(Response response) {
-        return response.getStatus() == Response.Status.OK.getStatusCode();
-    }
+
 }

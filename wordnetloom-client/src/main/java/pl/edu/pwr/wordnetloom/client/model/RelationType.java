@@ -218,4 +218,29 @@ public class RelationType {
     public void setActions(List<Action> actions) {
         this.actions = actions;
     }
+
+    @Override
+    public String toString() {
+        return "RelationType{" +
+                "id=" + id +
+                ", direction=" + direction +
+                ", globalWordnetRelationType=" + globalWordnetRelationType +
+                ", name='" + name + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", description='" + description + '\'' +
+                ", color='" + color + '\'' +
+                ", display='" + display + '\'' +
+                ", argument=" + argument +
+                ", multilingual=" + multilingual +
+                ", autoReverse=" + autoReverse +
+                ", reverseRelation=" + reverseRelation +
+                ", parentRelation=" + parentRelation +
+                ", allowedPartsOfSpeech=" + allowedPartsOfSpeech +
+                ", allowedLexicons=" + allowedLexicons +
+                ", reverseRelationTypeId=" + reverseRelationTypeId +
+                ", subrelations=" + subrelations +
+                ", links=" + links +
+                ", actions=" + actions +
+                '}';
+    }
 }

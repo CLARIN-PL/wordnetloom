@@ -138,7 +138,7 @@ public class SynsetRelationFormViewModel implements ViewModel {
                     } else {
                         subRelationTypeItemList.getSourceList().clear();
                     }
-                    List<RelationTest> tests = service.getRelationTests(matching.get().getLinks().getTests());
+                    List<RelationTest> tests = service.findRelationTests(matching.get().getLinks().getTests());
                     testList.clear();
                     testList.addAll(prepareTestList(tests,
                             synsetRelationScope.getParentSynset().getSenses(),
@@ -162,7 +162,7 @@ public class SynsetRelationFormViewModel implements ViewModel {
                     subRelationType.set(subdivisionOptional.get());
                     description.set(subdivisionOptional.get().getDescription());
                     synsetRelationScope.setRelationType(subdivisionOptional.get());
-                    List<RelationTest> tests = service.getRelationTests(subdivisionOptional.get().getLinks().getTests());
+                    List<RelationTest> tests = service.findRelationTests(subdivisionOptional.get().getLinks().getTests());
                     testList.clear();
                     testList.addAll(prepareTestList(tests,
                             synsetRelationScope.getParentSynset().getSenses(),
@@ -200,12 +200,12 @@ public class SynsetRelationFormViewModel implements ViewModel {
         testList.clear();
         if (topRelationType.get() != null) {
             if (subRelationType.get() != null) {
-                List<RelationTest> tests = service.getRelationTests(subRelationType.get().getLinks().getTests());
+                List<RelationTest> tests = service.findRelationTests(subRelationType.get().getLinks().getTests());
                 testList.addAll(prepareTestList(tests,
                         synsetRelationScope.getParentSynset().getSenses(),
                         synsetRelationScope.getChildSynset().getSenses()));
             } else {
-                List<RelationTest> tests = service.getRelationTests(topRelationType.get().getLinks().getTests());
+                List<RelationTest> tests = service.findRelationTests(topRelationType.get().getLinks().getTests());
                 testList.addAll(prepareTestList(tests,
                         synsetRelationScope.getParentSynset().getSenses(),
                         synsetRelationScope.getChildSynset().getSenses()));

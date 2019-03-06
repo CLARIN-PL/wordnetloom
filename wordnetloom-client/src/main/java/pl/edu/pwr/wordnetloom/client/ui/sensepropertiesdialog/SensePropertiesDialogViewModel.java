@@ -102,11 +102,8 @@ public class SensePropertiesDialogViewModel implements ViewModel {
                 dialogScope.setSenseToEdit(ns);
                 dialogHandler.onShowSuccessNotification("Sense saved");
             }
-        } catch (ValidationException ve) {
-            dialogHandler.onShowValidationErrorMsg(ve);
-        } catch (IOException e) {
-            LOG.error("Error while saving sense", e);
-            dialogHandler.onShowErrorMsg(e);
+        } catch (Exception e) {
+            dialogHandler.handleErrors(e);
         }
     }
 

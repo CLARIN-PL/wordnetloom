@@ -54,6 +54,11 @@ public class DataEntry {
         return this;
     }
 
+    public DataEntry withSynsetMode(Boolean mode) {
+        this.isSynset = mode;
+        return this;
+    }
+
     public boolean isFullyLoaded() {
         return fullyLoaded;
     }

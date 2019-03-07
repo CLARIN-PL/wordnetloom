@@ -1,10 +1,13 @@
 package pl.edu.pwr.wordnetloom.server.business.user.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Audited
 @Entity
 @Table(name = "tbl_users")
 @NamedQuery(name = User.FIND_BY_EMAIL, query = "SELECT u FROM User u " +

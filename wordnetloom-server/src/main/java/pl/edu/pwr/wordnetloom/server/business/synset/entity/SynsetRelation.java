@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
+@Audited
 @Entity
 @Table(name = "tbl_synset_relation")
 

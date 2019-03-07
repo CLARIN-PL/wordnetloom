@@ -1,12 +1,14 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Audited
 @Entity
 @Table(name = "tbl_sense_examples")
 @NamedQuery(name = SenseExample.FIND_BY_ID, query = "SELECT ex FROM SenseExample ex WHERE ex.id = :id")

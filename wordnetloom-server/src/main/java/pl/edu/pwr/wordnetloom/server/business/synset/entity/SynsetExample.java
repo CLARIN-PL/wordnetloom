@@ -1,11 +1,13 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
+@Audited
 @Entity
 @Table(name = "tbl_synset_examples")
 @NamedQuery(name = SynsetExample.FIND_BY_ID, query = "SELECT ex FROM SynsetExample ex WHERE ex.id = :id")

@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.*;
 
+@Audited
 @Entity
 @Table(name = "tbl_relation_type")
 @NamedQuery(name = RelationType.FIND_ALL,

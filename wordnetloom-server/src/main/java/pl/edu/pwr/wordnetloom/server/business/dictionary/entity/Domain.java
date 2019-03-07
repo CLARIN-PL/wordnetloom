@@ -1,8 +1,11 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Audited
 @Entity
 @Table(name = "tbl_domain")
 @NamedQuery(name = Domain.FIND_ALL, query = "SELECT d FROM Domain d")

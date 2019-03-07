@@ -1,9 +1,12 @@
 package pl.edu.pwr.wordnetloom.server.business.lexicon.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Audited
 @Entity
 @Table(name = "tbl_lexicon")
 @NamedQuery(name = Lexicon.FIND_ALL, query = "SELECT l FROM Lexicon l")

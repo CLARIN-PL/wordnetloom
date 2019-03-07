@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,8 @@ import java.util.UUID;
 
 @NamedQuery(name = Word.COUNT_BY_WORD,
         query = "SELECT COUNT(w.word) FROM Word w WHERE w.word = :word")
+
+@Audited
 @Entity
 @Table(name = "tbl_word")
 public class Word implements Serializable {

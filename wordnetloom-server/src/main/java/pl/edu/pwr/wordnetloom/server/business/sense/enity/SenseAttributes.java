@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Register;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Audited
 @Entity
 @Table(name = "tbl_sense_attributes")
 @NamedQuery(name = SenseAttributes.FIND_BY_ID,

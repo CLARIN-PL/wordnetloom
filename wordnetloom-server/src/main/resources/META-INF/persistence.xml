@@ -10,6 +10,13 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hibernate.connection.useUnicode" value="true"/>
             <property name="hibernate.connection.characterEncoding" value="UTF-8"/>
+
+            <!--envers properties-->
+            <property name="org.hibernate.envers.audit_table_prefix" value="tracker_" />
+            <property name="org.hibernate.envers.audit_table_suffix" value="" />
+            <property
+                name="org.hibernate.envers.audit_strategy"
+                value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -34,6 +34,12 @@
             <artifactId>flyway-core</artifactId>
             <version>5.2.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+            <version>5.3.6.Final</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>

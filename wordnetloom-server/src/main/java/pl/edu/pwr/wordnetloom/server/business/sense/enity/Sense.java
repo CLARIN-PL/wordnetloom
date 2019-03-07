@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
@@ -86,6 +87,8 @@ import java.util.UUID;
 @NamedQuery(name = Sense.COUNT_SENSES_BY_SYNSET_ID , query = "SELECT COUNT(s.id) FROM Sense s WHERE s.synset.id = :id")
 @NamedQuery(name = Sense.FIND_SENSE_BY_SYNSET_ID_AND_POSITION,
         query = "SELECT s FROM Sense s WHERE s.synset.id = :id and s.synsetPosition = :position ")
+
+@Audited
 public class Sense implements Serializable {
 
     public static final String FIND_BY_ID_WITH_ATTRIBUTES = "Sense.findByIdWithAttributes";

@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Audited
 @Entity
 @Table(name = "tbl_synset_attributes")
 @NamedQuery(name = SynsetAttributes.FIND_BY_ID_WITH_EXAMPLES,

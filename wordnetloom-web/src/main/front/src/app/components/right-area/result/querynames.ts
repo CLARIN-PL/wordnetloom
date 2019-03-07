@@ -13,6 +13,7 @@ export class QueryNames {
     'particle_root': 'particle_root',
     'particle_suffix': 'particle_suffix',
     'particle_constituent': 'particle_constituent',
+    'part_of_speech': 'part_of_speech'
   };
 
   static getQueryString(name, id) {

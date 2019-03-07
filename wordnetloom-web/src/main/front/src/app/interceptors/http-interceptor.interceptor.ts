@@ -33,6 +33,10 @@ export class CachingInterceptor implements HttpInterceptor {
 
     this.loadingBar.start();
 
+    // for debug, turn off cache
+    this.loadingBar.complete();
+    return this.sendRequest(req, next, this.cache);
+
     if (!this.isRequestCacheable(req)) {
       this.loadingBar.complete();
       return next.handle(req);

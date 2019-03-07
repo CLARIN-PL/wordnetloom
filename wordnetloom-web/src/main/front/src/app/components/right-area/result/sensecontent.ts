@@ -7,6 +7,7 @@ export class SenseContent {
   domain: number;
   definition: string;
 
+  partOfSpeechId;
   partOfSpeech;
   flag;
 
@@ -17,6 +18,7 @@ export class SenseContent {
     this.variant = json['variant'];
     this.definition = json['definition'];
 
+    this.partOfSpeechId = json['part_of_speech'];
     this.partOfSpeech = dictionarySettings['partOfSpeech'].searchOptions.find(it => it.id === json['part_of_speech']).name;
     this.flag = dictionarySettings['lexicon'].searchOptions.find(it => it.id === json['lexicon']).name;
     this.domain =  dictionarySettings['domain'].searchOptions.find(it => it.id === json['domain']).name;

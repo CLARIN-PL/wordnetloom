@@ -14,6 +14,7 @@ export class YiddishContent {
   yiddishVariantId: number;
   variant: number;
 
+  partOfSpeechId;
   partOfSpeech;
   grammaticalGender;
   flag;
@@ -36,6 +37,7 @@ export class YiddishContent {
     this.yiddishVariant = json['variant_type'].replace('Yiddish_', '').replace(/_/g, ' ');
 
     this.variant = parentSense.variant;
+    this.partOfSpeechId = parentSense.partOfSpeechId;
     this.partOfSpeech = parentSense.partOfSpeech;
     this.flag = parentSense.flag;
 
@@ -136,13 +138,13 @@ export class YiddishContent {
               name: jsonData[key],
               searchQuery: this.getSearchFieldQuery(key, jsonData[key])
             }]};
-      } else if (fieldNames[key].type === 'inherited') {
+      } else if (fieldNames[key].type === 'inherited' && key === 'part_of_speech') {
         newField = {
           name: fieldNames[key].viewName,
           values: [
             {
               name: this.partOfSpeech,
-              searchQuery: this.getSearchFieldQuery(name, jsonData[name])
+              searchQuery: this.getSearchFieldQuery(key, this.partOfSpeechId)
             }]};
       } else if (fieldNames[key].type === 'object') {
 

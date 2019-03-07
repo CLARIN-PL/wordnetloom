@@ -3,9 +3,6 @@ package pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import de.saxsys.mvvmfx.utils.viewlist.CachedViewModelCellFactory;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import pl.edu.pwr.wordnetloom.client.ui.dictionaryform.DictionaryListItemView;
@@ -157,4 +154,53 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
         viewModel.selectedParticleListItemProperty().bind(particlesList.getSelectionModel().selectedItemProperty());
     }
 
+    @FXML
+    public void addVariant() {
+        viewModel.getAddVariantCommand().execute();
+    }
+
+    @FXML
+    public void removeVariant() {
+        viewModel.getRemoveVariantCommand().execute();
+    }
+    @FXML
+    public void addTranscription() {
+        viewModel.getAddTranscriptionCommand().execute();
+    }
+    @FXML
+    public void removeTranscription() {
+        viewModel.getRemoveTranscriptionCommand().execute();
+    }
+    @FXML
+    public void addSemanticField() {
+        viewModel.getAddSemanticFieldCommand().execute();
+    }
+    @FXML
+    public void removeSemanticField() {
+        viewModel.getRemoveSemanticFieldCommand().execute();
+    }
+    @FXML
+    public void addSource() {
+        viewModel.getAddSourceCommand().execute();
+    }
+    @FXML
+    public void removeSource() {
+        viewModel.getRemoveSourceCommand().execute();
+    }
+    @FXML
+    public void addInflection() {
+        viewModel.getAddInflectionCommand().execute();
+    }
+    @FXML
+    public void removeInflection() {
+        viewModel.getRemoveInflectionCommand().execute();
+    }
+    @FXML
+    public void addParticle() {
+        viewModel.getAddParticleCommand().execute();
+    }
+    @FXML
+    public void removeParticle() {
+        viewModel.getRemoveParticleCommand().execute();
+    }
 }

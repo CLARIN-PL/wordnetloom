@@ -1,6 +1,9 @@
 package pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform;
 
 import de.saxsys.mvvmfx.ViewModel;
+import de.saxsys.mvvmfx.utils.commands.Action;
+import de.saxsys.mvvmfx.utils.commands.Command;
+import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import de.saxsys.mvvmfx.utils.itemlist.ItemList;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -108,6 +111,24 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
 
     private StringProperty root = new SimpleStringProperty();
 
+    private Command addVariantCommand;
+    private Command removeVariantCommand;
+
+    private Command addTranscriptionCommand;
+    private Command removeTranscriptionCommand;
+
+    private Command addInflectionCommand;
+    private Command removeInflectionCommand;
+
+    private Command addSemanticFieldCommand;
+    private Command removeSemanticFieldCommand;
+
+    private Command addSourceCommand;
+    private Command removeSourceCommand;
+
+    private Command addParticleCommand;
+    private Command removeParticleCommand;
+
     public void initialize(){
         initVariantsList();
         initAgeItemList();
@@ -120,6 +141,90 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         initYiddishStatusesItemList();
         initStylesList();
         initInflectionItemList();
+
+        addVariantCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addVariant();
+            }
+        });
+
+        removeVariantCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeVariant();
+            }
+        });
+
+        addInflectionCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addInflection();
+            }
+        });
+
+        removeInflectionCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeInflection();
+            }
+        });
+
+        addSemanticFieldCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addVSemanticField();
+            }
+        });
+
+        removeSemanticFieldCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeVSemanticField();
+            }
+        });
+
+        addTranscriptionCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addTranscription();
+            }
+        });
+
+        removeTranscriptionCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeTranscription();
+            }
+        });
+
+        addSourceCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addSource();
+            }
+        });
+
+        removeSourceCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeSource();
+            }
+        });
+
+        addParticleCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                addParticle();
+            }
+        });
+
+        removeParticleCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                removeParticle();
+            }
+        });
 
         selectedVariantType.addListener((obs, oldV, newV) -> {
             selectVariantType(obs,oldV,newV, NOTHING_SELECTED_MARKER, variantType);
@@ -168,6 +273,42 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
             Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.INFLECTIONS_DICTIONARY,
                     NOTHING_SELECTED_MARKER, inflectionCmb);
         });
+    }
+
+    private void removeParticle() {
+    }
+
+    private void removeSource() {
+    }
+
+    private void removeTranscription() {
+    }
+
+    private void removeVSemanticField() {
+    }
+
+    private void removeInflection() {
+    }
+
+    private void addParticle() {
+    }
+
+    private void addSource() {
+    }
+
+    private void addTranscription() {
+    }
+
+    private void addVSemanticField() {
+    }
+
+    private void addInflection() {
+    }
+
+    private void removeVariant() {
+    }
+
+    private void addVariant() {
     }
 
     public void setYiddishProperty(YiddishProperty yp){
@@ -965,6 +1106,102 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
 
     public void setSelectedTranscriptionListItem(TranscriptionListItemViewModel selectedTranscriptionListItem) {
         this.selectedTranscriptionListItem.set(selectedTranscriptionListItem);
+    }
+
+    public Command getAddVariantCommand() {
+        return addVariantCommand;
+    }
+
+    public void setAddVariantCommand(Command addVariantCommand) {
+        this.addVariantCommand = addVariantCommand;
+    }
+
+    public Command getRemoveVariantCommand() {
+        return removeVariantCommand;
+    }
+
+    public void setRemoveVariantCommand(Command removeVariantCommand) {
+        this.removeVariantCommand = removeVariantCommand;
+    }
+
+    public Command getAddTranscriptionCommand() {
+        return addTranscriptionCommand;
+    }
+
+    public void setAddTranscriptionCommand(Command addTranscriptionCommand) {
+        this.addTranscriptionCommand = addTranscriptionCommand;
+    }
+
+    public Command getRemoveTranscriptionCommand() {
+        return removeTranscriptionCommand;
+    }
+
+    public void setRemoveTranscriptionCommand(Command removeTranscriptionCommand) {
+        this.removeTranscriptionCommand = removeTranscriptionCommand;
+    }
+
+    public Command getAddInflectionCommand() {
+        return addInflectionCommand;
+    }
+
+    public void setAddInflectionCommand(Command addInflectionCommand) {
+        this.addInflectionCommand = addInflectionCommand;
+    }
+
+    public Command getRemoveInflectionCommand() {
+        return removeInflectionCommand;
+    }
+
+    public void setRemoveInflectionCommand(Command removeInflectionCommand) {
+        this.removeInflectionCommand = removeInflectionCommand;
+    }
+
+    public Command getAddSemanticFieldCommand() {
+        return addSemanticFieldCommand;
+    }
+
+    public void setAddSemanticFieldCommand(Command addSemanticFieldCommand) {
+        this.addSemanticFieldCommand = addSemanticFieldCommand;
+    }
+
+    public Command getRemoveSemanticFieldCommand() {
+        return removeSemanticFieldCommand;
+    }
+
+    public void setRemoveSemanticFieldCommand(Command removeSemanticFieldCommand) {
+        this.removeSemanticFieldCommand = removeSemanticFieldCommand;
+    }
+
+    public Command getAddSourceCommand() {
+        return addSourceCommand;
+    }
+
+    public void setAddSourceCommand(Command addSourceCommand) {
+        this.addSourceCommand = addSourceCommand;
+    }
+
+    public Command getRemoveSourceCommand() {
+        return removeSourceCommand;
+    }
+
+    public void setRemoveSourceCommand(Command removeSourceCommand) {
+        this.removeSourceCommand = removeSourceCommand;
+    }
+
+    public Command getAddParticleCommand() {
+        return addParticleCommand;
+    }
+
+    public void setAddParticleCommand(Command addParticleCommand) {
+        this.addParticleCommand = addParticleCommand;
+    }
+
+    public Command getRemoveParticleCommand() {
+        return removeParticleCommand;
+    }
+
+    public void setRemoveParticleCommand(Command removeParticleCommand) {
+        this.removeParticleCommand = removeParticleCommand;
     }
 }
 

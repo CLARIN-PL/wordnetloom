@@ -948,6 +948,24 @@ public class RemoteService {
         return new Lexicon();
     }
 
+    public YiddishProperties findYiddishProperties(URI link) {
+
+        WebTarget target = client.target(link);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .get();
+
+        if (isOkStatus(response)) {
+            YiddishProperties yp = response.readEntity(YiddishProperties.class);
+            LOG.debug("Loading yiddish properties: " + link.toString());
+            return yp;
+        }
+        return new YiddishProperties();
+    }
+
     public RelationType findRelationType(URI link) {
 
         WebTarget target = client.target(link);

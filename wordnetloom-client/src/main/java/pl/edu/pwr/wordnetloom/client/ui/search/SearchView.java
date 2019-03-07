@@ -152,7 +152,6 @@ public class SearchView implements FxmlView<SearchViewModel> {
             Parent view = load.getView();
             Stage showDialog = DialogHelper.showDialog(view, primaryStage, "/wordnetloom.css");
             load.getCodeBehind().setDisplayingStage(showDialog);
-
         });
 
         senseMode.selectedProperty().bindBidirectional(viewModel.selectedSenseModeProperty());

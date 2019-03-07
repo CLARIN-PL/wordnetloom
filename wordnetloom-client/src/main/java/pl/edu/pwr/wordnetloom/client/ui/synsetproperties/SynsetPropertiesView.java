@@ -74,6 +74,7 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
             Parent view = load.getView();
             Stage showDialog = DialogHelper.showDialog(view, primaryStage, "/wordnetloom.css");
             load.getCodeBehind().setDisplayingStage(showDialog);
+            load.getCodeBehind().loadYiddish();
             showDialog.toFront();
         });
 

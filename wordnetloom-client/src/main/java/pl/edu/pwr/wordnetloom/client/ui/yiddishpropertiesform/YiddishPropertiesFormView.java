@@ -2,13 +2,19 @@ package pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform;
 
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
+import de.saxsys.mvvmfx.utils.viewlist.CachedViewModelCellFactory;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import pl.edu.pwr.wordnetloom.client.ui.dictionaryform.DictionaryListItemView;
+import pl.edu.pwr.wordnetloom.client.ui.dictionaryform.DictionaryListItemViewModel;
 
 public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesFormViewModel> {
 
     @FXML
-    public ComboBox variantTypeCombo, dialectCombo;
+    public ComboBox<String> variantTypeCombo, dialectCombo;
 
     @FXML
     public Button addVariant,removeVariant;
@@ -17,10 +23,10 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public TextField yivoField, latinFiled, yiddishField;
 
     @FXML
-    public ListView transcriptionList;
+    public ListView<TranscriptionListItemViewModel> transcriptionList;
 
     @FXML
-    public ComboBox transcriptionType;
+    public ComboBox<String> transcriptionType;
 
     @FXML
     public TextField transcriptionField;
@@ -29,10 +35,10 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public Button addTranscriptionButton, removeTranscriptionButton;
 
     @FXML
-    public ListView semanticList;
+    public ListView<SemanticFieldListItemViewModel> semanticList;
 
     @FXML
-    public ComboBox semanticFiledCombo, semanticFiledModCombo;
+    public ComboBox<String> semanticFiledCombo, semanticFiledModCombo;
 
     @FXML
     public Button addSemanticFiledButton, removeSemanticRemoveButton;
@@ -41,24 +47,19 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public TextArea meaningArea;
 
     @FXML
-    public ComboBox grammaticalGenderCombo, styleCombo, lexicalCharacteristicCombo,
-            statusCombo, ageCombo;
+    public ComboBox<String> grammaticalGenderCombo, styleCombo, lexicalCharacteristicCombo,
+            statusCombo, ageCombo, sourceCombo, inflectionCombo;
     @FXML
     public TextField etymologyField;
-    @FXML
-    public ListView sourceList;
 
     @FXML
-    public ComboBox sourceCombo;
+    public ListView<DictionaryListItemViewModel> sourceList;
 
     @FXML
     public Button addSrcButton, removeSrcButton;
 
     @FXML
-    public ListView inflectionList;
-
-    @FXML
-    public ComboBox inflectionCombo;
+    public ListView<InflectionListItemViewModel> inflectionList;
 
     @FXML
     public Button addInflectionButton, removeInflectionButton;
@@ -70,10 +71,10 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public TextArea commentArea, contextArea;
 
     @FXML
-    public ListView particlesList;
+    public ListView<ParticleListItemViewModel> particlesList;
 
     @FXML
-    public ComboBox particleTypeCombo, particleCombo;
+    public ComboBox<String> particleTypeCombo, particleCombo;
 
     @FXML
     public TextField rootFiled;
@@ -87,6 +88,73 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
 
     public void initialize() {
 
+        yivoField.textProperty().bindBidirectional(viewModel.yivoProperty());
+        latinFiled.textProperty().bindBidirectional(viewModel.latinProperty());
+        yiddishField.textProperty().bindBidirectional(viewModel.yiddishProperty());
+
+        transcriptionField.textProperty().bindBidirectional(viewModel.transcriptionProperty());
+
+        meaningArea.textProperty().bindBidirectional(viewModel.meaningProperty());
+
+        etymologyField.textProperty().bindBidirectional(viewModel.etymologyProperty());
+
+        inflectionField.textProperty().bindBidirectional(viewModel.inflectionProperty());
+
+        etymologicalRootField.textProperty().bindBidirectional(viewModel.etymologicalRootProperty());
+
+        commentArea.textProperty().bindBidirectional(viewModel.commentProperty());
+        contextArea.textProperty().bindBidirectional(viewModel.contextProperty());
+        rootFiled.textProperty().bindBidirectional(viewModel.rootProperty());
+
+        variantTypeCombo.setItems(viewModel.getVariantTypes());
+        variantTypeCombo.valueProperty().bindBidirectional(viewModel.selectedVariantTypeProperty());
+
+        ageCombo.setItems(viewModel.getAges());
+        ageCombo.valueProperty().bindBidirectional(viewModel.selectedAgeProperty());
+
+        statusCombo.setItems(viewModel.getStatuses());
+        statusCombo.valueProperty().bindBidirectional(viewModel.selectedStatusProperty());
+
+        styleCombo.setItems(viewModel.getStyles());
+        styleCombo.valueProperty().bindBidirectional(viewModel.selectedStyleProperty());
+
+        lexicalCharacteristicCombo.setItems(viewModel.getLexicalCharacteristics());
+        lexicalCharacteristicCombo.valueProperty().bindBidirectional(viewModel.selectedLexicalCharacteristicProperty());
+
+        grammaticalGenderCombo.setItems(viewModel.getGrammaticalGenders());
+        grammaticalGenderCombo.valueProperty().bindBidirectional(viewModel.selectedGrammaticalGenderProperty());
+
+        sourceCombo.setItems(viewModel.getSources());
+        sourceCombo.valueProperty().bindBidirectional(viewModel.selectedSourceProperty());
+
+        inflectionCombo.setItems(viewModel.getInflectionsCmb());
+        inflectionCombo.valueProperty().bindBidirectional(viewModel.selectedInflectionCmbProperty());
+
+        semanticFiledCombo.setItems(viewModel.getSemanticFields());
+        semanticFiledCombo.valueProperty().bindBidirectional(viewModel.selectedSemanticFieldProperty());
+
+        semanticFiledModCombo.setItems(viewModel.getSemanticFieldMods());
+        semanticFiledModCombo.valueProperty().bindBidirectional(viewModel.selectedSemanticFieldModProperty());
+
+        sourceList.setItems(viewModel.getSourceList());
+        sourceList.setCellFactory(CachedViewModelCellFactory.createForFxmlView(DictionaryListItemView.class));
+        viewModel.selectedSourceListItemProperty().bind(sourceList.getSelectionModel().selectedItemProperty());
+
+        semanticList.setItems(viewModel.getSemanticFiledList());
+        semanticList.setCellFactory(CachedViewModelCellFactory.createForFxmlView(SemanticFieldListItemView.class));
+        viewModel.selectedSemanticFieldListItemProperty().bind(semanticList.getSelectionModel().selectedItemProperty());
+
+        inflectionList.setItems(viewModel.getInflectionFiledList());
+        inflectionList.setCellFactory(CachedViewModelCellFactory.createForFxmlView(InflectionListItemView.class));
+        viewModel.selectedInflectionListItemProperty().bind(inflectionList.getSelectionModel().selectedItemProperty());
+
+        transcriptionList.setItems(viewModel.getTranscriptionList());
+        transcriptionList.setCellFactory(CachedViewModelCellFactory.createForFxmlView(TranscriptionListItemView.class));
+        viewModel.selectedTranscriptionListItemProperty().bind(transcriptionList.getSelectionModel().selectedItemProperty());
+
+        particlesList.setItems(viewModel.getParticleList());
+        particlesList.setCellFactory(CachedViewModelCellFactory.createForFxmlView(ParticleListItemView.class));
+        viewModel.selectedParticleListItemProperty().bind(particlesList.getSelectionModel().selectedItemProperty());
     }
 
 }

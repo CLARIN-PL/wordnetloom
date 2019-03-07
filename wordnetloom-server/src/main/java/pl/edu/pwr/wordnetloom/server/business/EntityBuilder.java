@@ -1872,6 +1872,7 @@ public class EntityBuilder {
 
     private JsonObject buildYiddishDomain(YiddishDomain i, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("id", i.getId());
         builder.add("domain", Json.createObjectBuilder()
                 .add("id", i.getDomain().getId())
                 .add("name",loc.find(i.getDomain().getName(),locale)));
@@ -1886,6 +1887,7 @@ public class EntityBuilder {
 
     private JsonObject buildTranscription(Transcription i, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("transcription_id", i.getId());
         builder.add("id", i.getTranscriptionDictionary().getId());
         builder.add("name", loc.find(i.getTranscriptionDictionary().getName(),locale));
 
@@ -1903,6 +1905,8 @@ public class EntityBuilder {
 
     private JsonObject buildParticle(Particle p, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
+
+        builder.add("particle_id", p.getId());
 
         if(p instanceof RootParticle) {
             builder.add("type", "root");
@@ -1933,6 +1937,7 @@ public class EntityBuilder {
 
     private JsonObject buildInflection(Inflection i, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
+        builder.add("inflection_id", i.getId());
         builder.add("id", i.getInflectionDictionary().getId());
         builder.add("name", loc.find(i.getInflectionDictionary().getName(),locale));
         if(i.getText() !=null)

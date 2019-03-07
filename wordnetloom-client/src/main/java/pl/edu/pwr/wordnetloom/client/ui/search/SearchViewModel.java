@@ -712,6 +712,13 @@ public class SearchViewModel implements ViewModel {
     }
 
 
+    private void initAgeItemList() {
+        agesItemList = Dictionaries.initDictionaryItemList(Dictionaries.AGES_DICTIONARY);
+        ObservableList<String> mappedList = agesItemList.getTargetList();
+        ages = Dictionaries.createListWithNothingSelectedMarker(mappedList, AGE_NOTHING_SELECTED_MARKER);
+        ages.addListener((ListChangeListener<String>) p -> selectedAge.set(AGE_NOTHING_SELECTED_MARKER));
+    }
+
     private void initLexicalCharacteristicsItemList() {
         lexicalCharacteristicsItemList = Dictionaries.initDictionaryItemList(Dictionaries.LEXICAL_CHARACTERISTICS_DICTIONARY);
         ObservableList<String> mappedList = lexicalCharacteristicsItemList.getTargetList();
@@ -725,13 +732,6 @@ public class SearchViewModel implements ViewModel {
         ObservableList<String> mappedList = sourcesItemList.getTargetList();
         sources = Dictionaries.createListWithNothingSelectedMarker(mappedList, SOURCE_NOTHING_SELECTED_MARKER);
         sources.addListener((ListChangeListener<String>) p -> selectedSource.set(SOURCE_NOTHING_SELECTED_MARKER));
-    }
-
-    private void initAgeItemList() {
-        agesItemList = Dictionaries.initDictionaryItemList(Dictionaries.AGES_DICTIONARY);
-        ObservableList<String> mappedList = agesItemList.getTargetList();
-        ages = Dictionaries.createListWithNothingSelectedMarker(mappedList, AGE_NOTHING_SELECTED_MARKER);
-        ages.addListener((ListChangeListener<String>) p -> selectedAge.set(AGE_NOTHING_SELECTED_MARKER));
     }
 
     private void initYiddishStatusesItemList() {

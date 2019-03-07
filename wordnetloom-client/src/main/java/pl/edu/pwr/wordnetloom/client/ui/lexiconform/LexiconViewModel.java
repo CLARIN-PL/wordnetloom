@@ -38,8 +38,10 @@ public class LexiconViewModel implements ViewModel {
     private StringProperty referenceUrl = new SimpleStringProperty();
     private StringProperty citation = new SimpleStringProperty();
     private StringProperty confidenceScore = new SimpleStringProperty();
+
     private ObservableList<DictionaryListItemViewModel> lexiconList = FXCollections.observableArrayList();
     private ObjectProperty<DictionaryListItemViewModel> selectedLexiconListItem = new SimpleObjectProperty<>();
+
     private Command addCommand;
     private Command removeCommand;
     private Validator nameValidator;

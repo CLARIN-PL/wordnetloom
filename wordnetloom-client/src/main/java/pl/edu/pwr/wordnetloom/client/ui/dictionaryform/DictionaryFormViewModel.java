@@ -79,7 +79,7 @@ public class DictionaryFormViewModel implements ViewModel {
         if(d.getColor() != null) {
             color.set(javafx.scene.paint.Color.web(d.getColor()));
         }
-        if(d.getColor() !=null) {
+        if(d.getDefault() !=null) {
             isDefaultValue.set(d.getDefault());
         }
     }

@@ -128,8 +128,10 @@ public class SenseRelationsViewModel implements ViewModel {
     }
 
     private  void showSenseVisualisation(){
+        if(activeSense.isNotNull().get()) {
             URI link = activeSense.get().getLinks().getGraph();
             loadGraphEventPublisher.fireAsync(new LoadGraphEvent(link, true));
+        }
     }
 
 

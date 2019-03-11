@@ -62,7 +62,8 @@ public class SecurityResource {
                 return Response.ok(new Jwt(token)).build();
             }
         } catch (Exception e) {
-            log.info(e.getMessage());
+            e.printStackTrace();
+            log.info("Login error message: " + e.getMessage());
         }
         return Response.status(Response.Status.UNAUTHORIZED)
                 .entity(entityBuilder.buildErrorObject("Username and/or password is incorrect", Response.Status.BAD_REQUEST))

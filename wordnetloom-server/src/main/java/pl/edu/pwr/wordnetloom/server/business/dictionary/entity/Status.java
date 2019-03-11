@@ -1,9 +1,12 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
+@Audited
 @NamedQuery(
         name = Status.FIND_DEFAULT_STATUS_VALUE,
         query = "SELECT s FROM Status s WHERE s.isDefault = True")

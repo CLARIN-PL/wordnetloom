@@ -1,11 +1,13 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Audited
 @Entity
 @Table(name = "tbl_relation_tests")
 @NamedQuery(name = RelationTest.FIND_ALL_BY_RELATION_TYPE_ID,

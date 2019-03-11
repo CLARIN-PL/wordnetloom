@@ -6,7 +6,7 @@ services:
     restart: always
     volumes:
       - .:/docker-entrypoint-initdb.d
-      - /storage/docker/mysql-wordnet-db:/var/lib/mysql
+      - /storage/docker/mysql-wordnet:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: password

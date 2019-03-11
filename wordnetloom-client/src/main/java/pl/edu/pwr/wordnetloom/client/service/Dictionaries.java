@@ -34,6 +34,7 @@ public class Dictionaries {
     public static final String STATUS_DICTIONARY = "statuses";
     public static final String REGISTER_DICTIONARY = "register";
     public static final String LEXICON_DICTIONARY = "lexicon";
+    public static final String EMOTION_DICTIONARY = "dictionanry";
 
     private static final Map<String, ObservableList<Dictionary>> dictionaries = new ConcurrentHashMap<>();
     private static final ObservableList<Dictionary> userChosenLexicon = FXCollections.observableArrayList();

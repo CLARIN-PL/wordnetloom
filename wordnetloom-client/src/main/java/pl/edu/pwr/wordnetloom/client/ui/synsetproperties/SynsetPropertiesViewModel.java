@@ -360,4 +360,8 @@ public class SynsetPropertiesViewModel implements ViewModel {
     public Command extractToNewSynsetWithRelationCommand() {
         return extractToNewSynsetWithRelationCommand;
     }
+
+    public Property<Boolean> auxiliaryLabelVisible() {
+        return artificial;
+    }
 }

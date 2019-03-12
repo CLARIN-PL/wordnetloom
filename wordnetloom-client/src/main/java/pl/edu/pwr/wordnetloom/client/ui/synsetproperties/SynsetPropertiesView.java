@@ -23,7 +23,6 @@ import pl.edu.pwr.wordnetloom.client.ui.synsetpropertiesdialog.SynsetPropertiesD
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.concurrent.Callable;
 
 @Singleton
 public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel> {
@@ -35,7 +34,7 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
             statusInput,  linkInput;
 
     @FXML
-    public Label auxillaryLabel;
+    public Label auxiliaryLabel;
 
     @FXML
     public Button editButton, moveSenseUpButton, moveSenseDownButton,
@@ -108,6 +107,8 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
             }
         });
 
+        auxiliaryLabel.visibleProperty().bindBidirectional(viewModel.auxiliaryLabelVisible());
+
         synsetIdInput.textProperty().bind(viewModel.synsetIdProperty());
         princetonIdInput.textProperty().bind(viewModel.princetonProperty());
         iliIdInput.textProperty().bind(viewModel.iliProperty());
@@ -119,7 +120,7 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
         statusInput.textProperty().bind(viewModel.statusProperty());
         ownerInput.textProperty().bind(viewModel.ownerProperty());
 
-        auxillaryLabel.visibleProperty().bind(
+        auxiliaryLabel.visibleProperty().bind(
                 Bindings.createBooleanBinding(()->viewModel.artificialProperty().get())
         );
 

@@ -94,7 +94,7 @@ import java.util.*;
                 "LEFT JOIN FETCH y.yiddishDomains " +
                 "WHERE  s.id = :id")
 @NamedQuery(name = Sense.FIND_NEXT_VARIANT,
-        query = "SELECT MAX(s.variant) FROM Sense AS s WHERE s.word.id = :wordId " +
+        query = "SELECT MAX(s.variant)  FROM Sense AS s WHERE s.word.id = :wordId " +
                 "AND s.partOfSpeech.id = :posId AND s.lexicon.id = :lex")
 
 @NamedQuery(name = Sense.COUNT_SENSE_BY_WORD_ID, query = "SELECT COUNT(s.id) FROM Sense s WHERE s.word.id = :id")

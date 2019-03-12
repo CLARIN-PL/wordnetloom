@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.boundary;
 
+
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.control.DictionaryQueryService;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
@@ -25,10 +26,7 @@ import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -177,37 +175,15 @@ public class SenseCommandService {
     }
 
     public OperationResult<Sense> update(JsonObject sense) {
-
         OperationResult<Sense> result = new OperationResult<>();
 
         if (!sense.isNull("id")) {
             UUID id = UUID.fromString(sense.getString("id"));
             Optional<Sense> ous = senseQueryService.findById(id);
             ous.ifPresent(s -> {
-
                 boolean hasWordChanged = false;
                 AtomicBoolean hasPartOfSpeechChanged = new AtomicBoolean(false);
                 AtomicBoolean hasLexiconChanged = new AtomicBoolean(false);
-
-                if (!sense.isNull("part_of_speech")) {
-                    dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
-                            .ifPresent(p -> {
-                                s.setPartOfSpeech(p);
-                                hasPartOfSpeechChanged.set(ous.get().getPartOfSpeech().getId() != p.getId());
-                            });
-                } else {
-                    result.addError("part_of_speech", "Part of speech may not be empty");
-                }
-
-                if (!sense.isNull("lexicon")) {
-                    Optional<Lexicon> lex = lexiconQueryService.findById(sense.getInt("lexicon"));
-                    lex.ifPresent(l -> {
-                        s.setLexicon(l);
-                        hasLexiconChanged.set(ous.get().getLexicon().getId() != l.getId());
-                    });
-                } else {
-                    result.addError("lexicon", "Lexicon may not be empty");
-                }
 
                 if (!sense.isNull("lemma") && !sense.getString("lemma").isEmpty()) {
                     hasWordChanged = !ous.get().getWord().getWord().equals(sense.getString("lemma"));
@@ -216,12 +192,44 @@ public class SenseCommandService {
                 } else {
                     result.addError("lemma", "Lemma may not be empty");
                 }
-                System.out.println(sense.getInt("lexicon") + "," + sense.getInt("part_of_speech") + "," + s.getWord().getId());
+
+                // checking the lexicon has changed
+                if (!sense.isNull("lexicon")) {
+                    Optional<Lexicon> lex = lexiconQueryService.findById(sense.getInt("lexicon"));
+                    lex.ifPresent(l -> {
+                        hasLexiconChanged.set(ous.get().getLexicon().getId() != l.getId());
+                    });
+                } else {
+                    result.addError("lexicon", "Lexicon may not be empty");
+                }
+
+                // checking the part of speech has changed
+                if (!sense.isNull("part_of_speech")) {
+                    dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
+                            .ifPresent(p -> {
+                                hasPartOfSpeechChanged.set(ous.get().getPartOfSpeech().getId() != p.getId());
+                            });
+                } else {
+                    result.addError("part_of_speech", "Part of speech may not be empty");
+                }
+
+                int lexicon = sense.getInt("lexicon");
+                int part_of_speech = sense.getInt("part_of_speech");
 
                 if (hasLexiconChanged.get() || hasPartOfSpeechChanged.get() || hasWordChanged) {
-                    System.out.println("Updating variant");
-                    s.setVariant(findNextVariant(s.getWord().getId(), s.getPartOfSpeech().getId(), s.getLexicon().getId()));
-                    System.out.println(s.getLexicon().getId() + "," + s.getPartOfSpeech().getId() + "," + s.getWord().getId());
+                    s.setVariant(findNextVariant(s.getWord().getId(), (long)part_of_speech, (long)lexicon));
+                }
+
+                // set lexicon
+                if (!sense.isNull("lexicon")) {
+                    Optional<Lexicon> lex = lexiconQueryService.findById(sense.getInt("lexicon"));
+                    lex.ifPresent(s::setLexicon);
+                }
+
+                // set part of speech
+                if (!sense.isNull("part_of_speech")) {
+                    dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
+                            .ifPresent(s::setPartOfSpeech);
                 }
 
                 if (!sense.isNull("domain")) {
@@ -450,18 +458,15 @@ public class SenseCommandService {
     }
 
     private int findNextVariant(UUID wordId, Long posId, Long lex) {
-        Optional<Integer> variant = Optional.of(1);
-
         try {
-            variant = Optional.ofNullable(em.createNamedQuery(Sense.FIND_NEXT_VARIANT, Integer.class)
+            Optional<Integer> variant = Optional.ofNullable(em.createNamedQuery(Sense.FIND_NEXT_VARIANT, Integer.class)
                     .setParameter("wordId", wordId)
                     .setParameter("lex", lex)
                     .setParameter("posId", posId).getSingleResult());
-        } catch (NoResultException ex) {
-            return variant.get();
+            return Math.max(0, variant.orElse(0)) + 1;
+        } catch (NoResultException | NoSuchElementException ex) {
+            return 1;
         }
-        System.out.println("Found variant:" + variant.get());
-        return Math.max(0, variant.orElse(0)) + 1;
     }
 
     public void deleteExample(UUID exampleId) {

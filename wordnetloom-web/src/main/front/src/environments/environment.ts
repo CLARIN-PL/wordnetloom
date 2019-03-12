@@ -4,5 +4,6 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  apiUrl: 'http://156.17.135.55:9070/wordnetloom-server/resources/'
 };

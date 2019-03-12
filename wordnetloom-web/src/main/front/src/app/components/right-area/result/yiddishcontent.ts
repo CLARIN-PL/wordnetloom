@@ -77,18 +77,18 @@ export class YiddishContent {
   private assignTooltipForParticle(element) {
     const self = this;
 
-    if (element.type === 'root' || element.type === 'constituent') {
+    if (element.particle.type === 'root' || element.particle.type === 'constituent') {
       return (resolve, reject) => {
-        resolve(YiddishContent.capitalizeFirstLetter(element.type));
+        resolve(YiddishContent.capitalizeFirstLetter(element.particle.type));
       };
     }
 
     return (resolve, reject) => {
       self.http
-        .getDictionaryItem(`${element.type}es`, element.id)
+        .getDictionaryItem(`${element.particle.type}es`, element.particle.id)
         .toPromise()
         .then(data => {
-          resolve(YiddishContent.capitalizeFirstLetter(element.type) + ' | ' + data.description);
+          resolve(YiddishContent.capitalizeFirstLetter(element.particle.type) + ' | ' + data.description);
         });
     };
   }
@@ -166,8 +166,8 @@ export class YiddishContent {
             newField = {
               name: fieldNames[key].viewName,
               values: jsonData['inflections'].map(function (it) {
-                return {name: it.name + ' ' + it.text,
-                  searchQuery: self.getSearchFieldQuery('Inflection', it.id)
+                return {name: it.inflection.name + ' ' + it.text,
+                  searchQuery: self.getSearchFieldQuery('Inflection', it.inflection.id)
                 };
               })
             };
@@ -177,7 +177,7 @@ export class YiddishContent {
               values: jsonData['transcriptions'].map(function (it) {
                 return {
                   name: it.phonography,
-                  searchQuery: self.getSearchFieldQuery('transcriptions', it.id)
+                  searchQuery: self.getSearchFieldQuery('transcriptions', it.transcription.id)
                 };
               })
             };
@@ -194,20 +194,20 @@ export class YiddishContent {
                   ret.push({
                     name: '(' + it['modifier'].name + ')',
                     searchQuery: self.getSearchFieldQuery('semantic_fields_modifier', it['modifier'].id)
-                  })
+                  });
                 }
                 return ret;
               })
-            }
+            };
           } else if (key === 'particles' && jsonData['particles'].length > 0) {
             newField = {
               name: fieldNames[key].viewName, values: jsonData[key]
                 // .sort(YiddishContent.sortParticles) // sort particles
                 .map(function (it) {
                   return {
-                    name: it.value,
+                    name: it.particle.value,
                     tooltip: new Promise<string>(self.assignTooltipForParticle(it)),
-                    searchQuery: self.getSearchFieldQuery('particle_' + it.type, it.id ? it.id : it.value)
+                    searchQuery: self.getSearchFieldQuery('particle_' + it.particle.type, it.id ? it.id : it.value)
                   };
               })
             };

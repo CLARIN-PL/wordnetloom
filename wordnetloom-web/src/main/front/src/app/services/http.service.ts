@@ -5,11 +5,13 @@ import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/catch';
 import {lemmas} from './avaliable_lemmas_temp';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class HttpService {
-  // apiBase = 'http://156.17.135.55:8080/wordnetloom-server/resources/';
-  apiBase = 'http://156.17.135.29:8888/wordnetloom-server/resources/';
+  // apiBase = 'http://156.17.135.29:8888/wordnetloom-server/resources/';
+
+  apiBase = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

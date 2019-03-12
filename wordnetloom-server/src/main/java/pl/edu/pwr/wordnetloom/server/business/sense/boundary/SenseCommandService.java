@@ -203,7 +203,7 @@ public class SenseCommandService {
                     result.addError("lexicon", "Lexicon may not be empty");
                 }
 
-                // checking the part of speech has chenged
+                // checking the part of speech has changed
                 if (!sense.isNull("part_of_speech")) {
                     dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
                             .ifPresent(p -> {
@@ -215,7 +215,6 @@ public class SenseCommandService {
 
                 int lexicon = sense.getInt("lexicon");
                 int part_of_speech = sense.getInt("part_of_speech");
-                System.out.println(lexicon + "," + part_of_speech + "," + s.getWord().getId());
 
                 if (hasLexiconChanged.get() || hasPartOfSpeechChanged.get() || hasWordChanged) {
                     s.setVariant(findNextVariant(s.getWord().getId(), (long)part_of_speech, (long)lexicon));
@@ -224,18 +223,13 @@ public class SenseCommandService {
                 // set lexicon
                 if (!sense.isNull("lexicon")) {
                     Optional<Lexicon> lex = lexiconQueryService.findById(sense.getInt("lexicon"));
-                    lex.ifPresent(l -> {
-                        s.setLexicon(l);
-
-                    });
+                    lex.ifPresent(s::setLexicon);
                 }
 
                 // set part of speech
                 if (!sense.isNull("part_of_speech")) {
                     dictionaryQueryService.findPartsOfSpeech(sense.getInt("part_of_speech"))
-                            .ifPresent(p -> {
-                                s.setPartOfSpeech(p);
-                            });
+                            .ifPresent(s::setPartOfSpeech);
                 }
 
                 if (!sense.isNull("domain")) {

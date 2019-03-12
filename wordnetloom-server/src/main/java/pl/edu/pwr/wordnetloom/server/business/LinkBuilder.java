@@ -234,8 +234,11 @@ public class LinkBuilder {
     }
 
     public Object forYiddishVariant(YiddishSenseExtension e, UriInfo uriInfo) {
-        return createResourceUri(SenseResource.class, "yiddishVariants", e.getId(), uriInfo);
+        return uriInfo.getBaseUriBuilder().path(SenseResource.class)
+                .path(SenseResource.class, "yiddishVariant")
+                .build(e.getSense().getId(), e.getId());
     }
+
 
     public Object forSources(UriInfo uriInfo) {
         return createResourceUri(DictionaryResource.class, "getAllSources", uriInfo);

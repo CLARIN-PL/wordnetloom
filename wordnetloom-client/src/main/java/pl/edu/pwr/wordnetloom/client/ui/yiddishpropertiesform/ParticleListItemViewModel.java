@@ -14,11 +14,8 @@ public class ParticleListItemViewModel implements ViewModel {
 
     public ParticleListItemViewModel(YiddishParticle i) {
         this.field = i;
-        StringBuilder txt = new StringBuilder();
-        txt.append(i.getValue());
-        txt.append(" (")
-                    .append(i.getType()).append(")");
-        nameProperty.set(txt.toString());
+        String txt = i.getParticle().getValue() +" (" + i.getParticle().getType() + ")";
+        nameProperty.set(txt);
     }
 
     public YiddishParticle getItem() {

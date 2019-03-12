@@ -93,6 +93,26 @@ import java.util.*;
                 "LEFT JOIN FETCH y.transcriptions " +
                 "LEFT JOIN FETCH y.yiddishDomains " +
                 "WHERE  s.id = :id")
+
+@NamedQuery(name = Sense.FIND_YIDDISH_VARIANT_BY_ID,
+        query = "SELECT DISTINCT y FROM YiddishSenseExtension y " +
+                "LEFT JOIN FETCH y.sense s " +
+                "LEFT JOIN FETCH s.word " +
+                "LEFT JOIN FETCH s.domain " +
+                "LEFT JOIN FETCH s.partOfSpeech " +
+                "LEFT JOIN FETCH s.lexicon " +
+                "LEFT JOIN FETCH y.age " +
+                "LEFT JOIN FETCH y.grammaticalGender " +
+                "LEFT JOIN FETCH y.inflection " +
+                "LEFT JOIN FETCH y.lexicalCharacteristic " +
+                "LEFT JOIN FETCH y.particles " +
+                "LEFT JOIN FETCH y.source " +
+                "LEFT JOIN FETCH y.status " +
+                "LEFT JOIN FETCH y.style " +
+                "LEFT JOIN FETCH y.transcriptions " +
+                "LEFT JOIN FETCH y.yiddishDomains " +
+                "WHERE  s.id = :id AND y.id =:variant")
+
 @NamedQuery(name = Sense.FIND_NEXT_VARIANT,
         query = "SELECT MAX(s.variant)  FROM Sense AS s WHERE s.word.id = :wordId " +
                 "AND s.partOfSpeech.id = :posId AND s.lexicon.id = :lex")
@@ -116,6 +136,7 @@ public class Sense implements Serializable {
     public static final String FIND_SENSE_BY_SYNSET_ID_AND_POSITION = "Sense.findSenseBySynsetIdAndPosition";
     public static final String COUNT_SENSES_BY_SYNSET_ID = "Sense.countSensesBySynsetId";
     public static final String FIND_YIDDISH_VARIANTS = "Sense.findYiddishVariants";
+    public static final String FIND_YIDDISH_VARIANT_BY_ID = "Sense.findYiddishVariantById";
 
     @Id
     @GeneratedValue(generator = "uuid2")

@@ -1,25 +1,12 @@
 package pl.edu.pwr.wordnetloom.client.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class YiddishInflection {
-
-    @JsonProperty("inflection_id")
-    private long inflectionId;
 
     private long id;
 
-    private String name;
+    private Dictionary inflection;
 
     private String text;
-
-    public long getInflectionId() {
-        return inflectionId;
-    }
-
-    public void setInflectionId(long inflectionId) {
-        this.inflectionId = inflectionId;
-    }
 
     public long getId() {
         return id;
@@ -29,12 +16,12 @@ public class YiddishInflection {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Dictionary getInflection() {
+        return inflection;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setInflection(Dictionary inflection) {
+        this.inflection = inflection;
     }
 
     public String getText() {
@@ -43,15 +30,5 @@ public class YiddishInflection {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    @Override
-    public String toString() {
-        return "YiddishInflection{" +
-                "inflectionId=" + inflectionId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", text='" + text + '\'' +
-                '}';
     }
 }

@@ -14,6 +14,8 @@ public class Dictionary {
 
     private String value;
 
+    private String type;
+
     @JsonProperty("is_default")
     private Boolean isDefault;
 
@@ -84,6 +86,14 @@ public class Dictionary {
 
     public void setDefault(Boolean aDefault) {
         isDefault = aDefault;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

@@ -280,4 +280,13 @@ public class SenseResource {
                                       @PathParam("id") final UUID id) {
         return entityBuilder.buildYiddishVariants(queryService.findSenseYiddish(id), uriInfo, locale);
     }
+
+    @GET
+    @Path("{id}/yiddish/{variantId}")
+    public JsonObject yiddishVariant(@HeaderParam("Accept-Language") Locale locale,
+                                      @PathParam("id") final UUID id, @PathParam("variantId") Long variantId) {
+        return  queryService.findYiddishVariant(id, variantId)
+                .map(y -> entityBuilder.buildYiddishVariant(y, uriInfo, locale))
+                .orElse(Json.createObjectBuilder().build());
+    }
 }

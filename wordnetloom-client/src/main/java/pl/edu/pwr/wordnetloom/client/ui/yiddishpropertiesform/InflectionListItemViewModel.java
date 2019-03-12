@@ -16,7 +16,7 @@ public class InflectionListItemViewModel implements ViewModel {
     public InflectionListItemViewModel(YiddishInflection i) {
         this.field = i;
         StringBuilder txt = new StringBuilder();
-        txt.append(i.getName());
+        txt.append(i.getInflection().getName());
         if (i.getText() != null) {
             txt.append(" ")
                     .append(i.getText());

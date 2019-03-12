@@ -80,7 +80,6 @@ public class SearchView implements FxmlView<SearchViewModel> {
 
     @FXML
     private void search() {
-        // TODO ustawineie limitu może zrobić w innym miejscu
         searchResultList.reset();
         viewModel.getSearchCommand(searchResultList.getLimit()).execute();
     }
@@ -112,7 +111,7 @@ public class SearchView implements FxmlView<SearchViewModel> {
         // load graph of created synset
         viewModel.loadGraphEvent.fireAsync(new LoadGraphEvent(viewModel.selectedSearchListItemProperty()
                 .get().getSearchListItem()
-                .getLinks().getSynsetGraph(), false));
+                .getLinks().getSynsetGraph(), false,false));
     }
 
     private void refreshSearchResultList() {

@@ -13,9 +13,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import pl.edu.pwr.wordnetloom.client.model.Dictionary;
-import pl.edu.pwr.wordnetloom.client.model.VariantType;
-import pl.edu.pwr.wordnetloom.client.model.YiddishProperty;
+import pl.edu.pwr.wordnetloom.client.model.*;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.ui.dictionaryform.DictionaryListItemViewModel;
 
@@ -173,14 +171,14 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         addSemanticFieldCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                addVSemanticField();
+                addSemanticField();
             }
         });
 
         removeSemanticFieldCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                removeVSemanticField();
+                removeSemanticField();
             }
         });
 
@@ -284,25 +282,37 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private void removeTranscription() {
     }
 
-    private void removeVSemanticField() {
+    private void removeSemanticField() {
     }
 
     private void removeInflection() {
     }
 
     private void addParticle() {
+
     }
 
     private void addSource() {
+        sourceList.add(new DictionaryListItemViewModel(source.get()));
     }
 
     private void addTranscription() {
+
     }
 
-    private void addVSemanticField() {
+    private void addSemanticField() {
+        YiddishSemanticField field = new YiddishSemanticField();
+        field.setDomain(semanticField.get());
+        field.setModifier(semanticFieldMod.get());
+        semanticFiledList.add(new SemanticFieldListItemViewModel(field));
     }
 
     private void addInflection() {
+        YiddishInflection inf = new YiddishInflection();
+        Dictionary d = inflectionCmb.get();
+        inf.setText(inflection.get());
+        inf.setInflection(d);
+        inflectionFiledList.add(new InflectionListItemViewModel(inf));
     }
 
     private void removeVariant() {

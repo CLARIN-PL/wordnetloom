@@ -17,9 +17,9 @@ public class SemanticFieldListItemViewModel implements ViewModel {
         StringBuilder txt = new StringBuilder();
         txt.append(sf.getDomain().getName());
         if (sf.getModifier() != null) {
-            txt.append("(")
+            txt.append(" ( ")
                     .append(sf.getModifier().getName())
-                    .append(")");
+                    .append(" )");
         }
         nameProperty.set(txt.toString());
     }

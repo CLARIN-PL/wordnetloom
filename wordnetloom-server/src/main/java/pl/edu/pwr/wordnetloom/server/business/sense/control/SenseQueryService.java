@@ -237,4 +237,16 @@ public class SenseQueryService {
                 .getSingleResult();
         return s.getYiddish();
     }
+
+    public Optional<YiddishSenseExtension> findYiddishVariant(UUID id, Long variant) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(Sense.FIND_YIDDISH_VARIANT_BY_ID, YiddishSenseExtension.class)
+                            .setParameter("id", id)
+                            .setParameter("variant", variant)
+                            .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

@@ -1761,7 +1761,7 @@ public class EntityBuilder {
 
     public JsonObject buildYiddishVariants(Set<YiddishSenseExtension> senseYiddish, UriInfo uriInfo, Locale locale) {
         JsonArray array = senseYiddish.stream()
-                .map(e -> buildYiddishVariant(e, linkBuilder.forYiddishVariant(e, uriInfo), locale))
+                .map(e -> buildYiddishVariant(e, uriInfo, locale))
                 .collect(JsonCollectors.toJsonArray());
         return createObjectBuilder()
                 .add("rows", array)
@@ -1769,7 +1769,7 @@ public class EntityBuilder {
                 .build();
     }
 
-    private JsonObject buildYiddishVariant(YiddishSenseExtension e, Object forYiddishVariant, Locale locale) {
+    public JsonObject buildYiddishVariant(YiddishSenseExtension e, UriInfo uriInfo, Locale locale) {
 
         JsonObjectBuilder builder = createObjectBuilder();
         builder.add("id", e.getId());
@@ -1864,9 +1864,9 @@ public class EntityBuilder {
         builder.add("transcriptions", trans);
         builder.add("sources", src);
 
-        JsonObjectBuilder linkBuilder = createObjectBuilder();
-        // linkBuilder.add("self", forYiddishVariant);
-        builder.add("_links", linkBuilder);
+        JsonObjectBuilder lBuilder = createObjectBuilder();
+        lBuilder.add("self", linkBuilder.forYiddishVariant(e, uriInfo).toString());
+        builder.add("_links", lBuilder);
 
         return builder.build();
     }
@@ -1888,10 +1888,10 @@ public class EntityBuilder {
 
     private JsonObject buildTranscription(Transcription i, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
-        builder.add("transcription_id", i.getId());
-        builder.add("id", i.getTranscriptionDictionary().getId());
-        builder.add("name", loc.find(i.getTranscriptionDictionary().getName(),locale));
-
+        builder.add("id", i.getId());
+        builder.add("transcription", Json.createObjectBuilder()
+                .add("id", i.getTranscriptionDictionary().getId())
+                .add("name", loc.find(i.getTranscriptionDictionary().getName(),locale)));
         if(i.getPhonography() !=null)
             builder.add("phonography", i.getPhonography());
         return  builder.build();
@@ -1907,40 +1907,44 @@ public class EntityBuilder {
     private JsonObject buildParticle(Particle p, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
 
-        builder.add("particle_id", p.getId());
+        builder.add("id", p.getId());
+        JsonObjectBuilder particle = Json.createObjectBuilder();
 
         if(p instanceof RootParticle) {
-            builder.add("type", "root");
-            builder.add("value", ((RootParticle) p).getRoot());
+            particle.add("type", "root");
+            particle.add("value", ((RootParticle) p).getRoot());
         }
         if(p instanceof PrefixParticle) {
-            builder.add("id", ((PrefixParticle) p).getPrefix().getId());
-            builder.add("type", "prefix");
-            builder.add("value", loc.find(((PrefixParticle) p).getPrefix().getName(), locale));
+            particle.add("id", ((PrefixParticle) p).getPrefix().getId());
+            particle.add("type", "prefix");
+            particle.add("value", loc.find(((PrefixParticle) p).getPrefix().getName(), locale));
         }
         if(p instanceof InterfixParticle) {
-            builder.add("id", ((InterfixParticle) p).getInterfix().getId());
-            builder.add("type", "interfix");
-            builder.add("value", loc.find(((InterfixParticle) p).getInterfix().getName(), locale));
+            particle.add("id", ((InterfixParticle) p).getInterfix().getId());
+            particle.add("type", "interfix");
+            particle.add("value", loc.find(((InterfixParticle) p).getInterfix().getName(), locale));
         }
         if(p instanceof SuffixParticle) {
-            builder.add("id",  ((SuffixParticle) p).getSuffix().getId());
-            builder.add("type", "suffix");
-            builder.add("value", loc.find(((SuffixParticle) p).getSuffix().getName(), locale));
+            particle.add("id",  ((SuffixParticle) p).getSuffix().getId());
+            particle.add("type", "suffix");
+            particle.add("value", loc.find(((SuffixParticle) p).getSuffix().getName(), locale));
         }
         if(p instanceof ConstituentParticle){
-            builder.add("type", "constituent");
-            builder.add("value", ((ConstituentParticle) p).getConstituent());
+            particle.add("type", "constituent");
+            particle.add("value", ((ConstituentParticle) p).getConstituent());
         }
+        builder.add("particle", particle);
 
         return  builder.build();
     }
 
     private JsonObject buildInflection(Inflection i, Locale locale) {
         JsonObjectBuilder builder = createObjectBuilder();
-        builder.add("inflection_id", i.getId());
-        builder.add("id", i.getInflectionDictionary().getId());
-        builder.add("name", loc.find(i.getInflectionDictionary().getName(),locale));
+        builder.add("id", i.getId());
+        builder.add("inflection", Json.createObjectBuilder()
+                .add("id", i.getInflectionDictionary().getId())
+                .add("name", loc.find(i.getInflectionDictionary().getName(),locale)));
+
         if(i.getText() !=null)
             builder.add("text", i.getText());
         return  builder.build();

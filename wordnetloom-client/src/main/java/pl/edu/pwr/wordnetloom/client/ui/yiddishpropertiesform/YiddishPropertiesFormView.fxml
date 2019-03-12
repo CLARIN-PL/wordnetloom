@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform.YiddishPropertiesFormView">
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform.YiddishPropertiesFormView">
    <content>
       <VBox fx:id="form" prefHeight="1600.0" spacing="3.0">
           <children>
@@ -43,10 +43,10 @@
                               <Font name="System Bold" size="11.0" />
                            </font>
                         </Label>
-                              <ComboBox fx:id="variantTypeCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"  />
+                              <ComboBox fx:id="variantTypeCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
                               <ComboBox fx:id="dialectCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="addVariant" onAction="#addVariant" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="New variant" GridPane.columnIndex="2" />
-                              <Button fx:id="removeVariant" onAction="#removeVariant" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Remove variant" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Button fx:id="addVariant" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addVariant" text="New variant" GridPane.columnIndex="2" />
+                              <Button fx:id="removeVariant" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeVariant" text="Remove variant" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                           </children>
                       </GridPane>
                   </content>
@@ -102,8 +102,8 @@
                                   <children>
                                       <ComboBox fx:id="transcriptionType" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="transcriptionField" HBox.hgrow="ALWAYS" />
-                                      <Button fx:id="addTranscriptionButton"  onAction="#addTranscription" mnemonicParsing="false" text="Add" />
-                                      <Button fx:id="removeTranscriptionButton" onAction="#removeTranscription" mnemonicParsing="false" text="Remove" />
+                                      <Button fx:id="addTranscriptionButton" mnemonicParsing="false" onAction="#addTranscription" text="Add" />
+                                      <Button fx:id="removeTranscriptionButton" mnemonicParsing="false" onAction="#removeTranscription" text="Remove" />
                                   </children>
                               </HBox>
                               <Label maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Semantic Field">
@@ -122,8 +122,8 @@
                                   <children>
                                       <ComboBox fx:id="semanticFiledCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                                       <ComboBox fx:id="semanticFiledModCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                      <Button fx:id="addSemanticFiledButton" onAction="#addSemanticField" mnemonicParsing="false" text="Add" />
-                                      <Button fx:id="removeSemanticRemoveButton" onAction="#removeSemanticField" mnemonicParsing="false" text="Remove" />
+                                      <Button fx:id="addSemanticFiledButton" mnemonicParsing="false" onAction="#addSemanticField" text="Add" />
+                                      <Button fx:id="removeSemanticRemoveButton" mnemonicParsing="false" onAction="#removeSemanticField" text="Remove" />
                                   </children>
                               </HBox>
                               <Label maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Meaning">
@@ -217,8 +217,8 @@
                               <HBox maxWidth="1.7976931348623157E308" spacing="3.0" VBox.vgrow="ALWAYS">
                                   <children>
                                       <ComboBox fx:id="sourceCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                      <Button fx:id="addSrcButton" mnemonicParsing="false" text="Add" onAction="#addSource"/>
-                                      <Button fx:id="removeSrcButton" mnemonicParsing="false" text="Remove" onAction="#removeSource"/>
+                                      <Button fx:id="addSrcButton" mnemonicParsing="false" onAction="#addSource" text="Add" />
+                                      <Button fx:id="removeSrcButton" mnemonicParsing="false" onAction="#removeSource" text="Remove" />
                                   </children>
                               </HBox>
                               <Label maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Inflection">
@@ -237,8 +237,8 @@
                                   <children>
                                       <ComboBox fx:id="inflectionCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="inflectionField" HBox.hgrow="ALWAYS" />
-                                      <Button fx:id="addInflectionButton" mnemonicParsing="false" text="Add" onAction="#addInflection"/>
-                                      <Button fx:id="removeInflectionButton" mnemonicParsing="false" text="Remove" onAction="#removeInflection"/>
+                                      <Button fx:id="addInflectionButton" mnemonicParsing="false" onAction="#addInflection" text="Add" />
+                                      <Button fx:id="removeInflectionButton" mnemonicParsing="false" onAction="#removeInflection" text="Remove" />
                                   </children>
                               </HBox>
                               <GridPane>
@@ -302,15 +302,15 @@
                               <ComboBox fx:id="particleTypeCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                         <ComboBox fx:id="particleCombo" prefWidth="150.0" />
                         <TextField fx:id="rootFiled" />
-                              <Button fx:id="addParticleButton" mnemonicParsing="false" text="Add" onAction="#addParticle" />
-                              <Button fx:id="removeParticleButton" mnemonicParsing="false" text="Remove" onAction="#removeParticle"/>
+                              <Button fx:id="addParticleButton" mnemonicParsing="false" onAction="#addParticle" text="Add" />
+                              <Button fx:id="removeParticleButton" mnemonicParsing="false" onAction="#removeParticle" text="Remove" />
                           </children>
                       </HBox>
                   </VBox>
               </TitledPane>
           </children>
          <padding>
-            <Insets left="3.0" right="3.0" />
+            <Insets left="3.0" right="3.0" top="3.0" />
          </padding>
       </VBox>
    </content>

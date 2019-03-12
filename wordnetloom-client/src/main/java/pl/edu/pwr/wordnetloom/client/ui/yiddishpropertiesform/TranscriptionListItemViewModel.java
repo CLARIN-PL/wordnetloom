@@ -15,7 +15,7 @@ public class TranscriptionListItemViewModel implements ViewModel {
     public TranscriptionListItemViewModel(YiddishTranscription i) {
         this.field = i;
         StringBuilder txt = new StringBuilder();
-        txt.append(i.getName());
+        txt.append(i.getTranscription().getName());
         if (i.getPhonography() != null) {
             txt.append(" (")
                     .append(i.getPhonography()).append(")");

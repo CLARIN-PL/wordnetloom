@@ -1,25 +1,12 @@
 package pl.edu.pwr.wordnetloom.client.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class YiddishTranscription {
-
-    @JsonProperty("transcription_id")
-    private long transcriptionId;
 
     private long id;
 
-    private String name;
+    private Dictionary transcription;
 
     private String phonography;
-
-    public long getTranscriptionId() {
-        return transcriptionId;
-    }
-
-    public void setTranscriptionId(long transcriptionId) {
-        this.transcriptionId = transcriptionId;
-    }
 
     public long getId() {
         return id;
@@ -29,12 +16,12 @@ public class YiddishTranscription {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Dictionary getTranscription() {
+        return transcription;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTranscription(Dictionary transcription) {
+        this.transcription = transcription;
     }
 
     public String getPhonography() {
@@ -43,15 +30,5 @@ public class YiddishTranscription {
 
     public void setPhonography(String phonography) {
         this.phonography = phonography;
-    }
-
-    @Override
-    public String toString() {
-        return "YiddishTranscription{" +
-                "transcriptionId=" + transcriptionId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", phonography='" + phonography + '\'' +
-                '}';
     }
 }

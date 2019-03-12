@@ -33,17 +33,13 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
             semanticExamplesInput, synsetIdInput,
             princetonIdInput, iliIdInput, ownerInput,
             statusInput,  linkInput;
-//          lexiconInput, artificialInput,semanticCommentInput,lexiconInput, technicalCommentInput ;
 
     @FXML
     public Label auxillaryLabel;
 
-//    @FXML
-//    public Label definitionLabel, examplesLabel, commentLabel, linkLabel, auxillaryLabel;
-
     @FXML
     public Button editButton, moveSenseUpButton, moveSenseDownButton,
-            attachSenseButton, detachSenseButton;// extractToSynsetButton;
+            attachSenseButton, detachSenseButton;
 
     @FXML
     private ListView<SenseListItemViewModel> senseList;
@@ -116,28 +112,17 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
         princetonIdInput.textProperty().bind(viewModel.princetonProperty());
         iliIdInput.textProperty().bind(viewModel.iliProperty());
 
-//        lexiconInput.textProperty().bind(viewModel.lexiconProperty());
         definitionInput.textProperty().bind(viewModel.definitionProperty());
         semanticExamplesInput.textProperty().bind(viewModel.exampleProperty());
         linkInput.textProperty().bind(viewModel.linkProperty());
-//        semanticCommentInput.textProperty().bind(viewModel.commentProperty());
-//        artificialInput.textProperty().bind(viewModel.artificialProperty().asString());
 
         statusInput.textProperty().bind(viewModel.statusProperty());
-//        technicalCommentInput.textProperty().bind(viewModel.technicalCommentProperty());
         ownerInput.textProperty().bind(viewModel.ownerProperty());
 
         auxillaryLabel.visibleProperty().bind(
                 Bindings.createBooleanBinding(()->viewModel.artificialProperty().get())
         );
 
-//        examplesLabel.visibleProperty().bind(
-//                Bindings.createBooleanBinding(()->!viewModel.exampleProperty().getValue().isEmpty())
-//        );
-//
-//        linkLabel.disableProperty().bind(
-//                Bindings.createBooleanBinding(() -> !viewModel.linkProperty().getValue().isEmpty())
-//        );
     }
 
     private void initIcons() {
@@ -146,7 +131,6 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
         AwesomeDude.setIcon(moveSenseDownButton, AwesomeIcon.ARROW_DOWN, "11");
         AwesomeDude.setIcon(attachSenseButton, AwesomeIcon.PLUS, "11");
         AwesomeDude.setIcon(detachSenseButton, AwesomeIcon.MINUS, "11");
-      //  AwesomeDude.setIcon(extractToSynsetButton, AwesomeIcon.EXCHANGE, "11");
     }
 
     public void editSynset() {
@@ -169,7 +153,4 @@ public class SynsetPropertiesView implements FxmlView<SynsetPropertiesViewModel>
         viewModel.detachSenseCommand().execute();
     }
 
-    public void extractToNewSynsetWithRelation() {
-        viewModel.extractToNewSynsetWithRelationCommand().execute();
-    }
 }

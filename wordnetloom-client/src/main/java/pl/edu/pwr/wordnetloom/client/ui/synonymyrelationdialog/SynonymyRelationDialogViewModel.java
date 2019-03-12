@@ -5,11 +5,13 @@ import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableValue;
 import pl.edu.pwr.wordnetloom.client.events.ShowSynsetPropertiesEvent;
 import pl.edu.pwr.wordnetloom.client.events.UpdateSearchItemSynsetEvent;
 import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.service.ValidationException;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.SensePropertiesDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynonymyRelationDialogScope;
 
 import javax.enterprise.event.Event;
@@ -20,6 +22,7 @@ import java.util.ResourceBundle;
 public class SynonymyRelationDialogViewModel implements ViewModel {
 
     public static final String CLOSE_DIALOG_NOTIFICATION = "closeDialog";
+    public static final String OPEN_ADD_SENSE_DIALOG = "add_sense_dialog";
 
     @InjectScope
     SynonymyRelationDialogScope dialogScope;
@@ -35,6 +38,9 @@ public class SynonymyRelationDialogViewModel implements ViewModel {
 
     @Inject
     ResourceBundle resourceBundle;
+
+    @InjectScope
+    SensePropertiesDialogScope sensePropertiesDialogScope;
 
     private final IntegerProperty dialogPage = new SimpleIntegerProperty(0);
     private final ReadOnlyBooleanWrapper valid = new ReadOnlyBooleanWrapper();
@@ -77,6 +83,12 @@ public class SynonymyRelationDialogViewModel implements ViewModel {
         }
     }
 
+    public void addSense() {
+        sensePropertiesDialogScope.setSenseToEdit(new Sense());
+        sensePropertiesDialogScope.setSensePropertiesTitle("Create Sense");
+        publish(OPEN_ADD_SENSE_DIALOG);
+    }
+
     private void resetDialogPage() {
         dialogPage.set(0);
     }
@@ -115,5 +127,9 @@ public class SynonymyRelationDialogViewModel implements ViewModel {
 
     public StringProperty titleTextProperty() {
         return titleText;
+    }
+
+    public ObservableBooleanValue createSenseButtonVisibleProperty() {
+        return dialogPage.isEqualTo(0);
     }
 }

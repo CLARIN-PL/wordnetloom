@@ -460,7 +460,6 @@ public class SenseCommandService {
         } catch (NoResultException ex) {
             return variant.get();
         }
-        System.out.println("Found variant:" + variant.get());
         return Math.max(0, variant.orElse(0)) + 1;
     }
 

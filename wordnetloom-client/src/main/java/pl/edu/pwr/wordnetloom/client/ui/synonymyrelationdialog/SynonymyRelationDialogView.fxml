@@ -16,6 +16,8 @@
                     <children>
                         <Button id="previousButton" fx:id="previousButton" mnemonicParsing="false" onAction="#previous"
                                 text="%common.previous"/>
+                        <Button id="createSenseButton" fx:id="createSenseButton" defaultButton="true" mnemonicParsing="false"
+                                onAction="#create" text="%common.create"/>
                         <Button id="nextButton" fx:id="nextButton" defaultButton="true" mnemonicParsing="false"
                                 onAction="#next" text="%common.next"/>
                         <Button id="okButton" fx:id="okButton" defaultButton="true" mnemonicParsing="false"

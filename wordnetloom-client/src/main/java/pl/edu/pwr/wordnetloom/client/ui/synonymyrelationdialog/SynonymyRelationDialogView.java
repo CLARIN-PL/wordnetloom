@@ -3,7 +3,9 @@ package pl.edu.pwr.wordnetloom.client.ui.synonymyrelationdialog;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import de.saxsys.mvvmfx.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Pagination;
@@ -11,19 +13,24 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pl.edu.pwr.wordnetloom.client.ui.DialogHelper;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SenseRelationDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynonymyRelationDialogScope;
+import pl.edu.pwr.wordnetloom.client.ui.search.SearchViewModel;
 import pl.edu.pwr.wordnetloom.client.ui.searchsenseform.SearchSenseFormView;
 import pl.edu.pwr.wordnetloom.client.ui.searchsenseform.SearchSenseFormViewModel;
+import pl.edu.pwr.wordnetloom.client.ui.sensepropertiesdialog.SensePropertiesDialogView;
+import pl.edu.pwr.wordnetloom.client.ui.sensepropertiesdialog.SensePropertiesDialogViewModel;
 import pl.edu.pwr.wordnetloom.client.ui.senserelationform.SynonymyRelationFormView;
 import pl.edu.pwr.wordnetloom.client.ui.senserelationform.SynonymyRelationFormViewModel;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 public class SynonymyRelationDialogView implements FxmlView<SynonymyRelationDialogViewModel> {
 
 	@FXML
-	public Button previousButton, nextButton, okButton;
+	public Button previousButton, nextButton, okButton, createSenseButton;
 
 	@FXML
 	public Pagination formPagination;
@@ -38,6 +45,9 @@ public class SynonymyRelationDialogView implements FxmlView<SynonymyRelationDial
 	private SynonymyRelationDialogViewModel viewModel;
 
 	public Stage showDialog;
+
+	@Inject
+    Stage primaryStage;
 
 	public void initialize() {
 		initIcons();
@@ -68,6 +78,19 @@ public class SynonymyRelationDialogView implements FxmlView<SynonymyRelationDial
 			}
 		});
 
+
+        viewModel.subscribe(SynonymyRelationDialogViewModel.OPEN_ADD_SENSE_DIALOG, (key, payload) -> {
+            ViewTuple<SensePropertiesDialogView, SensePropertiesDialogViewModel> load = FluentViewLoader
+                    .fxmlView(SensePropertiesDialogView.class)
+                    .context(context)
+                    .load();
+
+            Parent view = load.getView();
+            Stage showDialog = DialogHelper.showDialog(view, primaryStage, "/wordnetloom.css");
+            load.getCodeBehind().setDisplayingStage(showDialog);
+            showDialog.toFront();
+        });
+
 		formPagination.currentPageIndexProperty().bindBidirectional(viewModel.dialogPageProperty());
 
 		okButton.disableProperty().bind(viewModel.okButtonDisabledProperty());
@@ -81,6 +104,9 @@ public class SynonymyRelationDialogView implements FxmlView<SynonymyRelationDial
 		previousButton.disableProperty().bind(viewModel.previousButtonDisabledProperty());
 		previousButton.visibleProperty().bind(viewModel.previousButtonVisibleProperty());
 		previousButton.managedProperty().bind(viewModel.previousButtonVisibleProperty());
+
+        createSenseButton.visibleProperty().bind(viewModel.createSenseButtonVisibleProperty());
+        createSenseButton.managedProperty().bind(viewModel.createSenseButtonVisibleProperty());
 
 	}
 
@@ -120,5 +146,10 @@ public class SynonymyRelationDialogView implements FxmlView<SynonymyRelationDial
 	@FXML
 	private void ok() {
 		viewModel.okAction();
+	}
+
+	@FXML
+	public void create() {
+        viewModel.addSense();
 	}
 }

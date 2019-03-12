@@ -128,8 +128,10 @@ public class SenseRelationsViewModel implements ViewModel {
     }
 
     private  void showSenseVisualisation(){
-            URI link = activeSense.get().getLinks().getGraph();
-            loadGraphEventPublisher.fireAsync(new LoadGraphEvent(link, true));
+        if(activeSense.isNotNull().get()) {
+            URI link = activeSense.get().getLinks().getSenseGraph();
+            loadGraphEventPublisher.fireAsync(new LoadGraphEvent(link, true, true));
+        }
     }
 
 
@@ -210,11 +212,11 @@ public class SenseRelationsViewModel implements ViewModel {
         if (selectedTreeListItem != null) {
             TreeItem<TreeItemObject> selectedItem = selectedTreeListItem.get();
             if (incoming.contains(selectedItem.getParent()) || outgoing.contains(selectedItem.getParent())) {
-                // TODO: to many requests
+
                 Relation senseRelation = service.findSenseRelation(((SenseRelation) selectedItem.getValue().getItem()).getLinks().getSelf());
                 Sense sense = service.findSense(senseRelation.getTarget().getId());
                 Synset synset = service.findSynset(sense.getLinks().getSynset());
-                loadGraphEventPublisher.fireAsync(new LoadGraphEvent(synset.getLinks().getGraph(), true));
+                loadGraphEventPublisher.fireAsync(new LoadGraphEvent(synset.getLinks().getSynsetGraph(), true,false));
             }
         }
     }

@@ -90,8 +90,8 @@ public class SensePropertiesDialogViewModel implements ViewModel {
 
     private void close() {
         Sense s = dialogScope.getSenseToEdit();
-        if (s != null && s.getSynset() != null) {
-            eventManager.fireAsync(new LoadGraphEvent(s.getSynset()));
+        if(s != null && s.getSynset() != null){
+            eventManager.fireAsync(new LoadGraphEvent(s.getSynset(),false,false));
         }
     }
 

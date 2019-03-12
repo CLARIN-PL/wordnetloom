@@ -8,22 +8,26 @@ public class LoadGraphEvent {
     private boolean inOpenNewTab;
     private UUID synsetId;
     private URI graphLink;
+    private boolean senseMode;
 
-    public LoadGraphEvent(UUID synsetId) {
+    public LoadGraphEvent(UUID synsetId, boolean senseMode) {
         this.synsetId = synsetId;
     }
 
-    public LoadGraphEvent(URI graphLink) {
+    public LoadGraphEvent(URI graphLink, boolean senseMode) {
         this.inOpenNewTab = false;
         this.graphLink = graphLink;
+        this.senseMode = senseMode;
     }
-    public LoadGraphEvent(URI graphLink, boolean inNewTab) {
+    public LoadGraphEvent(URI graphLink, boolean inNewTab, boolean senseMode) {
         this.inOpenNewTab = inNewTab;
         this.graphLink = graphLink;
+        this.senseMode = senseMode;
     }
-    public LoadGraphEvent(UUID synsetId, boolean inNewTab) {
+    public LoadGraphEvent(UUID synsetId, boolean inNewTab, boolean senseMode) {
         this.inOpenNewTab = inNewTab;
         this.synsetId = synsetId;
+        this.senseMode = senseMode;
     }
 
     public boolean isOpenInNewTab() {
@@ -38,12 +42,7 @@ public class LoadGraphEvent {
         return graphLink;
     }
 
-    @Override
-    public String toString() {
-        return "LoadGraphEvent{" +
-                "inOpenNewTab=" + inOpenNewTab +
-                ", synsetId=" + synsetId +
-                ", graphLink=" + graphLink +
-                '}';
+    public boolean isSenseMode() {
+        return senseMode;
     }
 }

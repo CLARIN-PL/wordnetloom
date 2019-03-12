@@ -358,7 +358,7 @@ public class SearchViewModel implements ViewModel {
 
         selectedSearchListItem.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                loadGraphEvent.fireAsync(new LoadGraphEvent(newValue.getSearchListItem().getLinks().getGraph()));
+                loadGraphEvent.fireAsync(new LoadGraphEvent(newValue.getSearchListItem().getLinks().getSynsetGraph(), false, false));
             }
         });
 
@@ -374,7 +374,7 @@ public class SearchViewModel implements ViewModel {
                 .filter(i -> i.getSearchListItem().getLinks().getSelf().toString().contains(sense.toString()))
                 .findFirst()
                 .ifPresent(item -> {
-                    item.getSearchListItem().getLinks().setGraph(synset.getLinks().getGraph());
+                    item.getSearchListItem().getLinks().setSynsetGraph(synset.getLinks().getSynsetGraph());
                     item.getSearchListItem().setSynset(synset.getId());
                 });
     }

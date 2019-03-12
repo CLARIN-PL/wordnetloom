@@ -15,7 +15,7 @@ RUN echo oracle-java11-installer shared/accepted-oracle-license-v1-2 select true
 ENV JAVA_HOME /usr/lib/jvm/java-11-oracle
 
 # Define Wildfly variables
-ENV VERSION 14.0.1.Final
+ENV VERSION 16.0.0.Final
 ENV INSTALL_DIR /opt
 ENV WILDFLY_HOME ${INSTALL_DIR}/wildfly-${VERSION}
 ENV DEPLOYMENT_DIR ${WILDFLY_HOME}/standalone/deployments/
@@ -34,6 +34,8 @@ RUN curl -O https://download.jboss.org/wildfly/${VERSION}/wildfly-${VERSION}.zip
     && chmod -R a+rw ${INSTALL_DIR}
 
 USER serveradmin
+RUN rm ${WILDFLY_HOME}/bin/standalone.conf
+ADD standalone.conf ${WILDFLY_HOME}/bin/
 
 RUN curl --location --output /tmp/mysql-connector-java-${MYSQL_VERSION}.jar --url http://search.maven.org/remotecontent?filepath=mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar
 
@@ -58,5 +60,5 @@ RUN echo "=> Starting WildFly server" && \
 
 COPY ./wordnetloom-server/target/wordnetloom-server.war ${DEPLOYMENT_DIR}
 
-EXPOSE 8080 9990
-ENTRYPOINT ${WILDFLY_HOME}/bin/standalone.sh -c standalone-full.xml -b=0.0.0.0 -bmanagment=0.0.0.0 -Djboss.http.port=8080 -Djboss.management.http.port=9990 -Djboss.https.port=9433
+EXPOSE 8080 8081 9990
+ENTRYPOINT ${WILDFLY_HOME}/bin/standalone.sh -c standalone-full.xml -b=0.0.0.0 -bmanagment=0.0.0.0 -Djboss.http.port=8080 -Djboss.management.http.port=8081

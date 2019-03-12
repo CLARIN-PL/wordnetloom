@@ -4,8 +4,6 @@ import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import de.saxsys.mvvmfx.*;
 import de.saxsys.mvvmfx.utils.viewlist.CachedViewModelCellFactory;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -19,7 +17,6 @@ import pl.edu.pwr.wordnetloom.client.ui.sensepropertiesdialog.SensePropertiesDia
 import pl.edu.pwr.wordnetloom.client.ui.sensepropertiesdialog.SensePropertiesDialogViewModel;
 
 import javax.inject.Inject;
-import javax.swing.event.ChangeEvent;
 
 public class SearchView implements FxmlView<SearchViewModel> {
 
@@ -49,7 +46,7 @@ public class SearchView implements FxmlView<SearchViewModel> {
 
     @FXML
     public Button searchButton, resetButton, addSenseWithSynsetButton, addSenseButton,
-            addSenseToNewSynset,deleteSenseButton;
+            addSenseToNewSynset, deleteSenseButton;
 
     @FXML
     public RadioMenuItem senseMode, synsetMode;
@@ -113,8 +110,9 @@ public class SearchView implements FxmlView<SearchViewModel> {
         viewModel.addSenseToNewSynsetCommand().execute();
         refreshSearchResultList();
         // load graph of created synset
-        viewModel.loadGraphEvent.fireAsync(new LoadGraphEvent(viewModel.selectedSearchListItemProperty().get().getSearchListItem().getLinks().getGraph()));
-        // TODO: zrobić ładowanie synsetu w czytelniejszej formie
+        viewModel.loadGraphEvent.fireAsync(new LoadGraphEvent(viewModel.selectedSearchListItemProperty()
+                .get().getSearchListItem()
+                .getLinks().getSynsetGraph(), false));
     }
 
     private void refreshSearchResultList() {
@@ -236,21 +234,21 @@ public class SearchView implements FxmlView<SearchViewModel> {
         searchResultList.setLimit(SEARCH_LIMIT);
         viewModel.setSearchLimit(SEARCH_LIMIT);
 
-        searchResultList.setLoadListener((startIndex, limit)->{
-            synchronized (SearchView.this){
+        searchResultList.setLoadListener((startIndex, limit) -> {
+            synchronized (SearchView.this) {
                 viewModel.getScrollCommand(startIndex, limit).execute();
             }
         });
-        searchResultList.setOnMouseClicked(event->{
-            SearchListItemViewModel selectedItem =  searchResultList.getSelectionModel().getSelectedItem();
-            if(selectedItem != null && senseMode.isSelected()){
+        searchResultList.setOnMouseClicked(event -> {
+            SearchListItemViewModel selectedItem = searchResultList.getSelectionModel().getSelectedItem();
+            if (selectedItem != null && senseMode.isSelected()) {
                 addSenseToNewSynset.setDisable(selectedItem.getSearchListItem().hasSynset());
             }
 
         });
         // only left mouse button select item
         searchResultList.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if(event.isSecondaryButtonDown()){
+            if (event.isSecondaryButtonDown()) {
                 event.consume();
             }
         });

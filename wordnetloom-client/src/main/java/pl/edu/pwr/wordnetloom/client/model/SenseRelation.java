@@ -6,9 +6,9 @@ import java.util.UUID;
 
 public class SenseRelation {
 
-    private UUID  target;
+    private UUID target;
 
-    private UUID  source;
+    private UUID source;
 
     @JsonProperty("relation_type")
     private UUID relationType;
@@ -55,7 +55,7 @@ public class SenseRelation {
         return label;
     }
 
-   public void setLabel(String label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 
@@ -67,12 +67,4 @@ public class SenseRelation {
         this.links = links;
     }
 
-    @Override
-    public String toString() {
-        return "SenseRelation{" +
-                "target=" + target.toString() +
-                ", source=" + source.toString() +
-                ", relationType=" + relationType.toString() +
-                '}';
-    }
 }

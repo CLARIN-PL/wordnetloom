@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.security.control;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Key;
@@ -28,7 +29,9 @@ public class JwtManager {
         PrivateKey pk = null;
         try {
             KeyStore ks = KeyStore.getInstance("JKS");
-            fis = new FileInputStream(System.getProperty("jboss.server.config.dir")+"/jwt.keystore");
+            String configDir = System.getProperty("jboss.server.config.dir");
+            String keystorePath = configDir + File.separator + "jwt.keystore";
+            fis = new FileInputStream(keystorePath);
             ks.load(fis, password);
             Key key = ks.getKey(alias, password);
             if (key instanceof PrivateKey) {
@@ -58,7 +61,7 @@ public class JwtManager {
         JWSSigner signer = new RSASSASigner(privateKey);
 
         JsonArrayBuilder rolesBuilder = Json.createArrayBuilder();
-        rolesBuilder.add(user.getRole().name().toLowerCase());
+        rolesBuilder.add(user.getRole().name());
 
         JsonObjectBuilder claimsBuilder = Json.createObjectBuilder()
                 .add("sub", user.getEmail())

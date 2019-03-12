@@ -32,11 +32,11 @@ public class SatelliteEdgeTransformer implements Transformer<Edge, Stroke>, Pred
      * default line width, should be less than 1, because edges on a preview are
      * not very important
      */
-    public static final float DEFAULT_LINE_WIDHT = 0.5f;
+    public static final float DEFAULT_LINE_WIDTH = 0.5f;
 
     @Override
     public Stroke transform(Edge edge) {
-        return new BasicStroke(DEFAULT_LINE_WIDHT);
+        return new BasicStroke(DEFAULT_LINE_WIDTH);
     }
 
     @Override

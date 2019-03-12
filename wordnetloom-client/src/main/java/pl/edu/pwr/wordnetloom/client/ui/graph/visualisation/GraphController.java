@@ -25,7 +25,9 @@ import pl.edu.pwr.wordnetloom.client.events.RemoveRelationEvent;
 import pl.edu.pwr.wordnetloom.client.events.UpdateCursorEvent;
 import pl.edu.pwr.wordnetloom.client.model.DataEntry;
 import pl.edu.pwr.wordnetloom.client.model.RelationType;
+import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.model.SynsetRelation;
+import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.service.SynsetDataStore;
 import pl.edu.pwr.wordnetloom.client.ui.DialogHelper;
 import pl.edu.pwr.wordnetloom.client.ui.graph.GraphTabViewModel;
@@ -107,6 +109,9 @@ public class GraphController {
 
     @Inject
     private Stage primaryStage;
+
+    @Inject
+    private RemoteService remoteService;
 
     // Collection of object which listen for an event of synset selection
     // change.
@@ -502,12 +507,12 @@ public class GraphController {
     }
 
     public void addMissingRelationInForest() {
-            List<Node> nodes = new ArrayList<>(forest.getVertices());
-            nodes.forEach(node -> {
-                if(node instanceof SynsetNode){
-                    addMissingRelations((SynsetNode)node);
-                }
-            });
+        List<Node> nodes = new ArrayList<>(forest.getVertices());
+        nodes.forEach(node -> {
+            if (node instanceof SynsetNode) {
+                addMissingRelations((SynsetNode) node);
+            }
+        });
     }
 
     public SynsetNode showRelation(UUID synsetId, RelationType relationType) {
@@ -521,9 +526,9 @@ public class GraphController {
 
     public void showRelation(final SynsetNode synsetNode, NodeDirection direction, RelationType relationType) {
         if (!synsetNode.isFullyLoaded()) {
-            if(synsetNode.isSynsetMode()) {
+            if (synsetNode.isSynsetMode()) {
                 store.load(synsetNode.getSynsetId());
-            }else{
+            } else {
                 store.loadSense(synsetNode.getSynsetId());
             }
             synsetNode.setFullyLoaded(true);
@@ -544,6 +549,7 @@ public class GraphController {
     public void showRelation(SynsetNode synsetNode, NodeDirection direction) {
         showRelation(synsetNode, direction, null);
     }
+
     /**
      * @param synsetNode node which relations will be shown
      * @param direction  relation class which will be shown
@@ -760,7 +766,8 @@ public class GraphController {
             selectedNode = synset;
         }
         if (synset instanceof SynsetNode) {
-            if(((SynsetNode) synset).isSynsetMode()) {
+
+            if (((SynsetNode) synset).isSynsetMode()) {
                 graphViewModel.showSynsetProperties(((SynsetNode) synset).getSynsetId());
                 graphViewModel.showCorpusExamples(synset.getLabel());
 
@@ -774,6 +781,10 @@ public class GraphController {
                         updateCursorEvent.fire(new UpdateCursorEvent(VisualisationPopupGraphMousePlugin.DEFAULT_CURSOR));
                     }
                 }
+            } else {
+                Sense sense = remoteService.findSense(((SynsetNode) synset).getSynsetId());
+                graphViewModel.showSynsetProperties(sense.getSynset());
+                graphViewModel.showCorpusExamples(synset.getLabel());
             }
         }
 /*
@@ -786,10 +797,10 @@ public class GraphController {
     }
 
     // TODO: refactor
-    public void removeRelation(UUID sourceSynset, UUID targetSynset, UUID relationId){
+    public void removeRelation(UUID sourceSynset, UUID targetSynset, UUID relationId) {
         Edge edge = getEdge(sourceSynset, targetSynset, relationId);
-        if(edge != null){
-            SynsetEdge synsetEdge = (SynsetEdge)edge;
+        if (edge != null) {
+            SynsetEdge synsetEdge = (SynsetEdge) edge;
             SynsetNode sourceNode = (SynsetNode) getNode(synsetEdge.getSource());
             SynsetNode targetNode = (SynsetNode) getNode(synsetEdge.getTarget());
             DataEntry sourceEntry = store.getById(sourceNode.getSynsetId());
@@ -797,27 +808,27 @@ public class GraphController {
             SynsetRelation synsetRelation = synsetEdge.getSynsetRelation();
             SynsetRelation reverseSynsetRelation = new SynsetRelation(synsetRelation.getTarget(), synsetRelation.getSource(), synsetRelation.getRelationType());
             SynsetEdge reverseSynsetEdge = new SynsetEdge(reverseSynsetRelation);
-            for(NodeDirection direction : NodeDirection.values()){
-                if(direction != NodeDirection.IGNORE){
-                    if(sourceNode.getRelations(direction).contains(edge)){
+            for (NodeDirection direction : NodeDirection.values()) {
+                if (direction != NodeDirection.IGNORE) {
+                    if (sourceNode.getRelations(direction).contains(edge)) {
                         sourceNode.getRelations(direction).remove(edge);
 //                        sourceNode.getRelations(direction).remove(reverseSynsetEdge);
                         sourceEntry.getRelations(direction).remove(synsetRelation);
                         sourceEntry.getRelations(direction).remove(reverseSynsetRelation);
                     }
-                    if(sourceEntry.getRelations(direction).size() == 1 && sourceEntry.getRelations(direction).get(0).getSource().equals(targetEntry.getId())){
+                    if (sourceEntry.getRelations(direction).size() == 1 && sourceEntry.getRelations(direction).get(0).getSource().equals(targetEntry.getId())) {
                         sourceEntry.getRelations(direction).clear();
                         sourceNode.getRelations(direction).clear();
                     }
                 }
-                if(direction != NodeDirection.IGNORE) {
-                    if(targetNode.getRelations(direction).contains(edge)){
+                if (direction != NodeDirection.IGNORE) {
+                    if (targetNode.getRelations(direction).contains(edge)) {
                         targetNode.getRelations(direction).remove(edge);
 //                        targetNode.getRelations(direction).remove(reverseSynsetEdge);
                         targetEntry.getRelations(direction).remove(synsetRelation);
                         targetEntry.getRelations(direction).remove(reverseSynsetRelation);
                     }
-                    if(targetEntry.getRelations(direction).size() == 1 && targetEntry.getRelations(direction).get(0).getTarget().equals(sourceEntry.getId())){
+                    if (targetEntry.getRelations(direction).size() == 1 && targetEntry.getRelations(direction).get(0).getTarget().equals(sourceEntry.getId())) {
                         targetEntry.getRelations(direction).clear();
                         targetNode.getRelations(direction).clear();
                     }
@@ -830,17 +841,17 @@ public class GraphController {
     }
 
 
-    private void tryRemoveSynsetNode(SynsetNode node){
-        if(node != rootNode && !hasRelationInForest(node)){
+    private void tryRemoveSynsetNode(SynsetNode node) {
+        if (node != rootNode && !hasRelationInForest(node)) {
             forest.removeVertex(node);
         }
     }
 
-    private boolean hasRelationInForest(SynsetNode node){
-        for(Edge edge : forest.getEdges()){
-            if(edge instanceof SynsetEdge){
-                SynsetEdge synsetEdge  = (SynsetEdge) edge;
-                if(synsetEdge.getChildSynset().equals(node) || synsetEdge.getParentSynset().equals(node)){
+    private boolean hasRelationInForest(SynsetNode node) {
+        for (Edge edge : forest.getEdges()) {
+            if (edge instanceof SynsetEdge) {
+                SynsetEdge synsetEdge = (SynsetEdge) edge;
+                if (synsetEdge.getChildSynset().equals(node) || synsetEdge.getParentSynset().equals(node)) {
                     return true;
                 }
             }
@@ -848,11 +859,11 @@ public class GraphController {
         return false;
     }
 
-    private Node getNode(UUID id){
-        for(Node node : forest.getVertices()){
-            if(node instanceof SynsetNode){
+    private Node getNode(UUID id) {
+        for (Node node : forest.getVertices()) {
+            if (node instanceof SynsetNode) {
                 SynsetNode synsetNode = (SynsetNode) node;
-                if(synsetNode.getSynsetId().equals(id)){
+                if (synsetNode.getSynsetId().equals(id)) {
                     return node;
                 }
             }
@@ -861,25 +872,25 @@ public class GraphController {
     }
 
 
-    private Edge getEdge(UUID sourceSynset, UUID targetSynset, UUID relationId){
-        for(Edge edge : getGraph().getEdges()){
-            if(edge instanceof SynsetEdge){
+    private Edge getEdge(UUID sourceSynset, UUID targetSynset, UUID relationId) {
+        for (Edge edge : getGraph().getEdges()) {
+            if (edge instanceof SynsetEdge) {
                 SynsetEdge synsetEdge = (SynsetEdge) edge;
-                if(sourceSynset.equals(synsetEdge.getSource())
-                && targetSynset.equals(synsetEdge.getTarget())
-                && relationId.equals(synsetEdge.getRelationId())){
+                if (sourceSynset.equals(synsetEdge.getSource())
+                        && targetSynset.equals(synsetEdge.getTarget())
+                        && relationId.equals(synsetEdge.getRelationId())) {
                     return edge;
                 }
             }
         }
-       return null;
+        return null;
     }
 
     public void onRemoveSynsetRelation(@Observes(notifyObserver = Reception.ALWAYS) RemoveRelationEvent event) {
         openRemoveRelationDialog(event.getFirst(), event.getSecond());
     }
 
-    private void openRemoveRelationDialog(UUID src, UUID trg){
+    private void openRemoveRelationDialog(UUID src, UUID trg) {
         ViewTuple<SynsetRelationRemoveDialogView, SynsetRelationRemoveDialogViewModel> load = FluentViewLoader
                 .fxmlView(SynsetRelationRemoveDialogView.class)
                 .context(context)
@@ -888,7 +899,7 @@ public class GraphController {
         Parent view = load.getView();
         Stage showDialog = DialogHelper.showDialog(view, primaryStage, "/wordnetloom.css");
         load.getCodeBehind().setDisplayingStage(showDialog);
-        load.getViewModel().loadRelations(src,trg);
+        load.getViewModel().loadRelations(src, trg);
     }
 
     private void openSynsetRelationDialog() {

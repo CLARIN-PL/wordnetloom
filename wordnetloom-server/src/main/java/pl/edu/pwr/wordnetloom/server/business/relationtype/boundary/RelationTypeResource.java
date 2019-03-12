@@ -8,15 +8,12 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationArgume
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+import java.security.Principal;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -29,7 +26,7 @@ public class RelationTypeResource {
     RelationTypeQueryService query;
 
     @Inject
-    RelationTypeCommandServce  command;
+    RelationTypeCommandServce command;
 
     @Inject
     EntityBuilder entityBuilder;
@@ -40,10 +37,27 @@ public class RelationTypeResource {
     @Context
     UriInfo uriInfo;
 
+    @Context
+    SecurityContext securityContext;
+
+
+    public String sayHello() {
+        if (securityContext != null) {
+            Principal userPrincipal = securityContext.getUserPrincipal();
+
+            System.out.println(securityContext.getAuthenticationScheme());
+            String principalName = userPrincipal == null ? "anonymous" : userPrincipal.getName();
+            return "\"Hello " + principalName + "\" isAdmin:" +
+                    securityContext.isUserInRole("ADMIN") + " isUser:" + securityContext.isUserInRole("USER");
+        }
+        return "princi is null";
+    }
+
     @GET
     public JsonObject relationTypes(@HeaderParam("Accept-Language") Locale locale,
                                     @QueryParam("argument") RelationArgument argument) {
-        if(argument != null){
+        System.out.println(sayHello());
+        if (argument != null) {
             return entityBuilder.buildRelationTypes(
                     query.findAllByRelationArgument(argument), uriInfo, locale);
         }
@@ -52,7 +66,7 @@ public class RelationTypeResource {
 
     @POST
     public Response addRelationType(@HeaderParam("Accept-Language") Locale locale, JsonObject json) {
-        OperationResult<RelationType> s = command.save(locale,json);
+        OperationResult<RelationType> s = command.save(locale, json);
         if (s.hasErrors()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(s.getErrors()).build();
@@ -64,8 +78,9 @@ public class RelationTypeResource {
     @PUT
     @Path("{id}")
     public Response updateRelationType(@HeaderParam("Accept-Language") Locale locale,
-                                @PathParam("id") final UUID id,
-                                JsonObject rt) {
+                                       @PathParam("id") final UUID id,
+                                       JsonObject rt) {
+        System.out.println(sayHello());
         OperationResult<RelationType> s = command.update(id, locale, rt);
         if (s.hasErrors()) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -79,6 +94,7 @@ public class RelationTypeResource {
     @GET
     @Path("{id}")
     public JsonObject getRelationType(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") UUID id) {
+        System.out.println(sayHello());
         return query.findRelationTypeById(id)
                 .map(rt -> entityBuilder.buildRelationType(rt, linkBuilder.forRelationType(rt, uriInfo),
                         linkBuilder.forRelationTests(rt, uriInfo), uriInfo, locale))

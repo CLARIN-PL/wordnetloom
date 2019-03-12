@@ -236,7 +236,11 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
     private void createOpenInNewTabOption(SynsetNode vertex) {
         MenuItem openInNewTab = new MenuItem(resourceBundle.getString("context.menu.open.in.new.tab"));
         openInNewTab.setOnAction(event -> {
-            loadGraphEvent.fireAsync(new LoadGraphEvent(vertex.getSynsetId(), true));
+            if(vertex.isSynsetMode()) {
+                loadGraphEvent.fireAsync(new LoadGraphEvent(vertex.getSynsetId(), true,false));
+            }else{
+                loadGraphEvent.fireAsync(new LoadGraphEvent(vertex.getSynsetId(), true,true));
+            }
         });
         currentMenuItems.add(openInNewTab);
     }

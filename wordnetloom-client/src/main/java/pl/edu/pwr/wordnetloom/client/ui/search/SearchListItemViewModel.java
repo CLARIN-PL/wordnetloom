@@ -8,7 +8,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import pl.edu.pwr.wordnetloom.client.config.ResourceProvider;
 import pl.edu.pwr.wordnetloom.client.events.LoadGraphEvent;
@@ -35,7 +34,8 @@ public class SearchListItemViewModel implements ViewModel {
 
     Event<LoadGraphEvent> publisher;
 
-    private Command openInNewTabCommand;
+    private Command openSynsetGraphInNewTabCommand;
+    private Command openSenseGraphInNewTabCommand;
 
     private Type itemType;
 
@@ -49,11 +49,21 @@ public class SearchListItemViewModel implements ViewModel {
         this.itemType = itemType;
         label.set(item.getLabel());
         img.set(ResourceProvider.getById(item.getLexicon()));
-        openInNewTabCommand = new DelegateCommand(() -> new Action() {
+
+        openSynsetGraphInNewTabCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
                 if(publisher != null) {
-                    publisher.fireAsync(new LoadGraphEvent(searchListItem.getLinks().getGraph(), true));
+                    publisher.fireAsync(new LoadGraphEvent(searchListItem.getLinks().getSynsetGraph(), true, false));
+                }
+            }
+        });
+
+        openSenseGraphInNewTabCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if(publisher != null) {
+                    publisher.fireAsync(new LoadGraphEvent(searchListItem.getLinks().getSenseGraph(), true,true));
                 }
             }
         });
@@ -67,8 +77,12 @@ public class SearchListItemViewModel implements ViewModel {
         return label.getReadOnlyProperty();
     }
 
-    public Command getOpenInNewTabCommand() {
-        return openInNewTabCommand;
+    public Command getOpenSenseGraphInNewTabCommand() {
+        return openSenseGraphInNewTabCommand;
+    }
+
+    public Command getOpenSynsetGraphInNewTabCommand() {
+        return openSynsetGraphInNewTabCommand;
     }
 
     public String getTooltipText(){

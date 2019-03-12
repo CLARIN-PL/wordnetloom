@@ -14,6 +14,7 @@ import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.GraphController;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.net.URI;
 import java.util.UUID;
 
 public class GraphTabViewModel implements ViewModel {

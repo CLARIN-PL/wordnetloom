@@ -79,7 +79,7 @@ public class SearchListItem {
     }
 
     public boolean hasSynset(){
-        return getLinks() != null && getLinks().getGraph() != null;
+        return getLinks() != null && getLinks().getSynsetGraph() != null;
     }
 
     @Override

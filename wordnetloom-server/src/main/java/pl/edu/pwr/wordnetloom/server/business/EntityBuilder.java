@@ -847,7 +847,7 @@ public class EntityBuilder {
         linkBuilder.add("self", self.toString());
         linkBuilder.add("examples", this.linkBuilder.forSynsetExamples(synset.getId(), uriInfo).toString());
         linkBuilder.add("relations", this.linkBuilder.forSynsetRelations(synset, uriInfo).toString());
-        linkBuilder.add("graph", this.linkBuilder.forSynsetsGraph(synset.getId(), uriInfo).toString());
+        linkBuilder.add("synset-graph", this.linkBuilder.forSynsetsGraph(synset.getId(), uriInfo).toString());
 
         builder.add("_links", linkBuilder);
         builder.add("_actions", createArrayBuilder()
@@ -1309,7 +1309,7 @@ public class EntityBuilder {
         if (sense.getSynset() != null) {
             linkBuilder.add("synset", this.linkBuilder.forSynset(sense.getSynset(), uriInfo).toString());
         }
-        linkBuilder.add("graph", this.linkBuilder.forSenseGraph(sense.getId(), uriInfo).toString())
+        linkBuilder.add("sense-graph", this.linkBuilder.forSenseGraph(sense.getId(), uriInfo).toString())
                 .add("examples", this.linkBuilder.forSenseExamples(sense.getId(), uriInfo).toString())
                 .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString());
 
@@ -1427,7 +1427,8 @@ public class EntityBuilder {
         linkBuilder.add("self", this.linkBuilder.forSense(sense, uriInfo).toString());
 
         if (searchMode && sense.getSynset() != null) {
-            linkBuilder.add("graph", this.linkBuilder.forSynsetsGraph(sense.getSynset().getId(), uriInfo).toString());
+            linkBuilder.add("synset-graph", this.linkBuilder.forSynsetsGraph(sense.getSynset().getId(), uriInfo).toString());
+            linkBuilder.add("sense-graph", this.linkBuilder.forSenseGraph(sense.getId(), uriInfo).toString());
         }
 
         if (searchMode && sense.getPartOfSpeech() != null) {
@@ -1455,7 +1456,7 @@ public class EntityBuilder {
         }
         JsonObjectBuilder linkBuilder = createObjectBuilder();
         linkBuilder.add("self", this.linkBuilder.forSynset(synset, uriInfo).toString());
-        linkBuilder.add("graph", this.linkBuilder.forSynsetsGraph(synset.getId(), uriInfo).toString());
+        linkBuilder.add("synset-graph", this.linkBuilder.forSynsetsGraph(synset.getId(), uriInfo).toString());
         builder.add("_links", linkBuilder);
 
         return builder.build();

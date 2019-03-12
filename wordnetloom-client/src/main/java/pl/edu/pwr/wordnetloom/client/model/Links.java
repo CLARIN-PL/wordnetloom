@@ -16,7 +16,11 @@ public class Links {
 
     private URI examples;
 
-    private URI graph;
+    @JsonProperty("sense-graph")
+    private URI senseGraph;
+
+    @JsonProperty("synset-graph")
+    private URI synsetGraph;
 
     private URI synset;
 
@@ -68,12 +72,20 @@ public class Links {
         this.examples = examples;
     }
 
-    public URI getGraph() {
-        return graph;
+    public URI getSenseGraph() {
+        return senseGraph;
     }
 
-    public void setGraph(URI graph) {
-        this.graph = graph;
+    public void setSenseGraph(URI senseGraph) {
+        this.senseGraph = senseGraph;
+    }
+
+    public URI getSynsetGraph() {
+        return synsetGraph;
+    }
+
+    public void setSynsetGraph(URI synsetGraph) {
+        this.synsetGraph = synsetGraph;
     }
 
     public URI getSynset() {
@@ -108,19 +120,4 @@ public class Links {
         this.reverseRelation = reverseRelation;
     }
 
-    @Override
-    public String toString() {
-        return "Links{" +
-                "self=" + self +
-                ", prev=" + prev +
-                ", next=" + next +
-                ", relations=" + relations +
-                ", examples=" + examples +
-                ", graph=" + graph +
-                ", synset=" + synset +
-                ", tests=" + tests +
-                ", reverseRelation=" + reverseRelation +
-                ", emotionalAnnotations=" + emotionalAnnotations +
-                '}';
-    }
 }

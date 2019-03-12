@@ -133,7 +133,7 @@ public class GraphViewModel implements ViewModel {
 
         Tab t = new Tab();
         t.setText("");
-        t.setId(id);
+            t.setId(id);
         t.setOnClosed(event -> tabs.remove(id));
 
         ViewTuple<GraphTabView, GraphTabViewModel> load = FluentViewLoader
@@ -228,6 +228,11 @@ public class GraphViewModel implements ViewModel {
                     tabId = selectedGraphTab.get().getId();
                 }
                 GraphTabViewModel activeTab = tabs.get(tabId);
+                if(event.isSenseMode()) {
+                    selectedGraphTabProperty().get().setStyle("-fx-text-base-color:red;");
+                }else{
+                    selectedGraphTabProperty().get().setStyle("");
+                }
                 activeTab.progressOverlayProperty().setValue(true);
 
                 Task graphLoader = new Task<DataEntry>() {

@@ -17,7 +17,8 @@
         <contextMenu>
             <ContextMenu maxHeight="1.7976931348623157E308">
                 <items>
-                    <MenuItem mnemonicParsing="false" onAction="#openInNewTab" text="Open in new tab" />
+                    <MenuItem mnemonicParsing="false" onAction="#openSynsetGraphInNewTab" text="Open synset graph in new tab" />
+                    <MenuItem mnemonicParsing="false" onAction="#openSenseGraphInNewTab" text="Open sense graph in new tab" />
                 </items>
             </ContextMenu>
         </contextMenu>

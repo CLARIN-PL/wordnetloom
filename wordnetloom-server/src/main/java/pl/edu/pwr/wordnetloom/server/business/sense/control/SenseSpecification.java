@@ -213,6 +213,7 @@ public class SenseSpecification {
 
             if (filter.getEtymology() != null) {
                 Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymology"), "%"+filter.getEtymology()+"%");
+                System.out.println(filter.getEtymology());
                 predicates.add(yiddishPredicate);
             }
 

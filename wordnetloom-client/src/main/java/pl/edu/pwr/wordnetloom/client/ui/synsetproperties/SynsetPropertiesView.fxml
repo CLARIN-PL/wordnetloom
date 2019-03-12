@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<TitledPane alignment="TOP_LEFT" animated="false" text="%synset.properties.title"
-            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="pl.edu.pwr.wordnetloom.client.ui.synsetproperties.SynsetPropertiesView">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+<TitledPane alignment="TOP_LEFT" animated="false" text="%synset.properties.title" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.synsetproperties.SynsetPropertiesView">
     <VBox spacing="3.0">
         <children>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                   style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);"
-                   text="Embedded Senses" VBox.vgrow="ALWAYS">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Embedded Senses" VBox.vgrow="ALWAYS">
                 <padding>
-                    <Insets bottom="3.0" right="10.0" top="3.0"/>
+                    <Insets bottom="3.0" right="10.0" top="3.0" />
                 </padding>
                 <font>
-                    <Font size="12.0"/>
+                    <Font size="12.0" />
                 </font>
             </Label>
             <VBox prefHeight="170.0" VBox.vgrow="NEVER">
@@ -25,108 +31,82 @@
                         <children>
                             <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
                                 <content>
-                                    <ListView fx:id="senseList"/>
+                                    <ListView fx:id="senseList" />
                                 </content>
                             </ScrollPane>
                             <VBox maxWidth="35.0" minWidth="35.0" spacing="4.0" HBox.hgrow="NEVER">
                                 <children>
-                                    <Button fx:id="moveSenseUpButton" maxWidth="1.7976931348623157E308"
-                                            mnemonicParsing="false" onAction="#moveSenseUp">
+                                    <Button fx:id="moveSenseUpButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveSenseUp">
                                         <font>
-                                            <Font size="12.0"/>
+                                            <Font size="12.0" />
                                         </font>
                                     </Button>
-                                    <Button fx:id="moveSenseDownButton" maxWidth="1.7976931348623157E308"
-                                            mnemonicParsing="false" onAction="#moveSenseDown">
+                                    <Button fx:id="moveSenseDownButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveSenseDown">
                                         <font>
-                                            <Font size="12.0"/>
+                                            <Font size="12.0" />
                                         </font>
                                     </Button>
-                                    <Button fx:id="attachSenseButton" maxWidth="1.7976931348623157E308"
-                                            mnemonicParsing="false" onAction="#attachSense">
+                                    <Button fx:id="attachSenseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#attachSense">
                                         <font>
-                                            <Font size="12.0"/>
+                                            <Font size="12.0" />
                                         </font>
                                     </Button>
-                                    <Button fx:id="detachSenseButton" maxWidth="1.7976931348623157E308"
-                                            mnemonicParsing="false" onAction="#detachSense">
+                                    <Button fx:id="detachSenseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#detachSense">
                                         <font>
-                                            <Font size="12.0"/>
+                                            <Font size="12.0" />
                                         </font>
                                     </Button>
-                                    <!--
-                                    <Button fx:id="extractToSynsetButton" maxWidth="1.7976931348623157E308"
-                                            mnemonicParsing="false" onAction="#extractToNewSynsetWithRelation">
-                                        <font>
-                                            <Font size="12.0"/>
-                                        </font>
-                                    </Button>-->
                                 </children>
                                 <padding>
-                                    <Insets left="4.0" right="4.0"/>
+                                    <Insets left="4.0" right="4.0" />
                                 </padding>
                             </VBox>
                         </children>
                         <padding>
-                            <Insets bottom="5.0" top="5.0"/>
+                            <Insets bottom="5.0" top="5.0" />
                         </padding>
                     </HBox>
                 </children>
             </VBox>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                   style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);"
-                   text="Semantic Properties">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Semantic Properties">
                 <padding>
-                    <Insets bottom="3.0" right="10.0" top="3.0"/>
+                    <Insets bottom="3.0" right="10.0" top="3.0" />
                 </padding>
                 <font>
-                    <Font size="12.0"/>
+                    <Font size="12.0" />
                 </font>
             </Label>
-            <!--<Label text="Lexicon">-->
-            <!--<font>-->
-            <!--<Font name="System Bold" size="11.0" />-->
-            <!--</font>-->
-            <!--</Label>-->
-            <!--<Label fx:id="lexiconInput" maxWidth="1.7976931348623157E308">-->
-            <!--<font>-->
-            <!--<Font size="11.0" />-->
-            <!--</font>-->
-            <!--</Label>-->
-            <Label text="Auxillary Synset" fx:id="auxillaryLabel">
+
+            <Label fx:id="auxiliaryLabel" text="Auxiliary Synset" textFill="#f50606">
                 <font>
-                    <Font name="System Bold" size="11.0"/>
+                    <Font name="System Bold" size="11.0" />
                 </font>
             </Label>
-            <!--<Label fx:id="artificialInput">-->
-            <!--<font>-->
-            <!--<Font size="11.0" />-->
-            <!--</font>-->
-            <!--</Label>-->
-            <Label text="Definition" fx:id="definitionLabel">
+
+            <Label fx:id="definitionLabel" text="Definition">
                 <font>
-                    <Font name="System Bold" size="11.0"/>
+                    <Font name="System Bold" size="11.0" />
                 </font>
             </Label>
             <TextFlow VBox.vgrow="ALWAYS">
                 <children>
                     <Label fx:id="definitionInput" prefWidth="230" wrapText="true">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
                 </children>
             </TextFlow>
-            <Label text="Examples" fx:id="examplesLabel">
+            <Label fx:id="examplesLabel" text="Examples">
                 <font>
-                    <Font name="System Bold" size="11.0"/>
+                    <Font name="System Bold" size="11.0" />
                 </font>
             </Label>
             <TextFlow VBox.vgrow="ALWAYS">
                 <children>
                     <Label fx:id="semanticExamplesInput" prefWidth="230" wrapText="true">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
                 </children>
@@ -145,104 +125,94 @@
             <!--</Label>-->
             <!--</children>-->
             <!--</TextFlow>-->
-            <Label text="Link" fx:id="linkLabel">
+            <Label fx:id="linkLabel" text="Link">
                 <font>
-                    <Font name="System Bold" size="11.0"/>
+                    <Font name="System Bold" size="11.0" />
                 </font>
             </Label>
             <Label fx:id="linkInput" maxWidth="1.7976931348623157E308">
                 <font>
-                    <Font size="11.0"/>
+                    <Font size="11.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                   style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);"
-                   text="Identyficators">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Identyficators">
                 <padding>
-                    <Insets bottom="3.0" right="10.0" top="3.0"/>
+                    <Insets bottom="3.0" right="10.0" top="3.0" />
                 </padding>
                 <font>
-                    <Font size="12.0"/>
+                    <Font size="12.0" />
                 </font>
             </Label>
             <GridPane hgap="3.0" vgap="6.0">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0"/>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                 </rowConstraints>
                 <children>
                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Synset ID">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Princeton ID"
-                           GridPane.rowIndex="1">
+                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Princeton ID" GridPane.rowIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="ILI ID"
-                           GridPane.rowIndex="2">
+                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="ILI ID" GridPane.rowIndex="2">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label fx:id="synsetIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                           wrapText="true" GridPane.columnIndex="1">
+                    <Label fx:id="synsetIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label fx:id="princetonIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label fx:id="princetonIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label fx:id="iliIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <Label fx:id="iliIdInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
                 </children>
             </GridPane>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                   style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);"
-                   text="Administrative Properties">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" style="-fx-border-color: #dddddd; -fx-border-width: 1 0 1 0; -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #f3f3f3, #fafafa);" text="Administrative Properties">
                 <padding>
-                    <Insets bottom="3.0" right="10.0" top="3.0"/>
+                    <Insets bottom="3.0" right="10.0" top="3.0" />
                 </padding>
                 <font>
-                    <Font size="12.0"/>
+                    <Font size="12.0" />
                 </font>
             </Label>
             <GridPane hgap="6.0" vgap="5.0">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                 </rowConstraints>
                 <children>
                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Onwer">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Status"
-                           GridPane.rowIndex="1">
+                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Status" GridPane.rowIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
                     <!--<Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Comment" GridPane.rowIndex="2">-->
@@ -250,16 +220,14 @@
                     <!--<Font size="12.0" />-->
                     <!--</font>-->
                     <!--</Label>-->
-                    <Label fx:id="ownerInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true"
-                           GridPane.columnIndex="1">
+                    <Label fx:id="ownerInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
-                    <Label fx:id="statusInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label fx:id="statusInput" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <font>
-                            <Font size="12.0"/>
+                            <Font size="12.0" />
                         </font>
                     </Label>
                     <!--<Label fx:id="technicalCommentInput" maxWidth="1.7976931348623157E308" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">-->
@@ -273,14 +241,14 @@
                 <children>
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#editSynset" text="Edit">
                         <font>
-                            <Font size="11.0"/>
+                            <Font size="11.0" />
                         </font>
                     </Button>
                 </children>
             </HBox>
         </children>
         <opaqueInsets>
-            <Insets/>
+            <Insets />
         </opaqueInsets>
     </VBox>
 </TitledPane>

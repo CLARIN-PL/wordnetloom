@@ -106,11 +106,17 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
         variantTypeCombo.setItems(viewModel.getVariantTypes());
         variantTypeCombo.valueProperty().bindBidirectional(viewModel.selectedVariantTypeProperty());
 
+        particleTypeCombo.setItems(viewModel.getParticleTypes());
+        particleTypeCombo.valueProperty().bindBidirectional(viewModel.selectedParticleTypeProperty());
+
         ageCombo.setItems(viewModel.getAges());
         ageCombo.valueProperty().bindBidirectional(viewModel.selectedAgeProperty());
 
         statusCombo.setItems(viewModel.getStatuses());
         statusCombo.valueProperty().bindBidirectional(viewModel.selectedStatusProperty());
+
+        transcriptionType.setItems(viewModel.getTranscriptions());
+        transcriptionType.valueProperty().bindBidirectional(viewModel.selectedTranscriptionProperty());
 
         styleCombo.setItems(viewModel.getStyles());
         styleCombo.valueProperty().bindBidirectional(viewModel.selectedStyleProperty());
@@ -163,42 +169,52 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public void removeVariant() {
         viewModel.getRemoveVariantCommand().execute();
     }
+
     @FXML
     public void addTranscription() {
         viewModel.getAddTranscriptionCommand().execute();
     }
+
     @FXML
     public void removeTranscription() {
         viewModel.getRemoveTranscriptionCommand().execute();
     }
+
     @FXML
     public void addSemanticField() {
         viewModel.getAddSemanticFieldCommand().execute();
     }
+
     @FXML
     public void removeSemanticField() {
         viewModel.getRemoveSemanticFieldCommand().execute();
     }
+
     @FXML
     public void addSource() {
         viewModel.getAddSourceCommand().execute();
     }
+
     @FXML
     public void removeSource() {
         viewModel.getRemoveSourceCommand().execute();
     }
+
     @FXML
     public void addInflection() {
         viewModel.getAddInflectionCommand().execute();
     }
+
     @FXML
     public void removeInflection() {
         viewModel.getRemoveInflectionCommand().execute();
     }
+
     @FXML
     public void addParticle() {
         viewModel.getAddParticleCommand().execute();
     }
+
     @FXML
     public void removeParticle() {
         viewModel.getRemoveParticleCommand().execute();

@@ -65,6 +65,10 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private final ObjectProperty<Dictionary> age = new SimpleObjectProperty<>();
     private final StringProperty selectedAge = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
 
+    private ObservableList<String> transcriptions;
+    private final ObjectProperty<Dictionary> transcriptionDic = new SimpleObjectProperty<>();
+    private final StringProperty selectedTranscription = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
+
     private ObservableList<String> sources;
     private final ObjectProperty<Dictionary> source = new SimpleObjectProperty<>();
     private final StringProperty selectedSource = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
@@ -77,10 +81,13 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private final ObjectProperty<Dictionary> inflectionCmb = new SimpleObjectProperty<>();
     private final StringProperty selectedInflectionCmb = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
 
-//    public ComboBox particleTypeCombo, particleCombo;
-    //  public ComboBox transcriptionType;
+    private ObservableList<String> particleTypes;
+    private final ObjectProperty<ParticleElementType> particleType = new SimpleObjectProperty<>();
+    private final StringProperty selectedParticleType = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
+
 
     private ItemList<VariantType> variantTypeItemList;
+    private ItemList<ParticleElementType> particleTypeItemList;
     private ItemList<Dictionary> ageItemList;
     private ItemList<Dictionary> grammaticalGenderItemList;
     private ItemList<Dictionary> semanticFieldItemList;
@@ -90,6 +97,7 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private ItemList<Dictionary> sourcesItemList;
     private ItemList<Dictionary> inflectionsItemList;
     private ItemList<Dictionary> lexicalCharacteristicsItemList;
+    private ItemList<Dictionary> transcriptionsItemList;
 
     private ObservableList<DictionaryListItemViewModel> sourceList = FXCollections.observableArrayList();
     private ObjectProperty<DictionaryListItemViewModel> selectedSourceListItem = new SimpleObjectProperty<>();
@@ -139,6 +147,8 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         initYiddishStatusesItemList();
         initStylesList();
         initInflectionItemList();
+        initTranscriptionsItemList();
+        initParticleTypeList();
 
         addVariantCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -228,6 +238,10 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
             selectVariantType(obs,oldV,newV, NOTHING_SELECTED_MARKER, variantType);
         });
 
+        selectedParticleType.addListener((obs, oldV, newV) -> {
+            selectParticleType(obs,oldV,newV, NOTHING_SELECTED_MARKER, particleType);
+        });
+
         selectedAge.addListener((obs, oldV, newV) -> {
             Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.AGES_DICTIONARY, NOTHING_SELECTED_MARKER, age);
         });
@@ -245,6 +259,11 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         selectedStatus.addListener((observable, oldValue, newValue) -> {
             Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.YIDDISH_STATUSES_DICTIONARY,
                     NOTHING_SELECTED_MARKER, status);
+        });
+
+        selectedTranscription.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.TRANSCRIPTIONS_DICTIONARY,
+                    NOTHING_SELECTED_MARKER, transcriptionDic);
         });
 
         selectedStyle.addListener((observable, oldValue, newValue) -> {
@@ -293,26 +312,39 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     }
 
     private void addSource() {
-        sourceList.add(new DictionaryListItemViewModel(source.get()));
+        if(source.get() != null) {
+            sourceList.add(new DictionaryListItemViewModel(source.get()));
+        }
     }
 
     private void addTranscription() {
-
+        if(transcriptionDic.get() != null && transcription.get() != null && !transcription.get().isEmpty()){
+            YiddishTranscription t = new YiddishTranscription();
+            t.setPhonography(transcription.get());
+            t.setTranscription(transcriptionDic.get());
+            transcriptionList.add(new TranscriptionListItemViewModel(t));
+        }
     }
 
     private void addSemanticField() {
-        YiddishSemanticField field = new YiddishSemanticField();
-        field.setDomain(semanticField.get());
-        field.setModifier(semanticFieldMod.get());
-        semanticFiledList.add(new SemanticFieldListItemViewModel(field));
+        if(semanticField.get() != null) {
+            YiddishSemanticField field = new YiddishSemanticField();
+            field.setDomain(semanticField.get());
+            if(semanticFieldMod.get() != null) {
+                field.setModifier(semanticFieldMod.get());
+                semanticFiledList.add(new SemanticFieldListItemViewModel(field));
+            }
+        }
     }
 
     private void addInflection() {
-        YiddishInflection inf = new YiddishInflection();
-        Dictionary d = inflectionCmb.get();
-        inf.setText(inflection.get());
-        inf.setInflection(d);
-        inflectionFiledList.add(new InflectionListItemViewModel(inf));
+        if(inflectionCmb.get() != null) {
+            YiddishInflection inf = new YiddishInflection();
+            Dictionary d = inflectionCmb.get();
+            inf.setText(inflection.get());
+            inf.setInflection(d);
+            inflectionFiledList.add(new InflectionListItemViewModel(inf));
+        }
     }
 
     private void removeVariant() {
@@ -398,6 +430,13 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         variantTypes.addListener((ListChangeListener<String>) p -> selectedVariantType.set(NOTHING_SELECTED_MARKER));
     }
 
+    private void initParticleTypeList() {
+        particleTypeItemList = new ItemList<>(FXCollections.observableArrayList(Arrays.asList(ParticleElementType.values())), ParticleElementType::name);
+        ObservableList<String> mappedList = particleTypeItemList.getTargetList();
+        particleTypes = createList(mappedList);
+        particleTypes.addListener((ListChangeListener<String>) p -> selectedParticleType.set(NOTHING_SELECTED_MARKER));
+    }
+
     private void initAgeItemList() {
         ageItemList = Dictionaries.initDictionaryItemList(Dictionaries.AGES_DICTIONARY);
         ObservableList<String> mappedList = ageItemList.getTargetList();
@@ -425,6 +464,13 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         ObservableList<String> mappedList = sourcesItemList.getTargetList();
         sources = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
         sources.addListener((ListChangeListener<String>) p -> selectedSource.set(NOTHING_SELECTED_MARKER));
+    }
+
+    private void initTranscriptionsItemList() {
+        transcriptionsItemList = Dictionaries.initDictionaryItemList(Dictionaries.TRANSCRIPTIONS_DICTIONARY);
+        ObservableList<String> mappedList = transcriptionsItemList.getTargetList();
+        transcriptions = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
+        transcriptions.addListener((ListChangeListener<String>) p -> selectedTranscription.set(NOTHING_SELECTED_MARKER));
     }
 
     private void initYiddishStatusesItemList() {
@@ -458,8 +504,8 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private void initStylesList() {
         stylesItemList = Dictionaries.initDictionaryItemList(Dictionaries.STYLES_DICTIONARY);
         ObservableList<String> mappedList = stylesItemList.getTargetList();
-        statuses = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
-        statuses.addListener((ListChangeListener<String>) p -> selectedStyle.set(NOTHING_SELECTED_MARKER));
+        styles = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
+        styles.addListener((ListChangeListener<String>) p -> selectedStyle.set(NOTHING_SELECTED_MARKER));
     }
 
 
@@ -478,6 +524,18 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
                                        ObjectProperty<VariantType> obj) {
         if (newV != null && !newV.equals(NOTHING_SELECTED)) {
             Optional<VariantType> matching = Stream.of(VariantType.values())
+                    .filter(d -> newV.equals(d.name()))
+                    .findFirst();
+            matching.ifPresent(obj::set);
+        } else if (NOTHING_SELECTED.equals(newV)) {
+            obj.set(null);
+        }
+    }
+
+    public static void selectParticleType(ObservableValue ods, String oldV, String newV, String NOTHING_SELECTED,
+                                         ObjectProperty<ParticleElementType> obj) {
+        if (newV != null && !newV.equals(NOTHING_SELECTED)) {
+            Optional<ParticleElementType> matching = Stream.of(ParticleElementType.values())
                     .filter(d -> newV.equals(d.name()))
                     .findFirst();
             matching.ifPresent(obj::set);
@@ -1212,6 +1270,86 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
 
     public void setRemoveParticleCommand(Command removeParticleCommand) {
         this.removeParticleCommand = removeParticleCommand;
+    }
+
+    public ObservableList<String> getTranscriptions() {
+        return transcriptions;
+    }
+
+    public void setTranscriptions(ObservableList<String> transcriptions) {
+        this.transcriptions = transcriptions;
+    }
+
+    public Dictionary getTranscriptionDic() {
+        return transcriptionDic.get();
+    }
+
+    public ObjectProperty<Dictionary> transcriptionDicProperty() {
+        return transcriptionDic;
+    }
+
+    public void setTranscriptionDic(Dictionary transcriptionDic) {
+        this.transcriptionDic.set(transcriptionDic);
+    }
+
+    public String getSelectedTranscription() {
+        return selectedTranscription.get();
+    }
+
+    public StringProperty selectedTranscriptionProperty() {
+        return selectedTranscription;
+    }
+
+    public void setSelectedTranscription(String selectedTranscription) {
+        this.selectedTranscription.set(selectedTranscription);
+    }
+
+    public ItemList<Dictionary> getTranscriptionsItemList() {
+        return transcriptionsItemList;
+    }
+
+    public void setTranscriptionsItemList(ItemList<Dictionary> transcriptionsItemList) {
+        this.transcriptionsItemList = transcriptionsItemList;
+    }
+
+    public ObservableList<String> getParticleTypes() {
+        return particleTypes;
+    }
+
+    public void setParticleTypes(ObservableList<String> particleTypes) {
+        this.particleTypes = particleTypes;
+    }
+
+    public ParticleElementType getParticleType() {
+        return particleType.get();
+    }
+
+    public ObjectProperty<ParticleElementType> particleTypeProperty() {
+        return particleType;
+    }
+
+    public void setParticleType(ParticleElementType particleType) {
+        this.particleType.set(particleType);
+    }
+
+    public String getSelectedParticleType() {
+        return selectedParticleType.get();
+    }
+
+    public StringProperty selectedParticleTypeProperty() {
+        return selectedParticleType;
+    }
+
+    public void setSelectedParticleType(String selectedParticleType) {
+        this.selectedParticleType.set(selectedParticleType);
+    }
+
+    public ItemList<ParticleElementType> getParticleTypeItemList() {
+        return particleTypeItemList;
+    }
+
+    public void setParticleTypeItemList(ItemList<ParticleElementType> particleTypeItemList) {
+        this.particleTypeItemList = particleTypeItemList;
     }
 }
 

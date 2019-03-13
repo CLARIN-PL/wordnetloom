@@ -62,6 +62,8 @@ public class SearchFilter implements Cloneable {
 
     private Long particleSuffix;
 
+    private Long particleInterfix;
+
     private String particleRoot;
 
     private String particleConstituent;
@@ -353,6 +355,14 @@ public class SearchFilter implements Cloneable {
 
     public void setEtymology(String etymology) {
         this.etymology = etymology;
+    }
+
+    public Long getParticleInterfix() {
+        return particleInterfix;
+    }
+
+    public void setParticleInterfix(Long particleInterfix) {
+        this.particleInterfix = particleInterfix;
     }
 
     @Override

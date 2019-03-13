@@ -100,7 +100,7 @@
                               <ListView fx:id="transcriptionList" prefHeight="120.0" />
                               <HBox maxWidth="1.7976931348623157E308" spacing="3.0" VBox.vgrow="ALWAYS">
                                   <children>
-                                      <ComboBox fx:id="transcriptionType" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                      <ComboBox fx:id="transcriptionType" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="transcriptionField" HBox.hgrow="ALWAYS" />
                                       <Button fx:id="addTranscriptionButton" mnemonicParsing="false" onAction="#addTranscription" text="Add" />
                                       <Button fx:id="removeTranscriptionButton" mnemonicParsing="false" onAction="#removeTranscription" text="Remove" />
@@ -120,7 +120,7 @@
                               <ListView fx:id="semanticList" prefHeight="45.0" />
                               <HBox maxWidth="1.7976931348623157E308" spacing="3.0" VBox.vgrow="ALWAYS">
                                   <children>
-                                      <ComboBox fx:id="semanticFiledCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                      <ComboBox fx:id="semanticFiledCombo" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                                       <ComboBox fx:id="semanticFiledModCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                                       <Button fx:id="addSemanticFiledButton" mnemonicParsing="false" onAction="#addSemanticField" text="Add" />
                                       <Button fx:id="removeSemanticRemoveButton" mnemonicParsing="false" onAction="#removeSemanticField" text="Remove" />
@@ -235,7 +235,7 @@
                               <ListView fx:id="inflectionList" prefHeight="60.0" />
                               <HBox maxWidth="1.7976931348623157E308" spacing="3.0" VBox.vgrow="ALWAYS">
                                   <children>
-                                      <ComboBox fx:id="inflectionCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                      <ComboBox fx:id="inflectionCombo" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="inflectionField" HBox.hgrow="ALWAYS" />
                                       <Button fx:id="addInflectionButton" mnemonicParsing="false" onAction="#addInflection" text="Add" />
                                       <Button fx:id="removeInflectionButton" mnemonicParsing="false" onAction="#removeInflection" text="Remove" />
@@ -299,9 +299,9 @@
                       <ListView fx:id="particlesList" prefHeight="90.0" />
                       <HBox maxWidth="1.7976931348623157E308" spacing="3.0" VBox.vgrow="ALWAYS">
                           <children>
-                              <ComboBox fx:id="particleTypeCombo" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                        <ComboBox fx:id="particleCombo" prefWidth="150.0" />
-                        <TextField fx:id="rootFiled" />
+                        <ComboBox fx:id="particleTypeCombo" prefWidth="120.0" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="particleValueCombo" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="particleTextFiled" prefWidth="150.0" HBox.hgrow="ALWAYS" />
                               <Button fx:id="addParticleButton" mnemonicParsing="false" onAction="#addParticle" text="Add" />
                               <Button fx:id="removeParticleButton" mnemonicParsing="false" onAction="#removeParticle" text="Remove" />
                           </children>

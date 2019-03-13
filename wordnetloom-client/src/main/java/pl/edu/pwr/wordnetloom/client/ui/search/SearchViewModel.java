@@ -54,17 +54,24 @@ public class SearchViewModel implements ViewModel {
     private static final String SEMANTIC_FIELD_NOTHING_SELECTED_MARKER = "Semantic Field";
     private static final String SEMANTIC_FIELD_MOD_NOTHING_SELECTED_MARKER = "Semantic Field Modifier";
     private static final String YIDDISH_STATUSES_NOTHING_SELECTED_MARKER = "Status";
+    private static final String STYLE_NOTHING_SELECTED_MARKER = "Style";
+    private static final String PREFIX_NOTHING_SELECTED_MARKER = "Particle prefix";
+    private static final String SUFFIX_NOTHING_SELECTED_MARKER = "Particle suffix";
+    private static final String INTERFIX_NOTHING_SELECTED_MARKER = "Particle interfix";
 
     private final StringProperty fieldSearch = new SimpleStringProperty();
     private final StringProperty definition = new SimpleStringProperty();
     private final StringProperty comment = new SimpleStringProperty();
     private final StringProperty example = new SimpleStringProperty();
     private final StringProperty synsetId = new SimpleStringProperty();
-    private final BooleanProperty progressOverlay = new SimpleBooleanProperty();
     private final StringProperty unitsCount = new SimpleStringProperty();
 
     private final StringProperty etymology = new SimpleStringProperty();
+    private final StringProperty etymologicalRoot = new SimpleStringProperty();
+    private final StringProperty particleRoot = new SimpleStringProperty();
+    private final StringProperty particleConstituent = new SimpleStringProperty();
 
+    private final BooleanProperty progressOverlay = new SimpleBooleanProperty();
     private final BooleanProperty selectedSenseMode = new SimpleBooleanProperty();
     private final BooleanProperty selectedSynsetMode = new SimpleBooleanProperty();
 
@@ -118,6 +125,22 @@ public class SearchViewModel implements ViewModel {
     private final ObjectProperty<Dictionary> age = new SimpleObjectProperty<>();
     private final StringProperty selectedAge = new SimpleStringProperty(AGE_NOTHING_SELECTED_MARKER);
 
+    private ObservableList<String> styles;
+    private final ObjectProperty<Dictionary> style = new SimpleObjectProperty<>();
+    private final StringProperty selectedStyle = new SimpleStringProperty(STYLE_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> prefixes;
+    private final ObjectProperty<Dictionary> prefix = new SimpleObjectProperty<>();
+    private final StringProperty selectedPrefix = new SimpleStringProperty(PREFIX_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> suffixes;
+    private final ObjectProperty<Dictionary> suffix = new SimpleObjectProperty<>();
+    private final StringProperty selectedSuffix = new SimpleStringProperty(SUFFIX_NOTHING_SELECTED_MARKER);
+
+    private ObservableList<String> interfixes;
+    private final ObjectProperty<Dictionary> interfix = new SimpleObjectProperty<>();
+    private final StringProperty selectedInterfix = new SimpleStringProperty(INTERFIX_NOTHING_SELECTED_MARKER);
+
     private ObservableList<String> sources;
     private final ObjectProperty<Dictionary> source = new SimpleObjectProperty<>();
     private final StringProperty selectedSource = new SimpleStringProperty(SOURCE_NOTHING_SELECTED_MARKER);
@@ -140,6 +163,10 @@ public class SearchViewModel implements ViewModel {
     private ItemList<Dictionary> semanticFieldModItemList;
     private ItemList<Dictionary> yiddishStatusesItemList;
     private ItemList<Dictionary> agesItemList;
+    private ItemList<Dictionary> stylesItemList;
+    private ItemList<Dictionary> prefixesItemList;
+    private ItemList<Dictionary> suffixesItemList;
+    private ItemList<Dictionary> interfixesItemList;
     private ItemList<Dictionary> sourcesItemList;
     private ItemList<Dictionary> lexicalCharacteristicsItemList;
 
@@ -225,7 +252,10 @@ public class SearchViewModel implements ViewModel {
         initSemanticFieldModItemList();
         initSourcesItemList();
         initYiddishStatusesItemList();
-
+        initStyleItemList();
+        initPrefixItemList();
+        initSuffixItemList();
+        initInterfixItemList();
 
         scrollCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -329,6 +359,25 @@ public class SearchViewModel implements ViewModel {
                     SOURCE_NOTHING_SELECTED_MARKER, source);
         });
 
+        selectedStyle.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.STYLES_DICTIONARY,
+                    STYLE_NOTHING_SELECTED_MARKER, style);
+        });
+
+        selectedPrefix.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.PREFIXES_DICTIONARY,
+                    PREFIX_NOTHING_SELECTED_MARKER, prefix);
+        });
+
+        selectedSuffix.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.SUFFIXES_DICTIONARY,
+                    SUFFIX_NOTHING_SELECTED_MARKER, suffix);
+        });
+
+        selectedInterfix.addListener((observable, oldValue, newValue) -> {
+            Dictionaries.dictionarySelected(observable, oldValue, newValue, Dictionaries.INTERFIXES_DICTIONARY,
+                    INTERFIX_NOTHING_SELECTED_MARKER, interfix);
+        });
 
         selectedSynsetRelation.addListener((obs, oldV, newV) -> {
             if (newV != null && !newV.equals(SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER)) {
@@ -531,12 +580,62 @@ public class SearchViewModel implements ViewModel {
             filter.setGrammaticalGenderId(null);
         }
 
+        if (selectedStyle.get() != null && !STYLE_NOTHING_SELECTED_MARKER
+                .equals(selectedStyle.get())) {
+            filter.setStyleId(style.get().getId());
+        } else {
+            filter.setStyleId(null);
+        }
+
+        if (selectedPrefix.get() != null && !PREFIX_NOTHING_SELECTED_MARKER
+                .equals(selectedPrefix.get())) {
+            filter.setParticlePrefix(prefix.get().getId());
+        } else {
+            filter.setParticlePrefix(null);
+        }
+
+        if (selectedSuffix.get() != null && !SUFFIX_NOTHING_SELECTED_MARKER
+                .equals(selectedSuffix.get())) {
+            filter.setParticleSuffix(suffix.get().getId());
+        } else {
+            filter.setParticleSuffix(null);
+        }
+
+        if (selectedInterfix.get() != null && !INTERFIX_NOTHING_SELECTED_MARKER
+                .equals(selectedInterfix.get())) {
+            filter.setParticleInterfix(interfix.get().getId());
+        } else {
+            filter.setParticleInterfix(null);
+        }
+
         if (etymology.get() != null &&
                 !etymology.get().isEmpty()) {
             filter.setEtymology(etymology.getValue());
         } else {
             filter.setEtymology(null);
         }
+
+        if (etymologicalRoot.get() != null &&
+                !etymologicalRoot.get().isEmpty()) {
+            filter.setEtymologicalRoot(etymologicalRoot.getValue());
+        } else {
+            filter.setEtymologicalRoot(null);
+        }
+
+        if (particleRoot.get() != null &&
+                !particleRoot.get().isEmpty()) {
+            filter.setParticleRoot(particleRoot.getValue());
+        } else {
+            filter.setParticleRoot(null);
+        }
+
+        if (particleConstituent.get() != null &&
+                !particleConstituent.get().isEmpty()) {
+            filter.setParticleConstituent(particleConstituent.getValue());
+        } else {
+            filter.setParticleConstituent(null);
+        }
+
     }
 
     public void search() {
@@ -656,7 +755,7 @@ public class SearchViewModel implements ViewModel {
         filter.setExample("");
 
         definition.set("");
-        filter.setDefinition("");
+        filter.setDefinition(null);
 
         synsetId.set("");
         filter.setSynsetId(null);
@@ -681,6 +780,30 @@ public class SearchViewModel implements ViewModel {
 
         etymology.set("");
         filter.setEtymology(null);
+
+        etymologicalRoot.set("");
+        filter.setEtymologicalRoot(null);
+
+        selectedStyle.set(null);
+        filter.setStyleId(null);
+
+        selectedSource.set(null);
+        filter.setSourceId(null);
+
+        selectedInterfix.set(null);
+        filter.setParticleInterfix(null);
+
+        filter.setParticleSuffix(null);
+        selectedSuffix.set(null);
+
+        filter.setParticlePrefix(null);
+        selectedPrefix.set(null);
+
+        particleRoot.set("");
+        filter.setParticleRoot(null);
+
+        particleConstituent.set("");
+        filter.setParticleConstituent(null);
 
         senseOnlyWithoutSynset.set(false);
         filter.setSensesWithoutSynset(false);
@@ -711,12 +834,39 @@ public class SearchViewModel implements ViewModel {
         domains.addListener((ListChangeListener<String>) p -> selectedDomain.set(DOMAIN_NOTHING_SELECTED_MARKER));
     }
 
-
     private void initAgeItemList() {
         agesItemList = Dictionaries.initDictionaryItemList(Dictionaries.AGES_DICTIONARY);
         ObservableList<String> mappedList = agesItemList.getTargetList();
         ages = Dictionaries.createListWithNothingSelectedMarker(mappedList, AGE_NOTHING_SELECTED_MARKER);
         ages.addListener((ListChangeListener<String>) p -> selectedAge.set(AGE_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initStyleItemList() {
+        stylesItemList = Dictionaries.initDictionaryItemList(Dictionaries.STYLES_DICTIONARY);
+        ObservableList<String> mappedList = stylesItemList.getTargetList();
+        styles = Dictionaries.createListWithNothingSelectedMarker(mappedList, STYLE_NOTHING_SELECTED_MARKER);
+        styles.addListener((ListChangeListener<String>) p -> selectedStyle.set(STYLE_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initPrefixItemList() {
+        prefixesItemList = Dictionaries.initDictionaryItemList(Dictionaries.PREFIXES_DICTIONARY);
+        ObservableList<String> mappedList = prefixesItemList.getTargetList();
+        prefixes = Dictionaries.createListWithNothingSelectedMarker(mappedList, PREFIX_NOTHING_SELECTED_MARKER);
+        prefixes.addListener((ListChangeListener<String>) p -> selectedPrefix.set(PREFIX_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initSuffixItemList() {
+        suffixesItemList = Dictionaries.initDictionaryItemList(Dictionaries.SUFFIXES_DICTIONARY);
+        ObservableList<String> mappedList = suffixesItemList.getTargetList();
+        suffixes = Dictionaries.createListWithNothingSelectedMarker(mappedList, SUFFIX_NOTHING_SELECTED_MARKER);
+        suffixes.addListener((ListChangeListener<String>) p -> selectedSuffix.set(SUFFIX_NOTHING_SELECTED_MARKER));
+    }
+
+    private void initInterfixItemList() {
+        interfixesItemList = Dictionaries.initDictionaryItemList(Dictionaries.INTERFIXES_DICTIONARY);
+        ObservableList<String> mappedList = interfixesItemList.getTargetList();
+        interfixes = Dictionaries.createListWithNothingSelectedMarker(mappedList, INTERFIX_NOTHING_SELECTED_MARKER);
+        interfixes.addListener((ListChangeListener<String>) p -> selectedInterfix.set(INTERFIX_NOTHING_SELECTED_MARKER));
     }
 
     private void initLexicalCharacteristicsItemList() {
@@ -1470,5 +1620,201 @@ public class SearchViewModel implements ViewModel {
 
     public void setLexicalCharacteristicsItemList(ItemList<Dictionary> lexicalCharacteristicsItemList) {
         this.lexicalCharacteristicsItemList = lexicalCharacteristicsItemList;
+    }
+
+    public ObservableList<String> getStyles() {
+        return styles;
+    }
+
+    public void setStyles(ObservableList<String> styles) {
+        this.styles = styles;
+    }
+
+    public Dictionary getStyle() {
+        return style.get();
+    }
+
+    public ObjectProperty<Dictionary> styleProperty() {
+        return style;
+    }
+
+    public void setStyle(Dictionary style) {
+        this.style.set(style);
+    }
+
+    public String getSelectedStyle() {
+        return selectedStyle.get();
+    }
+
+    public StringProperty selectedStyleProperty() {
+        return selectedStyle;
+    }
+
+    public void setSelectedStyle(String selectedStyle) {
+        this.selectedStyle.set(selectedStyle);
+    }
+
+    public ObservableList<String> getPrefixes() {
+        return prefixes;
+    }
+
+    public void setPrefixes(ObservableList<String> prefixes) {
+        this.prefixes = prefixes;
+    }
+
+    public Dictionary getPrefix() {
+        return prefix.get();
+    }
+
+    public ObjectProperty<Dictionary> prefixProperty() {
+        return prefix;
+    }
+
+    public void setPrefix(Dictionary prefix) {
+        this.prefix.set(prefix);
+    }
+
+    public String getSelectedPrefix() {
+        return selectedPrefix.get();
+    }
+
+    public StringProperty selectedPrefixProperty() {
+        return selectedPrefix;
+    }
+
+    public void setSelectedPrefix(String selectedPrefix) {
+        this.selectedPrefix.set(selectedPrefix);
+    }
+
+    public ObservableList<String> getSuffixes() {
+        return suffixes;
+    }
+
+    public void setSuffixes(ObservableList<String> suffixes) {
+        this.suffixes = suffixes;
+    }
+
+    public Dictionary getSuffix() {
+        return suffix.get();
+    }
+
+    public ObjectProperty<Dictionary> suffixProperty() {
+        return suffix;
+    }
+
+    public void setSuffix(Dictionary suffix) {
+        this.suffix.set(suffix);
+    }
+
+    public String getSelectedSuffix() {
+        return selectedSuffix.get();
+    }
+
+    public StringProperty selectedSuffixProperty() {
+        return selectedSuffix;
+    }
+
+    public void setSelectedSuffix(String selectedSuffix) {
+        this.selectedSuffix.set(selectedSuffix);
+    }
+
+    public ObservableList<String> getInterfixes() {
+        return interfixes;
+    }
+
+    public void setInterfixes(ObservableList<String> interfixes) {
+        this.interfixes = interfixes;
+    }
+
+    public Dictionary getInterfix() {
+        return interfix.get();
+    }
+
+    public ObjectProperty<Dictionary> interfixProperty() {
+        return interfix;
+    }
+
+    public void setInterfix(Dictionary interfix) {
+        this.interfix.set(interfix);
+    }
+
+    public String getSelectedInterfix() {
+        return selectedInterfix.get();
+    }
+
+    public StringProperty selectedInterfixProperty() {
+        return selectedInterfix;
+    }
+
+    public void setSelectedInterfix(String selectedInterfix) {
+        this.selectedInterfix.set(selectedInterfix);
+    }
+
+    public ItemList<Dictionary> getStylesItemList() {
+        return stylesItemList;
+    }
+
+    public void setStylesItemList(ItemList<Dictionary> stylesItemList) {
+        this.stylesItemList = stylesItemList;
+    }
+
+    public ItemList<Dictionary> getPrefixesItemList() {
+        return prefixesItemList;
+    }
+
+    public void setPrefixesItemList(ItemList<Dictionary> prefixesItemList) {
+        this.prefixesItemList = prefixesItemList;
+    }
+
+    public ItemList<Dictionary> getSuffixesItemList() {
+        return suffixesItemList;
+    }
+
+    public void setSuffixesItemList(ItemList<Dictionary> suffixesItemList) {
+        this.suffixesItemList = suffixesItemList;
+    }
+
+    public ItemList<Dictionary> getInterfixesItemList() {
+        return interfixesItemList;
+    }
+
+    public void setInterfixesItemList(ItemList<Dictionary> interfixesItemList) {
+        this.interfixesItemList = interfixesItemList;
+    }
+
+    public String getEtymologicalRoot() {
+        return etymologicalRoot.get();
+    }
+
+    public StringProperty etymologicalRootProperty() {
+        return etymologicalRoot;
+    }
+
+    public void setEtymologicalRoot(String etymologicalRoot) {
+        this.etymologicalRoot.set(etymologicalRoot);
+    }
+
+    public String getParticleRoot() {
+        return particleRoot.get();
+    }
+
+    public StringProperty particleRootProperty() {
+        return particleRoot;
+    }
+
+    public void setParticleRoot(String particleRoot) {
+        this.particleRoot.set(particleRoot);
+    }
+
+    public String getParticleConstituent() {
+        return particleConstituent.get();
+    }
+
+    public StringProperty particleConstituentProperty() {
+        return particleConstituent;
+    }
+
+    public void setParticleConstituent(String particleConstituent) {
+        this.particleConstituent.set(particleConstituent);
     }
 }

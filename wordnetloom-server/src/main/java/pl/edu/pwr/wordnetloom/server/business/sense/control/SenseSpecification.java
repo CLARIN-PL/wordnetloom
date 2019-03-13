@@ -145,6 +145,25 @@ public class SenseSpecification {
         return null;
     }
 
+    public static Predicate filterYiddishInterfxParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
+        if (filter.getParticleInterfx() != null) {
+            CriteriaQuery<Long> query = cb.createQuery(Long.class);
+            Subquery<Long> subquery = query.subquery(Long.class);
+
+            Root<InterfixParticle> particleRoot = subquery.from(InterfixParticle.class);
+
+            subquery.select(particleRoot.get("extension").get("id"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate sourcePredicate = cb.equal(particleRoot.get("interfix").get("id"), filter.getParticleInterfx());
+            predicates.add(sourcePredicate);
+
+            subquery.where(cb.and(predicates.toArray(new Predicate[0])));
+            return cb.in(root.get("id")).value(subquery);
+        }
+        return null;
+    }
+
     public static Predicate filterYiddishSuffixParticles(SearchFilter filter, Root<YiddishSenseExtension> root, CriteriaBuilder cb) {
         if (filter.getParticleSuffix() != null) {
             CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -173,7 +192,8 @@ public class SenseSpecification {
                 || filter.getYiddishDomainId() != null || filter.getYiddishDomainModificationId() != null
                 || (filter.getParticleRoot() != null && !filter.getParticleRoot().isEmpty())
                 || (filter.getParticleConstituent() != null && !filter.getParticleConstituent().isEmpty())
-                || filter.getParticlePrefix() != null || filter.getParticleSuffix() !=null) {
+                || filter.getParticlePrefix() != null || filter.getParticleSuffix() !=null
+                || filter.getParticleInterfx() !=null) {
 
             CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
             Subquery<UUID> subquery = query.subquery(UUID.class);
@@ -212,8 +232,7 @@ public class SenseSpecification {
             }
 
             if (filter.getEtymology() != null) {
-                Predicate yiddishPredicate = cb.equal(yiddishRoot.get("etymology"), "%"+filter.getEtymology()+"%");
-                System.out.println(filter.getEtymology());
+                Predicate yiddishPredicate = cb.like(yiddishRoot.get("etymology"), "%"+filter.getEtymology()+"%");
                 predicates.add(yiddishPredicate);
             }
 
@@ -252,6 +271,9 @@ public class SenseSpecification {
 
             Predicate particlesSuffix = filterYiddishSuffixParticles(filter, yiddishRoot, cb);
             if (particlesSuffix != null) predicates.add(particlesSuffix);
+
+            Predicate particlesInterfix = filterYiddishInterfxParticles(filter, yiddishRoot, cb);
+            if (particlesInterfix != null) predicates.add(particlesInterfix);
 
             subquery.where(cb.and(predicates.toArray(new Predicate[0])));
             return cb.in(root.get("id")).value(subquery);

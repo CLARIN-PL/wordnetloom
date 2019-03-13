@@ -71,10 +71,10 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     public ListView<ParticleListItemViewModel> particlesList;
 
     @FXML
-    public ComboBox<String> particleTypeCombo, particleCombo;
+    public ComboBox<String> particleTypeCombo, particleValueCombo;
 
     @FXML
-    public TextField rootFiled;
+    public TextField particleTextFiled;
 
     @FXML
     public Button addParticleButton, removeParticleButton;
@@ -101,13 +101,19 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
 
         commentArea.textProperty().bindBidirectional(viewModel.commentProperty());
         contextArea.textProperty().bindBidirectional(viewModel.contextProperty());
-        rootFiled.textProperty().bindBidirectional(viewModel.rootProperty());
+
+        particleTextFiled.textProperty().bindBidirectional(viewModel.rootProperty());
+        particleTextFiled.visibleProperty().bindBidirectional(viewModel.particleTextFiledVisibleProperty());
 
         variantTypeCombo.setItems(viewModel.getVariantTypes());
         variantTypeCombo.valueProperty().bindBidirectional(viewModel.selectedVariantTypeProperty());
 
         particleTypeCombo.setItems(viewModel.getParticleTypes());
         particleTypeCombo.valueProperty().bindBidirectional(viewModel.selectedParticleTypeProperty());
+
+        particleValueCombo.setItems(viewModel.getParticleValues());
+        particleValueCombo.valueProperty().bindBidirectional(viewModel.selectedParticleValueProperty());
+        particleValueCombo.visibleProperty().bindBidirectional(viewModel.particleValueVisibleProperty());
 
         ageCombo.setItems(viewModel.getAges());
         ageCombo.valueProperty().bindBidirectional(viewModel.selectedAgeProperty());

@@ -57,6 +57,8 @@ public class SearchFilter {
 
     private Long particleSuffix;
 
+    private Long particleInterfx;
+
     private String particleRoot;
 
     private String particleConstituent;
@@ -314,5 +316,13 @@ public class SearchFilter {
 
     public void setSenseWithoutSynset(Boolean senseWithoutSynset) {
         this.senseWithoutSynset = senseWithoutSynset;
+    }
+
+    public Long getParticleInterfx() {
+        return particleInterfx;
+    }
+
+    public void setParticleInterfx(Long particleInterfx) {
+        this.particleInterfx = particleInterfx;
     }
 }

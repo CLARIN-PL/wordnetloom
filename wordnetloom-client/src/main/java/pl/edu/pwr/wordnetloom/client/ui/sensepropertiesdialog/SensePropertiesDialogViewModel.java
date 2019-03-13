@@ -83,7 +83,7 @@ public class SensePropertiesDialogViewModel implements ViewModel {
         valid.bind(dialogScope.senseFormValidProperty());
 
         Sense ss = dialogScope.getSenseToEdit();
-        if (ss.getLinks().getYiddish() != null) {
+        if (ss != null &&  ss.getLinks() != null && ss.getLinks().getYiddish() != null) {
             yp = service.findYiddishProperties(ss.getLinks().getYiddish());
         }
     }

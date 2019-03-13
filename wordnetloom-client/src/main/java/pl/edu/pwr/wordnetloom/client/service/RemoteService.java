@@ -344,6 +344,18 @@ public class RemoteService {
             target = target.queryParam("particle_suffix", filter.getParticleSuffix());
         }
 
+        if (filter.getParticleInterfix() != null) {
+            target = target.queryParam("particle_interfix", filter.getParticleInterfix());
+        }
+
+        if (filter.getParticleRoot() != null) {
+            target = target.queryParam("particle_root", filter.getParticleRoot());
+        }
+
+        if (filter.getParticleConstituent() != null) {
+            target = target.queryParam("particle_constituent", filter.getParticleConstituent());
+        }
+
         if (filter.getEtymologicalRoot() != null && !filter.getEtymologicalRoot().isEmpty()) {
             target = target.queryParam("etymological_root", filter.getEtymologicalRoot());
         }

@@ -5,10 +5,7 @@ import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import de.saxsys.mvvmfx.utils.itemlist.ItemList;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -36,6 +33,9 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private StringProperty context = new SimpleStringProperty();
     private StringProperty etymology = new SimpleStringProperty();
     private StringProperty inflection = new SimpleStringProperty();
+
+    private BooleanProperty particleTextFiledVisible = new SimpleBooleanProperty(false);
+    private BooleanProperty particleValueVisible = new SimpleBooleanProperty(false);
 
     private ObservableList<String> variantTypes;
     private final ObjectProperty<VariantType> variantType = new SimpleObjectProperty<>();
@@ -85,6 +85,9 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private final ObjectProperty<ParticleElementType> particleType = new SimpleObjectProperty<>();
     private final StringProperty selectedParticleType = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
 
+    private ObservableList<String> particleValues;
+    private final ObjectProperty<ParticleElementType> particleValue = new SimpleObjectProperty<>();
+    private final StringProperty selectedParticleValue = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
 
     private ItemList<VariantType> variantTypeItemList;
     private ItemList<ParticleElementType> particleTypeItemList;
@@ -98,6 +101,7 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private ItemList<Dictionary> inflectionsItemList;
     private ItemList<Dictionary> lexicalCharacteristicsItemList;
     private ItemList<Dictionary> transcriptionsItemList;
+    private ItemList<Dictionary> particleValueItemList;
 
     private ObservableList<DictionaryListItemViewModel> sourceList = FXCollections.observableArrayList();
     private ObjectProperty<DictionaryListItemViewModel> selectedSourceListItem = new SimpleObjectProperty<>();
@@ -433,7 +437,7 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     private void initParticleTypeList() {
         particleTypeItemList = new ItemList<>(FXCollections.observableArrayList(Arrays.asList(ParticleElementType.values())), ParticleElementType::name);
         ObservableList<String> mappedList = particleTypeItemList.getTargetList();
-        particleTypes = createList(mappedList);
+        particleTypes =  Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
         particleTypes.addListener((ListChangeListener<String>) p -> selectedParticleType.set(NOTHING_SELECTED_MARKER));
     }
 
@@ -442,6 +446,13 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         ObservableList<String> mappedList = ageItemList.getTargetList();
         ages = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
         ages.addListener((ListChangeListener<String>) p -> selectedAge.set(NOTHING_SELECTED_MARKER));
+    }
+
+    private void initParticleValuesItemList(String dic) {
+        particleValueItemList = Dictionaries.initDictionaryItemList(dic);
+        ObservableList<String> mappedList = particleValueItemList.getTargetList();
+        particleValues = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
+        particleValues.addListener((ListChangeListener<String>) p -> selectedParticleValue.set(NOTHING_SELECTED_MARKER));
     }
 
     private void initInflectionItemList() {
@@ -532,15 +543,42 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         }
     }
 
-    public static void selectParticleType(ObservableValue ods, String oldV, String newV, String NOTHING_SELECTED,
+    public void selectParticleType(ObservableValue ods, String oldV, String newV, String NOTHING_SELECTED,
                                          ObjectProperty<ParticleElementType> obj) {
         if (newV != null && !newV.equals(NOTHING_SELECTED)) {
             Optional<ParticleElementType> matching = Stream.of(ParticleElementType.values())
                     .filter(d -> newV.equals(d.name()))
                     .findFirst();
             matching.ifPresent(obj::set);
+            if(ParticleElementType.root.name().equals(newV)){
+                particleTextFiledVisible.set(true);
+                particleValueVisible.set(false);
+            }
+            if(ParticleElementType.constituent.name().equals(newV)){
+                particleTextFiledVisible.set(true);
+                particleValueVisible.set(false);
+            }
+
+            if(ParticleElementType.prefix.name().equals(newV)){
+                particleTextFiledVisible.set(false);
+                particleValueVisible.set(true);
+                initParticleValuesItemList(Dictionaries.PREFIXES_DICTIONARY);
+            }
+            if(ParticleElementType.suffix.name().equals(newV)){
+                particleTextFiledVisible.set(false);
+                particleValueVisible.set(true);
+                initParticleValuesItemList(Dictionaries.SUFFIXES_DICTIONARY);
+            }
+            if(ParticleElementType.interfix.name().equals(newV)){
+                particleTextFiledVisible.set(false);
+                particleValueVisible.set(true);
+                initParticleValuesItemList(Dictionaries.INTERFIXES_DICTIONARY);
+            }
+
         } else if (NOTHING_SELECTED.equals(newV)) {
             obj.set(null);
+            particleTextFiledVisible.set(false);
+            particleValueVisible.set(false);
         }
     }
 
@@ -1350,6 +1388,70 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
 
     public void setParticleTypeItemList(ItemList<ParticleElementType> particleTypeItemList) {
         this.particleTypeItemList = particleTypeItemList;
+    }
+
+    public boolean isParticleTextFiledVisible() {
+        return particleTextFiledVisible.get();
+    }
+
+    public BooleanProperty particleTextFiledVisibleProperty() {
+        return particleTextFiledVisible;
+    }
+
+    public void setParticleTextFiledVisible(boolean particleTextFiledVisible) {
+        this.particleTextFiledVisible.set(particleTextFiledVisible);
+    }
+
+    public boolean isParticleValueVisible() {
+        return particleValueVisible.get();
+    }
+
+    public BooleanProperty particleValueVisibleProperty() {
+        return particleValueVisible;
+    }
+
+    public void setParticleValueVisible(boolean particleValueVisible) {
+        this.particleValueVisible.set(particleValueVisible);
+    }
+
+    public ObservableList<String> getParticleValues() {
+        return particleValues;
+    }
+
+    public void setParticleValues(ObservableList<String> particleValues) {
+        this.particleValues = particleValues;
+    }
+
+    public ParticleElementType getParticleValue() {
+        return particleValue.get();
+    }
+
+    public ObjectProperty<ParticleElementType> particleValueProperty() {
+        return particleValue;
+    }
+
+    public void setParticleValue(ParticleElementType particleValue) {
+        this.particleValue.set(particleValue);
+    }
+
+    public String getSelectedParticleValue() {
+        return selectedParticleValue.get();
+    }
+
+    public StringProperty selectedParticleValueProperty() {
+        return selectedParticleValue;
+    }
+
+    public void setSelectedParticleValue(String selectedParticleValue) {
+        this.selectedParticleValue.set(selectedParticleValue);
+    }
+
+    public ItemList<Dictionary> getParticleValueItemList() {
+        return particleValueItemList;
+    }
+
+    public void setParticleValueItemList(ItemList<Dictionary> particleValueItemList) {
+        this.particleValueItemList = particleValueItemList;
     }
 }
 

@@ -30,16 +30,10 @@ public class SearchView implements FxmlView<SearchViewModel> {
     public ComboBox<String> ageCombo,sourceCombo,lexicalCharacteristicCombo;
 
     @FXML
-    public TextField etymologyFiled;
+    public TextField etymologyFiled, etymologicalRootFiled;
 
-    @InjectViewModel
-    private SearchViewModel viewModel;
-
-    @Inject
-    Stage primaryStage;
-
-    @InjectContext
-    Context context;
+    @FXML
+    public ComboBox<String> styleCombo, prefixCombo, suffixCombo, interfixCombo;
 
     @FXML
     public MenuButton modeButton;
@@ -57,10 +51,12 @@ public class SearchView implements FxmlView<SearchViewModel> {
     @FXML
     public TitledPane generalPanel,yiddishPanel, sensePanel, synsetPanel;
 
+    @FXML
     public ComboBox synsetType;
 
     @FXML
-    public TextField synsetIdInput, definitionInput, commentInput, exampleInput;
+    public TextField synsetIdInput, definitionInput, commentInput, exampleInput,
+            particleRootFiled, particleConstituentFiled;
 
     @FXML
     private CustomTextField fieldSearch;
@@ -77,6 +73,15 @@ public class SearchView implements FxmlView<SearchViewModel> {
 
     @FXML
     public StackPane progressOverlay;
+
+    @InjectViewModel
+    private SearchViewModel viewModel;
+
+    @Inject
+    Stage primaryStage;
+
+    @InjectContext
+    Context context;
 
     @FXML
     private void search() {
@@ -193,6 +198,9 @@ public class SearchView implements FxmlView<SearchViewModel> {
         onlyWithoutSynset.selectedProperty().bindBidirectional(viewModel.senseOnlyWithoutSynsetProperty());
 
         etymologyFiled.textProperty().bindBidirectional(viewModel.etymologyProperty());
+        etymologicalRootFiled.textProperty().bindBidirectional(viewModel.etymologicalRootProperty());
+        particleRootFiled.textProperty().bindBidirectional(viewModel.particleRootProperty());
+        particleConstituentFiled.textProperty().bindBidirectional(viewModel.particleConstituentProperty());
 
         ageCombo.setItems(viewModel.getAges());
         ageCombo.valueProperty().bindBidirectional(viewModel.selectedAgeProperty());
@@ -211,6 +219,18 @@ public class SearchView implements FxmlView<SearchViewModel> {
 
         sourceCombo.setItems(viewModel.getSources());
         sourceCombo.valueProperty().bindBidirectional(viewModel.selectedSourceProperty());
+
+        styleCombo.setItems(viewModel.getStyles());
+        styleCombo.valueProperty().bindBidirectional(viewModel.selectedStyleProperty());
+
+        interfixCombo.setItems(viewModel.getInterfixes());
+        interfixCombo.valueProperty().bindBidirectional(viewModel.selectedInterfixProperty());
+
+        prefixCombo.setItems(viewModel.getPrefixes());
+        prefixCombo.valueProperty().bindBidirectional(viewModel.selectedPrefixProperty());
+
+        suffixCombo.setItems(viewModel.getSuffixes());
+        suffixCombo.valueProperty().bindBidirectional(viewModel.selectedSuffixProperty());
 
         lexicalCharacteristicCombo.setItems(viewModel.getLexicalCharacteristics());
         lexicalCharacteristicCombo.valueProperty().bindBidirectional(viewModel.selectedLexicalCharacteristicProperty());

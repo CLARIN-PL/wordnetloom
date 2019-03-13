@@ -128,6 +128,11 @@ public class SearchFilterExtractorFromUrl {
             searchFilter.setParticleSuffix(Long.valueOf(particleSuffix));
         }
 
+        final String particleInterfix = getUriInfo().getQueryParameters().getFirst("particle_interfix");
+        if (particleInterfix != null) {
+            searchFilter.setParticleInterfx(Long.valueOf(particleInterfix));
+        }
+
         searchFilter.setParticleRoot(getUriInfo().getQueryParameters().getFirst("particle_root"));
         searchFilter.setParticleConstituent(getUriInfo().getQueryParameters().getFirst("particle_constituent"));
         searchFilter.setEtymology(getUriInfo().getQueryParameters().getFirst("etymology"));

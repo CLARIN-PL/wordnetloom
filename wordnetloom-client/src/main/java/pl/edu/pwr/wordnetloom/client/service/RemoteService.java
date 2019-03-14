@@ -51,6 +51,7 @@ public class RemoteService {
     private static final String PATH_SYNSETS = "/synsets/{id}";
     private static final String PATH_SENSES = "/senses";
     private static final String PATH_SENSES_ID = "/senses/{id}";
+    private static final String PATH_ADD_YIDDISH_VARIANT = "/senses/{senseId}/yiddish";
     private static final String PATH_RELATION_TYPES = "/relation-types";
     private static final String PATH_ADD_SENSE_RELATION = "/senses/relations";
     private static final String PATH_ADD_SYNSET_RELATION = "/synsets/relations";
@@ -922,6 +923,56 @@ public class RemoteService {
         return null;
     }
 
+    public YiddishProperty addYiddishVariant(UUID senseId, YiddishProperty p) throws IOException, ValidationException, ForbiddenException {
+
+
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_ADD_YIDDISH_VARIANT)
+                .resolveTemplate("senseId", senseId);
+
+        LOG.debug("Saving yiddish variant: " + p);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .post(Entity.entity(p, MediaType.APPLICATION_JSON));
+
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Yiddish Variant", p);
+
+        if (isCreatedStatus(response)) {
+            YiddishProperty yp = findYiddishProperty(response.getLocation());
+            LOG.debug("Yiddish Variant created: " + yp);
+            return yp;
+        }
+
+        return null;
+    }
+
+    public YiddishProperty updateYiddishVariant(YiddishProperty p) throws IOException, ValidationException, ForbiddenException {
+
+        WebTarget target = client.target(p.getLinks().getSelf());
+
+        LOG.debug("Updating yiddish variant: " + p);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .put(Entity.entity(p, MediaType.APPLICATION_JSON));
+
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response,"Yiddish Variant", p);
+
+        if (isOkStatus(response)) {
+            YiddishProperty yp = findYiddishProperty(response.getLocation());
+            LOG.debug("Yiddish Variant updated: " + yp);
+            return yp;
+        }
+        return null;
+    }
+
 
 
     public Example findExample(URI link) {
@@ -976,6 +1027,24 @@ public class RemoteService {
             return yp;
         }
         return new YiddishProperties();
+    }
+
+    public YiddishProperty findYiddishProperty(URI link) {
+
+        WebTarget target = client.target(link);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .get();
+
+        if (isOkStatus(response)) {
+            YiddishProperty yp = response.readEntity(YiddishProperty.class);
+            LOG.debug("Loading yiddish property: " + link.toString());
+            return yp;
+        }
+        return new YiddishProperty();
     }
 
     public RelationType findRelationType(URI link) {

@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.yiddish.entity;
 
+import org.hibernate.annotations.Cascade;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 
@@ -42,7 +43,7 @@ public class YiddishSenseExtension implements Serializable {
     @JoinColumn(name = "extension_id")
     private Set<Transcription> transcriptions = new LinkedHashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("id")
     @JoinColumn(name = "extension_id")
     private Set<YiddishDomain> yiddishDomains = new LinkedHashSet<>();
@@ -97,72 +98,9 @@ public class YiddishSenseExtension implements Serializable {
     @Column
     private String context;
 
-    @OneToMany(mappedBy = "extension", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "extension", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("position")
     private Set<Particle> particles = new LinkedHashSet<>();
-
-    public YiddishSenseExtension() {
-    }
-
-    public YiddishSenseExtension(Sense se) {
-        sense = se;
-    }
-
-    public YiddishSenseExtension(YiddishSenseExtension ext) {
-        sense = ext.sense;
-        //dialectalDictionary = ext.dialectalDictionary;
-        variant = ext.variant;
-        latinSpelling = ext.latinSpelling;
-        yivoSpelling = ext.yivoSpelling;
-        yiddishSpelling = ext.yiddishSpelling;
-
-        for (Transcription t : ext.transcriptions) {
-            transcriptions.add(new Transcription(t));
-        }
-
-        for (YiddishDomain d : ext.yiddishDomains) {
-            yiddishDomains.add(new YiddishDomain(d, this));
-        }
-
-        meaning = ext.meaning;
-        grammaticalGender = ext.grammaticalGender;
-        style = ext.style;
-        status = ext.status;
-        lexicalCharacteristic = ext.lexicalCharacteristic;
-
-        for (SourceDictionary sc : ext.source) {
-            source.add(sc);
-        }
-
-        age = ext.age;
-        etymology = ext.etymology;
-
-        for (Inflection i : ext.inflection) {
-            inflection.add(new Inflection(i));
-        }
-
-        etymologicalRoot = ext.etymologicalRoot;
-        comment = ext.comment;
-        context = ext.context;
-
-        for (Particle p : ext.particles) {
-            Particle np = null;
-            if (p instanceof InterfixParticle) {
-                np = new InterfixParticle((InterfixParticle) p, this);
-            }
-            if (p instanceof PrefixParticle) {
-                np = new PrefixParticle((PrefixParticle) p, this);
-            }
-            if (p instanceof RootParticle) {
-                np = new RootParticle((RootParticle) p, this);
-            }
-            if (p instanceof SuffixParticle) {
-                np = new SuffixParticle((SuffixParticle) p, this);
-            }
-            if (np != null)
-                particles.add(np);
-        }
-    }
 
     public Long getId() {
         return id;

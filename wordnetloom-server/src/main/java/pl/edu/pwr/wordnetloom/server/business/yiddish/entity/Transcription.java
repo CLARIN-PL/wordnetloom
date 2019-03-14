@@ -22,19 +22,6 @@ public class Transcription implements Serializable{
 
 	private String phonography;
 
-	public Transcription() {
-	}
-	
-	public Transcription(Transcription trans) {
-		this.transcriptionDictionary = trans.transcriptionDictionary;
-		this.phonography = trans.phonography;
-	}
-
-	public Transcription(TranscriptionDictionary dic , String phon) {
-		this.transcriptionDictionary = dic;
-		this.phonography = phon;
-	}
-
 	@Override
 	public String toString(){
 		return phonography + " ( "+transcriptionDictionary.getName()+" )";

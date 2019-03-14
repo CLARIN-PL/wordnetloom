@@ -82,7 +82,6 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     @InjectViewModel
     private YiddishPropertiesFormViewModel viewModel;
 
-
     public void initialize() {
 
         yivoField.textProperty().bindBidirectional(viewModel.yivoProperty());
@@ -224,5 +223,9 @@ public class YiddishPropertiesFormView implements FxmlView<YiddishPropertiesForm
     @FXML
     public void removeParticle() {
         viewModel.getRemoveParticleCommand().execute();
+    }
+
+    public YiddishPropertiesFormViewModel getViewModel() {
+        return viewModel;
     }
 }

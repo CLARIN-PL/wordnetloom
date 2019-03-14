@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.pwr.wordnetloom.client.events.LoadGraphEvent;
 import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.model.YiddishProperties;
+import pl.edu.pwr.wordnetloom.client.model.YiddishProperty;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.ExampleDialogScope;
@@ -29,10 +30,12 @@ import java.util.ResourceBundle;
 @ScopeProvider(scopes = ExampleDialogScope.class)
 public class SensePropertiesDialogViewModel implements ViewModel {
 
-    public static final String LOAD_TAB = "load_tab";
     private static final Logger LOG = LoggerFactory.getLogger(SensePropertiesDialogViewModel.class);
 
+    public static final String UPDATE_TAB_NAME = "update_tab_name";
     public static final String CLOSE_DIALOG_NOTIFICATION = "closeDialog";
+    public static final String ADD_YIDDISH_PROPERTY = "yiddishProperty";
+    public static final String REMOVE_YIDDISH_PROPERTY = "removeYiddishProperty";
 
     static final String TITLE_LABEL_KEY = "sense.properties.dialog.title";
 
@@ -57,8 +60,6 @@ public class SensePropertiesDialogViewModel implements ViewModel {
 
     private Command saveCommand;
     private Command closeCommand;
-
-    private ObservableList<Tab> tabs;
 
     public Command getSaveCommand() {
         return saveCommand;
@@ -85,7 +86,20 @@ public class SensePropertiesDialogViewModel implements ViewModel {
         Sense ss = dialogScope.getSenseToEdit();
         if (ss != null &&  ss.getLinks() != null && ss.getLinks().getYiddish() != null) {
             yp = service.findYiddishProperties(ss.getLinks().getYiddish());
+
         }
+        dialogScope.subscribe(SensePropertiesDialogScope.ADD_YIDDISH_PROPERTY, (s, objects) -> {
+            YiddishProperty p = (YiddishProperty) objects[0];
+            yp.getRows().add(p);
+            publish(ADD_YIDDISH_PROPERTY, p);
+        });
+        dialogScope.subscribe(SensePropertiesDialogScope.UPDATE_TAB_NAME, (s, objects) -> {
+            publish(UPDATE_TAB_NAME, objects);
+        });
+
+        dialogScope.subscribe(SensePropertiesDialogScope.REMOVE_YIDDISH_PROPERTY, (s, objects) -> {
+            publish(REMOVE_YIDDISH_PROPERTY, objects);
+        });
     }
 
     private void close() {
@@ -129,7 +143,4 @@ public class SensePropertiesDialogViewModel implements ViewModel {
         return closeCommand;
     }
 
-    public void setTabs(ObservableList<Tab> tabs) {
-        this.tabs = tabs;
-    }
 }

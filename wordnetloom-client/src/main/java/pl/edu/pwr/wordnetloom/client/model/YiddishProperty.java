@@ -1,12 +1,17 @@
 package pl.edu.pwr.wordnetloom.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.util.List;
+import java.util.UUID;
 
-public class YiddishProperty {
+public class YiddishProperty implements Cloneable{
 
-    private long id;
+    private String tabId = UUID.randomUUID().toString();
+
+    private Long id;
 
     @JsonProperty("variant_type")
     private VariantType variantType;
@@ -57,11 +62,19 @@ public class YiddishProperty {
     @JsonProperty("_links")
     private Links links;
 
-    public long getId() {
+    public String getTabId() {
+        return tabId;
+    }
+
+    public void setTabId(String tabId) {
+        this.tabId = tabId;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -226,19 +239,84 @@ public class YiddishProperty {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof YiddishProperty)) return false;
+
+        YiddishProperty that = (YiddishProperty) o;
+
+        if (tabId != null ? !tabId.equals(that.tabId) : that.tabId != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (variantType != that.variantType) return false;
+        if (latinSpelling != null ? !latinSpelling.equals(that.latinSpelling) : that.latinSpelling != null)
+            return false;
+        if (yiddishSpelling != null ? !yiddishSpelling.equals(that.yiddishSpelling) : that.yiddishSpelling != null)
+            return false;
+        if (yivoSpelling != null ? !yivoSpelling.equals(that.yivoSpelling) : that.yivoSpelling != null) return false;
+        if (meaning != null ? !meaning.equals(that.meaning) : that.meaning != null) return false;
+        if (etymologicalRoot != null ? !etymologicalRoot.equals(that.etymologicalRoot) : that.etymologicalRoot != null)
+            return false;
+        if (comment != null ? !comment.equals(that.comment) : that.comment != null) return false;
+        if (context != null ? !context.equals(that.context) : that.context != null) return false;
+        if (etymology != null ? !etymology.equals(that.etymology) : that.etymology != null) return false;
+        if (age != null ? !age.equals(that.age) : that.age != null) return false;
+        if (grammaticalGender != null ? !grammaticalGender.equals(that.grammaticalGender) : that.grammaticalGender != null)
+            return false;
+        if (lexicalCharacteristic != null ? !lexicalCharacteristic.equals(that.lexicalCharacteristic) : that.lexicalCharacteristic != null)
+            return false;
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
+        if (style != null ? !style.equals(that.style) : that.style != null) return false;
+        if (sources != null ? !sources.equals(that.sources) : that.sources != null) return false;
+        if (semanticFields != null ? !semanticFields.equals(that.semanticFields) : that.semanticFields != null)
+            return false;
+        if (transcriptions != null ? !transcriptions.equals(that.transcriptions) : that.transcriptions != null)
+            return false;
+        if (inflections != null ? !inflections.equals(that.inflections) : that.inflections != null) return false;
+        if (particles != null ? !particles.equals(that.particles) : that.particles != null) return false;
+        return links != null ? links.equals(that.links) : that.links == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tabId != null ? tabId.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (variantType != null ? variantType.hashCode() : 0);
+        result = 31 * result + (latinSpelling != null ? latinSpelling.hashCode() : 0);
+        result = 31 * result + (yiddishSpelling != null ? yiddishSpelling.hashCode() : 0);
+        result = 31 * result + (yivoSpelling != null ? yivoSpelling.hashCode() : 0);
+        result = 31 * result + (meaning != null ? meaning.hashCode() : 0);
+        result = 31 * result + (etymologicalRoot != null ? etymologicalRoot.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (context != null ? context.hashCode() : 0);
+        result = 31 * result + (etymology != null ? etymology.hashCode() : 0);
+        result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (grammaticalGender != null ? grammaticalGender.hashCode() : 0);
+        result = 31 * result + (lexicalCharacteristic != null ? lexicalCharacteristic.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (style != null ? style.hashCode() : 0);
+        result = 31 * result + (sources != null ? sources.hashCode() : 0);
+        result = 31 * result + (semanticFields != null ? semanticFields.hashCode() : 0);
+        result = 31 * result + (transcriptions != null ? transcriptions.hashCode() : 0);
+        result = 31 * result + (inflections != null ? inflections.hashCode() : 0);
+        result = 31 * result + (particles != null ? particles.hashCode() : 0);
+        result = 31 * result + (links != null ? links.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "YiddishProperty{" +
-                "id=" + id +
-                ", variant_type=" + variantType +
+                "tabId='" + tabId + '\'' +
+                ", id=" + id +
+                ", variantType=" + variantType +
                 ", latinSpelling='" + latinSpelling + '\'' +
                 ", yiddishSpelling='" + yiddishSpelling + '\'' +
                 ", yivoSpelling='" + yivoSpelling + '\'' +
                 ", meaning='" + meaning + '\'' +
                 ", etymologicalRoot='" + etymologicalRoot + '\'' +
-                ", comment='" + comment + '\'' +
-                ", context='" + context + '\'' +
                 ", etymology='" + etymology + '\'' +
                 ", age=" + age +
+                ", grammaticalGender=" + grammaticalGender +
                 ", lexicalCharacteristic=" + lexicalCharacteristic +
                 ", status=" + status +
                 ", style=" + style +
@@ -247,7 +325,10 @@ public class YiddishProperty {
                 ", transcriptions=" + transcriptions +
                 ", inflections=" + inflections +
                 ", particles=" + particles +
-                ", links=" + links +
                 '}';
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

@@ -5,6 +5,7 @@ import pl.edu.pwr.wordnetloom.server.business.graph.control.GraphQueryService;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeExpanded;
 import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.YiddishSenseExtension;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -260,19 +261,6 @@ public class SenseResource {
         return Response.noContent().build();
     }
 
-    @PUT
-    @Path("{id}/emotional-annotations/{annotationId}")
-    public Response updateEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .build();
-    }
-
-    @DELETE
-    @Path("{id}/emotional-annotations/{annotationId}")
-    public Response deleteEmotionalAnnotations(@PathParam("id") final UUID id) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .build();
-    }
 
     @GET
     @Path("{id}/yiddish")
@@ -288,5 +276,39 @@ public class SenseResource {
         return  queryService.findYiddishVariant(id, variantId)
                 .map(y -> entityBuilder.buildYiddishVariant(y, uriInfo, locale))
                 .orElse(Json.createObjectBuilder().build());
+    }
+
+    @POST
+    @Path("{id}/yiddish")
+    public Response addVariant(@HeaderParam("Accept-Language") Locale locale,
+                                      @PathParam("id") final UUID id, JsonObject json) {
+
+        OperationResult<YiddishSenseExtension> e = senseCommandService.addYiddishVariant(id, json);
+        if (e.hasErrors()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getErrors()).build();
+        }
+        return Response.created(linkBuilder.forYiddishVariant(e.getEntity(), uriInfo))
+                .build();
+    }
+
+    @PUT
+    @Path("{id}/yiddish/{variantId}")
+    public Response updateYiddishVariant(JsonObject json,
+                                  @PathParam("id") final UUID id, @PathParam("variantId") Long variantId) {
+        OperationResult<YiddishSenseExtension> s = senseCommandService.updateYiddishVariant(id,variantId, json);
+        if (s.hasErrors()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(s.getErrors()).build();
+        }
+        return Response.ok().location(linkBuilder.forYiddishVariant(s.getEntity(), uriInfo))
+                .build();
+    }
+
+    @DELETE
+    @Path("{id}/yiddish/{variantId}")
+    public Response removeYiddishVariant(@PathParam("id") final UUID id, @PathParam("variantId") Long variantId) {
+        senseCommandService.deleteYiddishVariant(id, variantId);
+        return Response.noContent().build();
     }
 }

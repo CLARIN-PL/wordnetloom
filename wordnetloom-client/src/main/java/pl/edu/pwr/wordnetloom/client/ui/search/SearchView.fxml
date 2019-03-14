@@ -36,13 +36,6 @@
                           <toggleGroup>
                               <ToggleGroup fx:id="modeToggleGroup" />
                           </toggleGroup>
-                          <graphic>
-                              <TitledPane animated="false" text="untitled">
-                                  <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                  </content>
-                              </TitledPane>
-                          </graphic>
                       </RadioMenuItem>
                       <RadioMenuItem fx:id="synsetMode" mnemonicParsing="false" text="Synset Mode" toggleGroup="$modeToggleGroup" />
                   </items>

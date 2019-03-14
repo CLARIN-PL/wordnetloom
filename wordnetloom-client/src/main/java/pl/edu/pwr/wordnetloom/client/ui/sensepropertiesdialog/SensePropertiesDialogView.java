@@ -19,6 +19,7 @@ import pl.edu.pwr.wordnetloom.client.ui.yiddishpropertiesform.YiddishPropertiesF
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.UUID;
 
 public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialogViewModel> {
 
@@ -44,6 +45,16 @@ public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialog
 		viewModel.subscribe(SensePropertiesDialogViewModel.CLOSE_DIALOG_NOTIFICATION, (key, payload) -> {
 			showDialog.close();
 		});
+		viewModel.subscribe(SensePropertiesDialogViewModel.ADD_YIDDISH_PROPERTY, (s, objects) -> {
+            addYiddishProperty((YiddishProperty) objects[0]);
+		});
+        viewModel.subscribe(SensePropertiesDialogViewModel.UPDATE_TAB_NAME, (s, objects) -> {
+            updateTabName(objects[0].toString(), objects[1].toString());
+        });
+
+		viewModel.subscribe(SensePropertiesDialogViewModel.REMOVE_YIDDISH_PROPERTY, (s, objects) -> {
+			removeTab(objects[0].toString());
+		});
 		saveButton.disableProperty().bind(viewModel.saveButtonDisabledProperty());
 	}
 
@@ -54,23 +65,39 @@ public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialog
 
 	public void loadYiddish(){
 	    if(viewModel.getYp() != null) {
-            viewModel.getYp().getRows().forEach(y ->{
-
-                ViewTuple<YiddishPropertiesFormView, YiddishPropertiesFormViewModel> load = FluentViewLoader
-                        .fxmlView(YiddishPropertiesFormView.class)
-                        .context(context)
-                        .load();
-
-                load.getViewModel().setYiddishProperty(y);
-                Parent view = load.getView();
-
-                Tab t = new Tab();
-                t.setText(y.getVariantType().name());
-                t.setContent(view);
-                tabs.getTabs().add(t);
-            });
+            viewModel.getYp().getRows().forEach(this::addYiddishProperty);
         }
     }
+
+	private void removeTab(String id){
+		tabs.getTabs()
+				.stream()
+				.filter(t -> t.getId().equals(id))
+				.findFirst().ifPresent(t -> tabs.getTabs().remove(t));
+	}
+    private void updateTabName(String id, String name){
+	    tabs.getTabs()
+                .stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst().ifPresent(t -> t.setText(name));
+    }
+
+	private void addYiddishProperty(YiddishProperty y) {
+		ViewTuple<YiddishPropertiesFormView, YiddishPropertiesFormViewModel> load = FluentViewLoader
+				.fxmlView(YiddishPropertiesFormView.class)
+				.context(context)
+				.load();
+
+		load.getViewModel().setYiddishProperty(y);
+		Parent view = load.getView();
+
+		Tab t = new Tab();
+		t.setId(y.getTabId());
+		t.setText(y.getVariantType().name());
+		t.setContent(view);
+		tabs.getTabs().add(t);
+	}
+
 	private void initIcons(){
         AwesomeDude.setIcon(saveButton, AwesomeIcon.SAVE, "11");
         AwesomeDude.setIcon(closeButton, AwesomeIcon.TIMES, "11");

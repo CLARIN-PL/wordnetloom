@@ -3,9 +3,7 @@ package pl.edu.pwr.wordnetloom.server.business.sense.boundary;
 
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.control.DictionaryQueryService;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Register;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.control.RelationTypeQueryService;
@@ -17,6 +15,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
+import pl.edu.pwr.wordnetloom.server.business.yiddish.entity.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -217,7 +216,7 @@ public class SenseCommandService {
                 int part_of_speech = sense.getInt("part_of_speech");
 
                 if (hasLexiconChanged.get() || hasPartOfSpeechChanged.get() || hasWordChanged) {
-                    s.setVariant(findNextVariant(s.getWord().getId(), (long)part_of_speech, (long)lexicon));
+                    s.setVariant(findNextVariant(s.getWord().getId(), (long) part_of_speech, (long) lexicon));
                 }
 
                 // set lexicon
@@ -562,4 +561,507 @@ public class SenseCommandService {
                 .ifPresent(e -> em.remove(e));
     }
 
+    public OperationResult<YiddishSenseExtension> addYiddishVariant(UUID id, JsonObject json) {
+        OperationResult<YiddishSenseExtension> result = new OperationResult<>();
+
+        Optional<Sense> s = senseQueryService.findById(id);
+
+        if (s.isPresent()) {
+            YiddishSenseExtension yse = new YiddishSenseExtension();
+            yse.setSense(s.get());
+            if (!json.isNull("variant_type")) {
+                yse.setVariant(VariantType.valueOf(json.getString("variant_type")));
+            } else {
+                result.addError("variant_type", "Variant type may not be empty");
+            }
+
+            if (!json.isNull("latin_spelling")) {
+                yse.setLatinSpelling(json.getString("latin_spelling"));
+            } else {
+                yse.setLatinSpelling(null);
+            }
+
+            if (!json.isNull("yiddish_spelling")) {
+                yse.setYiddishSpelling(json.getString("yiddish_spelling"));
+            } else {
+                yse.setYiddishSpelling(null);
+            }
+
+            if (!json.isNull("yivo_spelling")) {
+                yse.setYivoSpelling(json.getString("yivo_spelling"));
+            } else {
+                yse.setYivoSpelling(null);
+            }
+
+            if (!json.isNull("meaning")) {
+                yse.setMeaning(json.getString("meaning"));
+            } else {
+                yse.setMeaning(null);
+            }
+
+            if (!json.isNull("etymological_root")) {
+                yse.setEtymologicalRoot(json.getString("etymological_root"));
+            } else {
+                yse.setEtymologicalRoot(null);
+            }
+
+            if (!json.isNull("comment")) {
+                yse.setComment(json.getString("comment"));
+            } else {
+                yse.setComment(null);
+            }
+
+            if (!json.isNull("context")) {
+                yse.setContext(json.getString("context"));
+            } else {
+                yse.setContext(null);
+            }
+
+            if (!json.isNull("etymology")) {
+                yse.setEtymology(json.getString("etymology"));
+            } else {
+                yse.setEtymology(null);
+            }
+
+            if (!json.isNull("age")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("age").getInt("id"))
+                        .filter(d -> d instanceof AgeDictionary)
+                        .map(d -> (AgeDictionary) d)
+                        .ifPresent(yse::setAge);
+            } else {
+                yse.setAge(null);
+            }
+
+            if (!json.isNull("grammatical_gender")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("grammatical_gender").getInt("id"))
+                        .filter(d -> d instanceof GrammaticalGenderDictionary)
+                        .map(d -> (GrammaticalGenderDictionary) d)
+                        .ifPresent(yse::setGrammaticalGender);
+            } else {
+                yse.setGrammaticalGender(null);
+            }
+
+            if (!json.isNull("lexical_characteristic")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("lexical_characteristic").getInt("id"))
+                        .filter(d -> d instanceof LexicalCharacteristicDictionary)
+                        .map(d -> (LexicalCharacteristicDictionary) d)
+                        .ifPresent(yse::setLexicalCharacteristic);
+            } else {
+                yse.setLexicalCharacteristic(null);
+            }
+
+            if (!json.isNull("status")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("status").getInt("id"))
+                        .filter(d -> d instanceof StatusDictionary)
+                        .map(d -> (StatusDictionary) d)
+                        .ifPresent(yse::setStatus);
+            } else {
+                yse.setStatus(null);
+            }
+
+            if (!json.isNull("style")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("style").getInt("id"))
+                        .filter(d -> d instanceof StyleDictionary)
+                        .map(d -> (StyleDictionary) d)
+                        .ifPresent(yse::setStyle);
+            } else {
+                yse.setStyle(null);
+            }
+
+            if (!json.isNull("sources")) {
+                json.getJsonArray("sources")
+                        .forEach(src -> {
+                            JsonObject j = src.asJsonObject();
+
+                            dictionaryQueryService.findDictionaryById(j.getInt("id"))
+                                    .filter(d -> d instanceof SourceDictionary)
+                                    .map(d -> (SourceDictionary) d)
+                                    .ifPresent(d -> yse.getSource().add(d));
+                        });
+            }
+
+            if (!json.isNull("semantic_fields")) {
+                json.getJsonArray("semantic_fields")
+                        .forEach(src -> {
+                            YiddishDomain domain = new YiddishDomain();
+                            domain.setSenseExtension(yse);
+                            JsonObject j = src.asJsonObject();
+                            if (!j.isNull("domain")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("domain").getInt("id"))
+                                        .filter(d -> d instanceof DomainDictionary)
+                                        .map(d -> (DomainDictionary) d)
+                                        .ifPresent(domain::setDomain);
+                            }
+                            if (!j.isNull("modifier")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("modifier").getInt("id"))
+                                        .filter(d -> d instanceof DomainModifierDictionary)
+                                        .map(d -> (DomainModifierDictionary) d)
+                                        .ifPresent(domain::setModifier);
+                            }
+                            yse.getYiddishDomains().add(domain);
+                        });
+            }
+
+            if (!json.isNull("transcriptions")) {
+                json.getJsonArray("transcriptions")
+                        .forEach(trs -> {
+                            Transcription t = new Transcription();
+                            JsonObject j = trs.asJsonObject();
+                            if (!j.isNull("transcription")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("transcription").getInt("id"))
+                                        .filter(d -> d instanceof TranscriptionDictionary)
+                                        .map(d -> (TranscriptionDictionary) d)
+                                        .ifPresent(t::setTranscriptionDictionary);
+                            }
+                            if (!j.isNull("phonography")) {
+                                t.setPhonography(j.getString("phonography"));
+                            }
+                            yse.getTranscriptions().add(t);
+                        });
+            }
+
+            if (!json.isNull("inflections")) {
+                json.getJsonArray("inflections")
+                        .forEach(trs -> {
+                            Inflection i = new Inflection();
+                            JsonObject j = trs.asJsonObject();
+                            if (!j.isNull("inflection")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("inflection").getInt("id"))
+                                        .filter(d -> d instanceof InflectionDictionary)
+                                        .map(d -> (InflectionDictionary) d)
+                                        .ifPresent(i::setInflectionDictionary);
+                            }
+                            if (!j.isNull("text")) {
+                                i.setText(j.getString("text"));
+                            }
+                            yse.getInflection().add(i);
+                        });
+            }
+
+            if (!json.isNull("particles")) {
+                AtomicInteger pos = new AtomicInteger(0);
+                json.getJsonArray("particles")
+                        .forEach(part -> {
+                            JsonObject j = part.asJsonObject();
+                            if (!j.isNull("particle")) {
+                                String type = j.getJsonObject("particle").getString("type");
+                                String value = j.getJsonObject("particle").getString("value");
+                                Integer dicId = null;
+                                if (!j.getJsonObject("particle").isNull("id")) {
+                                    dicId = j.getJsonObject("particle").getInt("id");
+                                }
+                                if (type.equals("root")) {
+                                    RootParticle rp = new RootParticle();
+                                    rp.setExtension(yse);
+                                    rp.setPosition(pos.getAndIncrement());
+                                    rp.setRoot(value);
+                                    yse.getParticles().add(rp);
+                                }
+                                if (type.equals("constituent")) {
+                                    ConstituentParticle cp = new ConstituentParticle();
+                                    cp.setConstituent(value);
+                                    cp.setExtension(yse);
+                                    cp.setPosition(pos.getAndIncrement());
+                                    yse.getParticles().add(cp);
+                                }
+                                if (type.equals("prefix")) {
+                                    PrefixParticle pp = new PrefixParticle();
+                                    pp.setExtension(yse);
+                                    pp.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof PrefixDictionary)
+                                            .map(d -> (PrefixDictionary) d)
+                                            .ifPresent(pp::setPrefix);
+                                    yse.getParticles().add(pp);
+                                }
+                                if (type.equals("suffix")) {
+                                    SuffixParticle sp = new SuffixParticle();
+                                    sp.setExtension(yse);
+                                    sp.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof SuffixDictionary)
+                                            .map(d -> (SuffixDictionary) d)
+                                            .ifPresent(sp::setSuffix);
+                                    yse.getParticles().add(sp);
+                                }
+                                if (type.equals("interfix")) {
+                                    InterfixParticle ip = new InterfixParticle();
+                                    ip.setExtension(yse);
+                                    ip.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof InterfixDictionary)
+                                            .map(d -> (InterfixDictionary) d)
+                                            .ifPresent(ip::setInterfix);
+                                    yse.getParticles().add(ip);
+                                }
+                            }
+                        });
+            }
+
+            if (!result.hasErrors()) {
+                em.persist(yse);
+                result.setEntity(yse);
+            }
+        }
+
+        return result;
+    }
+
+    public OperationResult<YiddishSenseExtension> updateYiddishVariant(UUID id, Long variantId, JsonObject json) {
+        OperationResult<YiddishSenseExtension> result = new OperationResult<>();
+        Optional<YiddishSenseExtension> yse = senseQueryService.findYiddishVariant(id, variantId);
+        if (yse.isPresent()) {
+            if (!json.isNull("variant_type")) {
+                yse.get().setVariant(VariantType.valueOf(json.getString("variant_type")));
+            } else {
+                result.addError("variant_type", "Variant type may not be empty");
+            }
+
+            if (!json.isNull("latin_spelling")) {
+                yse.get().setLatinSpelling(json.getString("latin_spelling"));
+            } else {
+                yse.get().setLatinSpelling(null);
+            }
+
+            if (!json.isNull("yiddish_spelling")) {
+                yse.get().setYiddishSpelling(json.getString("yiddish_spelling"));
+            } else {
+                yse.get().setYiddishSpelling(null);
+            }
+
+            if (!json.isNull("yivo_spelling")) {
+                yse.get().setYivoSpelling(json.getString("yivo_spelling"));
+            } else {
+                yse.get().setYivoSpelling(null);
+            }
+
+            if (!json.isNull("meaning")) {
+                yse.get().setMeaning(json.getString("meaning"));
+            } else {
+                yse.get().setMeaning(null);
+            }
+
+            if (!json.isNull("etymological_root")) {
+                yse.get().setEtymologicalRoot(json.getString("etymological_root"));
+            } else {
+                yse.get().setEtymologicalRoot(null);
+            }
+
+            if (!json.isNull("comment")) {
+                yse.get().setComment(json.getString("comment"));
+            } else {
+                yse.get().setComment(null);
+            }
+
+            if (!json.isNull("context")) {
+                yse.get().setContext(json.getString("context"));
+            } else {
+                yse.get().setContext(null);
+            }
+
+            if (!json.isNull("etymology")) {
+                yse.get().setEtymology(json.getString("etymology"));
+            } else {
+                yse.get().setEtymology(null);
+            }
+
+            if (!json.isNull("age")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("age").getInt("id"))
+                        .filter(d -> d instanceof AgeDictionary)
+                        .map(d -> (AgeDictionary) d)
+                        .ifPresent(d -> yse.get().setAge(d));
+            } else {
+                yse.get().setAge(null);
+            }
+
+            if (!json.isNull("grammatical_gender")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("grammatical_gender").getInt("id"))
+                        .filter(d -> d instanceof GrammaticalGenderDictionary)
+                        .map(d -> (GrammaticalGenderDictionary) d)
+                        .ifPresent(d -> yse.get().setGrammaticalGender(d));
+            } else {
+                yse.get().setGrammaticalGender(null);
+            }
+
+            if (!json.isNull("lexical_characteristic")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("lexical_characteristic").getInt("id"))
+                        .filter(d -> d instanceof LexicalCharacteristicDictionary)
+                        .map(d -> (LexicalCharacteristicDictionary) d)
+                        .ifPresent(d -> yse.get().setLexicalCharacteristic(d));
+            } else {
+                yse.get().setLexicalCharacteristic(null);
+            }
+
+            if (!json.isNull("status")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("status").getInt("id"))
+                        .filter(d -> d instanceof StatusDictionary)
+                        .map(d -> (StatusDictionary) d)
+                        .ifPresent(d -> yse.get().setStatus(d));
+            } else {
+                yse.get().setStatus(null);
+            }
+
+            if (!json.isNull("style")) {
+                dictionaryQueryService.findDictionaryById(json.getJsonObject("style").getInt("id"))
+                        .filter(d -> d instanceof StyleDictionary)
+                        .map(d -> (StyleDictionary) d)
+                        .ifPresent(d -> yse.get().setStyle(d));
+            } else {
+                yse.get().setStyle(null);
+            }
+
+            if (!json.isNull("sources")) {
+                Set<SourceDictionary> sd = new HashSet<>();
+                json.getJsonArray("sources")
+                        .forEach(src -> {
+                            JsonObject j = src.asJsonObject();
+
+                            dictionaryQueryService.findDictionaryById(j.getInt("id"))
+                                    .filter(d -> d instanceof SourceDictionary)
+                                    .map(d -> (SourceDictionary) d)
+                                    .ifPresent(sd::add);
+                        });
+                yse.get().setSource(sd);
+            }
+
+            if (!json.isNull("semantic_fields")) {
+                Set<YiddishDomain> dom = new HashSet<>();
+                json.getJsonArray("semantic_fields")
+                        .forEach(src -> {
+                            YiddishDomain domain = new YiddishDomain();
+                            domain.setSenseExtension(yse.get());
+                            JsonObject j = src.asJsonObject();
+                            if (!j.isNull("domain")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("domain").getInt("id"))
+                                        .filter(d -> d instanceof DomainDictionary)
+                                        .map(d -> (DomainDictionary) d)
+                                        .ifPresent(domain::setDomain);
+                            }
+                            if (!j.isNull("modifier")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("modifier").getInt("id"))
+                                        .filter(d -> d instanceof DomainModifierDictionary)
+                                        .map(d -> (DomainModifierDictionary) d)
+                                        .ifPresent(domain::setModifier);
+                            }
+                            dom.add(domain);
+                        });
+                yse.get().setYiddishDomains(dom);
+            }
+
+            if (!json.isNull("transcriptions")) {
+                Set<Transcription> tr = new HashSet<>();
+                json.getJsonArray("transcriptions")
+                        .forEach(trs -> {
+                            Transcription t = new Transcription();
+                            JsonObject j = trs.asJsonObject();
+                            if (!j.isNull("transcription")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("transcription").getInt("id"))
+                                        .filter(d -> d instanceof TranscriptionDictionary)
+                                        .map(d -> (TranscriptionDictionary) d)
+                                        .ifPresent(t::setTranscriptionDictionary);
+                            }
+                            if (!j.isNull("phonography")) {
+                                t.setPhonography(j.getString("phonography"));
+                            }
+                            tr.add(t);
+                        });
+                yse.get().setTranscriptions(tr);
+            }
+
+            if (!json.isNull("inflections")) {
+                Set<Inflection> inf = new HashSet<>();
+                json.getJsonArray("inflections")
+                        .forEach(trs -> {
+                            Inflection i = new Inflection();
+                            JsonObject j = trs.asJsonObject();
+                            if (!j.isNull("inflection")) {
+                                dictionaryQueryService.findDictionaryById(j.getJsonObject("inflection").getInt("id"))
+                                        .filter(d -> d instanceof InflectionDictionary)
+                                        .map(d -> (InflectionDictionary) d)
+                                        .ifPresent(i::setInflectionDictionary);
+                            }
+                            if (!j.isNull("text")) {
+                                i.setText(j.getString("text"));
+                            }
+                           inf.add(i);
+                        });
+                yse.get().setInflection(inf);
+            }
+
+            if (!json.isNull("particles")) {
+                AtomicInteger pos = new AtomicInteger(0);
+                Set<Particle> pa = new HashSet<>();
+                json.getJsonArray("particles")
+                        .forEach(part -> {
+                            JsonObject j = part.asJsonObject();
+                            if (!j.isNull("particle")) {
+                                String type = j.getJsonObject("particle").getString("type");
+                                String value = j.getJsonObject("particle").getString("value");
+                                Integer dicId = null;
+                                if (!j.getJsonObject("particle").isNull("id")) {
+                                    dicId = j.getJsonObject("particle").getInt("id");
+                                }
+                                if (type.equals("root")) {
+                                    RootParticle rp = new RootParticle();
+                                    rp.setExtension(yse.get());
+                                    rp.setPosition(pos.getAndIncrement());
+                                    rp.setRoot(value);
+                                    pa.add(rp);
+                                }
+                                if (type.equals("constituent")) {
+                                    ConstituentParticle cp = new ConstituentParticle();
+                                    cp.setConstituent(value);
+                                    cp.setExtension(yse.get());
+                                    cp.setPosition(pos.getAndIncrement());
+                                    pa.add(cp);
+                                }
+                                if (type.equals("prefix")) {
+                                    PrefixParticle pp = new PrefixParticle();
+                                    pp.setExtension(yse.get());
+                                    pp.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof PrefixDictionary)
+                                            .map(d -> (PrefixDictionary) d)
+                                            .ifPresent(pp::setPrefix);
+                                    pa.add(pp);
+                                }
+                                if (type.equals("suffix")) {
+                                    SuffixParticle sp = new SuffixParticle();
+                                    sp.setExtension(yse.get());
+                                    sp.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof SuffixDictionary)
+                                            .map(d -> (SuffixDictionary) d)
+                                            .ifPresent(sp::setSuffix);
+                                   pa.add(sp);
+                                }
+                                if (type.equals("interfix")) {
+                                    InterfixParticle ip = new InterfixParticle();
+                                    ip.setExtension(yse.get());
+                                    ip.setPosition(pos.getAndIncrement());
+                                    dictionaryQueryService.findDictionaryById(dicId)
+                                            .filter(d -> d instanceof InterfixDictionary)
+                                            .map(d -> (InterfixDictionary) d)
+                                            .ifPresent(ip::setInterfix);
+                                    pa.add(ip);
+                                }
+                            }
+                        });
+                yse.get().setParticles(pa);
+            }
+
+            if (!result.hasErrors()) {
+                em.merge(yse.get());
+                result.setEntity(yse.get());
+            }
+        }
+        return result;
+    }
+
+    public void deleteYiddishVariant(UUID id, Long variantId) {
+
+        YiddishSenseExtension ye = senseQueryService.findYiddishVariant(id, variantId).get();
+        ye.setSource(null);
+        em.remove(ye);
+    }
 }

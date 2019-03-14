@@ -31,19 +31,6 @@ public class YiddishDomain implements Serializable {
     public YiddishDomain() {
     }
 
-    public YiddishDomain(YiddishDomain domain, YiddishSenseExtension ext) {
-        super();
-        this.domain = domain.domain;
-        modifier = domain.modifier;
-        senseExtension = ext;
-    }
-
-    public YiddishDomain(DomainDictionary domain, DomainModifierDictionary modifier) {
-        super();
-        this.domain = domain;
-        this.modifier = modifier;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -77,5 +64,13 @@ public class YiddishDomain implements Serializable {
 
     public void setModifier(DomainModifierDictionary modifier) {
         this.modifier = modifier;
+    }
+
+    public YiddishSenseExtension getSenseExtension() {
+        return senseExtension;
+    }
+
+    public void setSenseExtension(YiddishSenseExtension senseExtension) {
+        this.senseExtension = senseExtension;
     }
 }

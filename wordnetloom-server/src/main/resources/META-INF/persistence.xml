@@ -16,7 +16,7 @@
             <property name="org.hibernate.envers.audit_table_suffix" value="" />
             <property name="org.hibernate.envers.default_schema" value="wordnet_audit" />
             <property name="org.hibernate.envers.default_catalog" value="wordnet_audit" />
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <!--<property name="hibernate.hbm2ddl.auto" value="update" />-->
             <property
                 name="org.hibernate.envers.audit_strategy"
                 value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>

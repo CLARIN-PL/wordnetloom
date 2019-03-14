@@ -66,7 +66,7 @@ public class Dictionaries {
 
     public static void dictionarySelected(ObservableValue ods, String oldV, String newV,
                                           String dictionaryName, String NOTHING_SELECTED, ObjectProperty<Dictionary> obj) {
-        if (newV != null && !newV.equals(NOTHING_SELECTED)) {
+        if (newV != null && !newV.equals(NOTHING_SELECTED) && dictionaryName != null) {
             Optional<Dictionary> matching = getDictionary(dictionaryName)
                     .stream()
                     .filter(d -> newV.equals(d.getName()))

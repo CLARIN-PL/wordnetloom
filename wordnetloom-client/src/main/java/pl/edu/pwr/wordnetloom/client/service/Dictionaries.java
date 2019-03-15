@@ -32,7 +32,7 @@ public class Dictionaries {
     public static final String DOMAIN_DICTIONARY = "domains";
     public static final String STATUS_DICTIONARY = "statuses";
     public static final String REGISTER_DICTIONARY = "registers";
-    public static final String LEXICON_DICTIONARY = "lexicon";
+    public static final String LEXICON_DICTIONARY = "lexicons";
     public static final String AGES_DICTIONARY = "ages";
     public static final String SOURCES_DICTIONARY = "sources";
     public static final String TRANSCRIPTIONS_DICTIONARY = "transcriptions";

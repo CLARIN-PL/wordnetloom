@@ -39,8 +39,7 @@ public class SenseFormView implements FxmlView<SenseFormViewModel> {
 	public Label variantLabel, ownerLabel;
 
 	@FXML
-	public ComboBox<String> lexiconCombo, posCombo,
-            domainCombo ,registerCombo, statusCombo;
+	public ComboBox<String> lexiconCombo, posCombo, domainCombo ,registerCombo, statusCombo;
 
 	@FXML
 	public TextArea definitionArea, commentArea, technicalCommentArea;

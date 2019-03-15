@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TreeItem;
+import pl.edu.pwr.wordnetloom.client.events.CreateSenseRelationEvent;
 import pl.edu.pwr.wordnetloom.client.events.LoadGraphEvent;
 import pl.edu.pwr.wordnetloom.client.events.RefreshSenseRelationsEvent;
 import pl.edu.pwr.wordnetloom.client.events.ShowSenseRelationsEvent;
@@ -125,6 +126,11 @@ public class SenseRelationsViewModel implements ViewModel {
         if (activeSense != null) {
             publish(OPEN_ADD_SENSE_RELATION_DIALOG);
         }
+    }
+
+    public void onSenseRelation(@Observes CreateSenseRelationEvent event){
+        activeSense.set(service.findSense(event.getParentId()));
+        addSenseRelation();
     }
 
     private  void showSenseVisualisation(){

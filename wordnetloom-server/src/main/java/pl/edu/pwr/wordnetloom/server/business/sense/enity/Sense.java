@@ -188,6 +188,7 @@ public class Sense implements Serializable {
     private SenseAttributes attributes;
 
     @OneToMany(mappedBy = "sense", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("variant DESC")
     private Set<YiddishSenseExtension> yiddish = new LinkedHashSet<>();
 
     public UUID getId(){

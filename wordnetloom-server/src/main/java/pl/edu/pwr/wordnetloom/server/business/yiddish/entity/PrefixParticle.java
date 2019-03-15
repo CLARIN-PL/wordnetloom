@@ -14,25 +14,30 @@ public class PrefixParticle extends Particle {
     @JoinColumn(name = "particle_id")
     private PrefixDictionary prefix;
 
-    public PrefixParticle() {
-    }
-
-    public PrefixParticle(PrefixParticle p, YiddishSenseExtension ext) {
-        setExtension(ext);
-        setPosition(p.getPosition());
-        prefix = p.getPrefix();
-    }
-
-    public PrefixParticle(PrefixDictionary dic) {
-        prefix = dic;
-    }
-
     public PrefixDictionary getPrefix() {
         return prefix;
     }
 
     public void setPrefix(PrefixDictionary prefix) {
         this.prefix = prefix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PrefixParticle)) return false;
+        if (!super.equals(o)) return false;
+
+        PrefixParticle that = (PrefixParticle) o;
+
+        return prefix != null ? prefix.equals(that.prefix) : that.prefix == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
+        return result;
     }
 
     @Override

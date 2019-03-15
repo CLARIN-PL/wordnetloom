@@ -43,6 +43,9 @@ public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialog
 	public void initialize() {
 	    initIcons();
 		viewModel.subscribe(SensePropertiesDialogViewModel.CLOSE_DIALOG_NOTIFICATION, (key, payload) -> {
+		    tabs.getTabs().forEach(t -> {
+		        t.setContent(null);
+            });
 			showDialog.close();
 		});
 		viewModel.subscribe(SensePropertiesDialogViewModel.ADD_YIDDISH_PROPERTY, (s, objects) -> {

@@ -1,6 +1,5 @@
 package pl.edu.pwr.wordnetloom.server.business.yiddish.entity;
 
-import org.hibernate.annotations.Cascade;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 
@@ -19,11 +18,11 @@ public class YiddishSenseExtension implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sense_id", referencedColumnName = "id", nullable = false)
     private Sense sense;
 
-/*    @ManyToOne(fetch = FetchType.EAGER)
+/*  @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dialectal_id", referencedColumnName = "id")
     private DialectalDictionary dialectalDictionary;*/
 

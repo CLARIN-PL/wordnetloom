@@ -40,6 +40,24 @@ public class Particle implements Serializable {
         this.position = position;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Particle)) return false;
+
+        Particle particle = (Particle) o;
+
+        if (id != null ? !id.equals(particle.id) : particle.id != null) return false;
+        return extension != null ? extension.equals(particle.extension) : particle.extension == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (extension != null ? extension.hashCode() : 0);
+        return result;
+    }
+
     public YiddishSenseExtension getExtension() {
         return extension;
     }

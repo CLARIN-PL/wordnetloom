@@ -1,9 +1,6 @@
 package pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.control;
 
-import de.saxsys.mvvmfx.Context;
-import de.saxsys.mvvmfx.FluentViewLoader;
-import de.saxsys.mvvmfx.InjectContext;
-import de.saxsys.mvvmfx.ViewTuple;
+import de.saxsys.mvvmfx.*;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -23,6 +20,7 @@ import pl.edu.pwr.wordnetloom.client.events.RemoveRelationEvent;
 import pl.edu.pwr.wordnetloom.client.events.UpdateCursorEvent;
 import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.GraphController;
 import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.structure.*;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.SenseRelationDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynsetRelationScope;
 
 import javax.enterprise.event.Event;
@@ -262,6 +260,7 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
         });
         currentMenuItems.add(createRelationItem);
     }
+
 
     private void addGroupSynsetsOption(Node vertex, PickedState<Node> pickedVertexState) {
         MenuItem groupItem = new MenuItem(resourceBundle.getString("context.menu.group"));

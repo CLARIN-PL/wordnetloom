@@ -18,7 +18,9 @@ import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.dictionaryform.DictionaryListItemViewModel;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SensePropertiesDialogScope;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.YiddishPropertiesDialogScope;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Optional;
@@ -149,7 +151,7 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
     ParticleDictionarySelector particleDictionarySelector;
 
     @InjectScope
-    SensePropertiesDialogScope sensePropertiesDialogScope;
+    YiddishPropertiesDialogScope yiddishPropertiesDialogScope;
 
     @Inject
     RemoteService service;
@@ -174,7 +176,8 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         initTranscriptionsItemList();
         initParticleTypeList();
         initParticleValuesItemList();
-        sensePropertiesDialogScope.subscribe(SensePropertiesDialogScope.COMMIT, (key, payload) -> {
+
+        yiddishPropertiesDialogScope.subscribe(YiddishPropertiesDialogScope.COMMIT, (key, payload) -> {
             commit();
             save();
         });
@@ -272,7 +275,9 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
         });
 
         selectedParticleValue.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, particleType.get().getDictionary(), NOTHING_SELECTED_MARKER, particleValue);
+            if (particleType.isNotNull().get()) {
+                Dictionaries.dictionarySelected(obs, oldV, newV, particleType.get().getDictionary(), NOTHING_SELECTED_MARKER, particleValue);
+            }
         });
 
         selectedAge.addListener((obs, oldV, newV) -> {
@@ -410,7 +415,8 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
 
     private void removeVariant() {
         service.delete(yiddishProperty.getLinks().getSelf());
-        sensePropertiesDialogScope.publish(SensePropertiesDialogScope.REMOVE_YIDDISH_PROPERTY, yiddishProperty.getTabId());
+        yiddishPropertiesDialogScope.publish(YiddishPropertiesDialogScope.REMOVE_YIDDISH_PROPERTY, yiddishProperty.getTabId());
+        yiddishProperty = null;
     }
 
     private void addVariant() {
@@ -419,63 +425,67 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
             yp.setId(null);
             yp.setTabId(UUID.randomUUID().toString());
             yp.setLinks(new Links());
-            sensePropertiesDialogScope.publish(SensePropertiesDialogScope.ADD_YIDDISH_PROPERTY, yp);
+            yiddishPropertiesDialogScope.publish(YiddishPropertiesDialogScope.ADD_YIDDISH_PROPERTY, yp);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
     }
 
     public void save() {
-        try {
-            if (yiddishProperty.getId() == null) {
-                Sense s = sensePropertiesDialogScope.getSenseToEdit();
+        if(yiddishProperty != null) {
+            try {
+                if (yiddishProperty.getId() == null) {
+                    UUID id = yiddishPropertiesDialogScope.getSenseId();
 
-                YiddishProperty y = service.addYiddishVariant(s.getId(), yiddishProperty);
-                yiddishProperty = y;
-            } else {
-                service.updateYiddishVariant(yiddishProperty);
+                    YiddishProperty y = service.addYiddishVariant(id, yiddishProperty);
+                    yiddishProperty = y;
+                } else {
+                    service.updateYiddishVariant(yiddishProperty);
+                }
+            } catch (Exception e) {
+                dialogHandler.handleErrors(e);
             }
-        } catch (Exception e) {
-            dialogHandler.handleErrors(e);
         }
     }
 
     public void commit() {
-        yiddishProperty.setYiddishSpelling(yiddish.get());
-        yiddishProperty.setYivoSpelling(yivo.get());
-        yiddishProperty.setLatinSpelling(latin.get());
-        yiddishProperty.setComment(comment.get());
-        yiddishProperty.setContext(context.get());
-        yiddishProperty.setMeaning(meaning.get());
-        yiddishProperty.setEtymologicalRoot(etymologicalRoot.get());
-        yiddishProperty.setEtymology(etymology.get());
-        yiddishProperty.setVariantType(variantType.get());
-        yiddishProperty.setAge(age.get());
-        yiddishProperty.setGrammaticalGender(grammaticalGender.get());
-        yiddishProperty.setStatus(status.get());
-        yiddishProperty.setStyle(style.get());
-        yiddishProperty.setLexicalCharacteristic(lexicalCharacteristic.get());
-        yiddishProperty.setSources(sourceList.stream()
-                .map(DictionaryListItemViewModel::getDictionaryItem)
-                .collect(Collectors.toList())
-        );
+        if(yiddishProperty != null) {
+            yiddishProperty.setYiddishSpelling(yiddish.get());
+            yiddishProperty.setYivoSpelling(yivo.get());
+            yiddishProperty.setLatinSpelling(latin.get());
+            yiddishProperty.setComment(comment.get());
+            yiddishProperty.setContext(context.get());
+            yiddishProperty.setMeaning(meaning.get());
+            yiddishProperty.setEtymologicalRoot(etymologicalRoot.get());
+            yiddishProperty.setEtymology(etymology.get());
+            yiddishProperty.setVariantType(variantType.get());
+            yiddishProperty.setAge(age.get());
+            yiddishProperty.setGrammaticalGender(grammaticalGender.get());
+            yiddishProperty.setStatus(status.get());
+            yiddishProperty.setStyle(style.get());
+            yiddishProperty.setLexicalCharacteristic(lexicalCharacteristic.get());
+            yiddishProperty.setSources(sourceList.stream()
+                    .map(DictionaryListItemViewModel::getDictionaryItem)
+                    .collect(Collectors.toList())
+            );
 
-        yiddishProperty.setSemanticFields(semanticFiledList.stream()
-                .map(SemanticFieldListItemViewModel::getItem)
-                .collect(Collectors.toList())
-        );
-        yiddishProperty.setInflections(inflectionFiledList.stream()
-                .map(InflectionListItemViewModel::getItem)
-                .collect(Collectors.toList())
-        );
-        yiddishProperty.setTranscriptions(transcriptionList.stream()
-                .map(TranscriptionListItemViewModel::getItem)
-                .collect(Collectors.toList())
-        );
-        yiddishProperty.setParticles(particleList.stream()
-                .map(ParticleListItemViewModel::getItem)
-                .collect(Collectors.toList())
-        );
+            yiddishProperty.setSemanticFields(semanticFiledList.stream()
+                    .map(SemanticFieldListItemViewModel::getItem)
+                    .collect(Collectors.toList())
+            );
+            yiddishProperty.setInflections(inflectionFiledList.stream()
+                    .map(InflectionListItemViewModel::getItem)
+                    .collect(Collectors.toList())
+            );
+            yiddishProperty.setTranscriptions(transcriptionList.stream()
+                    .map(TranscriptionListItemViewModel::getItem)
+                    .collect(Collectors.toList())
+            );
+            yiddishProperty.setParticles(particleList.stream()
+                    .map(ParticleListItemViewModel::getItem)
+                    .collect(Collectors.toList())
+            );
+        }
     }
 
     public void setYiddishProperty(YiddishProperty yp) {
@@ -658,7 +668,7 @@ public class YiddishPropertiesFormViewModel implements ViewModel {
                     .filter(d -> newV.equals(d.name()))
                     .findFirst();
             matching.ifPresent(obj::set);
-            sensePropertiesDialogScope.publish(SensePropertiesDialogScope.UPDATE_TAB_NAME,
+            yiddishPropertiesDialogScope.publish(YiddishPropertiesDialogScope.UPDATE_TAB_NAME,
                     yiddishProperty.getTabId(), variantType.get().name());
         } else if (NOTHING_SELECTED.equals(newV)) {
             obj.set(null);

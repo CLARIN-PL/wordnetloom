@@ -14,25 +14,30 @@ public class SuffixParticle extends Particle {
     @JoinColumn(name = "particle_id")
     private SuffixDictionary suffix;
 
-    public SuffixParticle() {
-    }
-
-    public SuffixParticle(SuffixParticle p, YiddishSenseExtension ext) {
-        setExtension(ext);
-        setPosition(p.getPosition());
-        suffix = p.getSuffix();
-    }
-
-    public SuffixParticle(SuffixDictionary dic) {
-        suffix = dic;
-    }
-
     public SuffixDictionary getSuffix() {
         return suffix;
     }
 
     public void setSuffix(SuffixDictionary suffix) {
         this.suffix = suffix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SuffixParticle)) return false;
+        if (!super.equals(o)) return false;
+
+        SuffixParticle that = (SuffixParticle) o;
+
+        return suffix != null ? suffix.equals(that.suffix) : that.suffix == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (suffix != null ? suffix.hashCode() : 0);
+        return result;
     }
 
     @Override

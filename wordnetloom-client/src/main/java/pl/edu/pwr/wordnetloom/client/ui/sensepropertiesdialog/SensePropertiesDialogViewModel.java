@@ -22,12 +22,14 @@ import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.ExampleDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SensePropertiesDialogScope;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.YiddishPropertiesDialogScope;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.ResourceBundle;
 
-@ScopeProvider(scopes = ExampleDialogScope.class)
+@ScopeProvider(scopes = {ExampleDialogScope.class, YiddishPropertiesDialogScope.class})
 public class SensePropertiesDialogViewModel implements ViewModel {
 
     private static final Logger LOG = LoggerFactory.getLogger(SensePropertiesDialogViewModel.class);
@@ -46,6 +48,9 @@ public class SensePropertiesDialogViewModel implements ViewModel {
 
     @InjectScope
     SensePropertiesDialogScope dialogScope;
+
+    @InjectScope
+    YiddishPropertiesDialogScope yiddishPropertiesDialogScope;
 
     @Inject
     RemoteService service;
@@ -88,16 +93,16 @@ public class SensePropertiesDialogViewModel implements ViewModel {
             yp = service.findYiddishProperties(ss.getLinks().getYiddish());
 
         }
-        dialogScope.subscribe(SensePropertiesDialogScope.ADD_YIDDISH_PROPERTY, (s, objects) -> {
+        yiddishPropertiesDialogScope.subscribe(YiddishPropertiesDialogScope.ADD_YIDDISH_PROPERTY, (s, objects) -> {
             YiddishProperty p = (YiddishProperty) objects[0];
             yp.getRows().add(p);
             publish(ADD_YIDDISH_PROPERTY, p);
         });
-        dialogScope.subscribe(SensePropertiesDialogScope.UPDATE_TAB_NAME, (s, objects) -> {
+        yiddishPropertiesDialogScope.subscribe(YiddishPropertiesDialogScope.UPDATE_TAB_NAME, (s, objects) -> {
             publish(UPDATE_TAB_NAME, objects);
         });
 
-        dialogScope.subscribe(SensePropertiesDialogScope.REMOVE_YIDDISH_PROPERTY, (s, objects) -> {
+        yiddishPropertiesDialogScope.subscribe(YiddishPropertiesDialogScope.REMOVE_YIDDISH_PROPERTY, (s, objects) -> {
             publish(REMOVE_YIDDISH_PROPERTY, objects);
         });
     }
@@ -116,6 +121,8 @@ public class SensePropertiesDialogViewModel implements ViewModel {
     private void save() {
         dialogScope.publish(SensePropertiesDialogScope.COMMIT);
         Sense s = dialogScope.getSenseToEdit();
+        yiddishPropertiesDialogScope.setSenseId(s.getId());
+        yiddishPropertiesDialogScope.publish(YiddishPropertiesDialogScope.COMMIT);
         try {
             if (s.getId() != null) {
                 Sense us = service.updateSense(s);

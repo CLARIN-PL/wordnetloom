@@ -6,6 +6,8 @@ import pl.edu.pwr.wordnetloom.client.model.RelationType;
 import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.model.Synset;
 
+import java.util.UUID;
+
 public class SenseRelationDialogScope implements Scope {
 
     public static final String REFRESH_SENSES = "refresh_senses";

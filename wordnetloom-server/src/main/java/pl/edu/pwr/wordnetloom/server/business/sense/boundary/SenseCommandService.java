@@ -1015,45 +1015,51 @@ public class SenseCommandService {
                                     cp.setPosition(pos.getAndIncrement());
                                     pa.add(cp);
                                 }
-                                if (type.equals("prefix")) {
-                                    PrefixParticle pp = new PrefixParticle();
-                                    pp.setExtension(yse.get());
-                                    pp.setPosition(pos.getAndIncrement());
-                                    dictionaryQueryService.findDictionaryById(dicId)
-                                            .filter(d -> d instanceof PrefixDictionary)
-                                            .map(d -> (PrefixDictionary) d)
-                                            .ifPresent(pp::setPrefix);
-                                    pa.add(pp);
-                                }
-                                if (type.equals("suffix")) {
-                                    SuffixParticle sp = new SuffixParticle();
-                                    sp.setExtension(yse.get());
-                                    sp.setPosition(pos.getAndIncrement());
-                                    dictionaryQueryService.findDictionaryById(dicId)
-                                            .filter(d -> d instanceof SuffixDictionary)
-                                            .map(d -> (SuffixDictionary) d)
-                                            .ifPresent(sp::setSuffix);
-                                   pa.add(sp);
-                                }
-                                if (type.equals("interfix")) {
-                                    InterfixParticle ip = new InterfixParticle();
-                                    ip.setExtension(yse.get());
-                                    ip.setPosition(pos.getAndIncrement());
-                                    dictionaryQueryService.findDictionaryById(dicId)
-                                            .filter(d -> d instanceof InterfixDictionary)
-                                            .map(d -> (InterfixDictionary) d)
-                                            .ifPresent(ip::setInterfix);
-                                    pa.add(ip);
+                                if(dicId != null) {
+                                    if (type.equals("prefix")) {
+                                        PrefixParticle pp = new PrefixParticle();
+                                        pp.setExtension(yse.get());
+                                        pp.setPosition(pos.getAndIncrement());
+                                        dictionaryQueryService.findDictionaryById(dicId)
+                                                .filter(d -> d instanceof PrefixDictionary)
+                                                .map(d -> (PrefixDictionary) d)
+                                                .ifPresent(pp::setPrefix);
+                                        pa.add(pp);
+                                    }
+                                    if (type.equals("suffix")) {
+                                        SuffixParticle sp = new SuffixParticle();
+                                        sp.setExtension(yse.get());
+                                        sp.setPosition(pos.getAndIncrement());
+                                        dictionaryQueryService.findDictionaryById(dicId)
+                                                .filter(d -> d instanceof SuffixDictionary)
+                                                .map(d -> (SuffixDictionary) d)
+                                                .ifPresent(sp::setSuffix);
+                                        pa.add(sp);
+                                    }
+                                    if (type.equals("interfix")) {
+                                        InterfixParticle ip = new InterfixParticle();
+                                        ip.setExtension(yse.get());
+                                        ip.setPosition(pos.getAndIncrement());
+                                        dictionaryQueryService.findDictionaryById(dicId)
+                                                .filter(d -> d instanceof InterfixDictionary)
+                                                .map(d -> (InterfixDictionary) d)
+                                                .ifPresent(ip::setInterfix);
+                                        pa.add(ip);
+                                    }
                                 }
                             }
                         });
+                yse.get().getParticles().forEach(em::remove);
                 yse.get().setParticles(pa);
+            }else {
+                result.addError("Yiddish property","Entity not found");
             }
 
             if (!result.hasErrors()) {
                 em.merge(yse.get());
                 result.setEntity(yse.get());
             }
+
         }
         return result;
     }

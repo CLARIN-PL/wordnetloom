@@ -9,19 +9,6 @@ public class ConstituentParticle extends Particle {
     @Column
     private String constituent;
 
-    public ConstituentParticle() {
-    }
-
-    public ConstituentParticle(ConstituentParticle p, YiddishSenseExtension ext) {
-        setExtension(ext);
-        setPosition(p.getPosition());
-        constituent = p.getConstituent();
-    }
-
-    public ConstituentParticle(String constituent) {
-        this.constituent = constituent;
-    }
-
     public String getConstituent() {
         return constituent;
     }
@@ -33,5 +20,23 @@ public class ConstituentParticle extends Particle {
     @Override
     public String toString() {
         return constituent + " ( Constituent )";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConstituentParticle)) return false;
+        if (!super.equals(o)) return false;
+
+        ConstituentParticle that = (ConstituentParticle) o;
+
+        return constituent != null ? constituent.equals(that.constituent) : that.constituent == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (constituent != null ? constituent.hashCode() : 0);
+        return result;
     }
 }

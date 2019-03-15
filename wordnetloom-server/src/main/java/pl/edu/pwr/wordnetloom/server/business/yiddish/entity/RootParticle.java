@@ -9,25 +9,30 @@ public class RootParticle extends Particle {
     @Column
     private String root;
 
-    public RootParticle() {
-    }
-
-    public RootParticle(RootParticle p, YiddishSenseExtension ext) {
-        setExtension(ext);
-        setPosition(p.getPosition());
-        root = p.getRoot();
-    }
-
-    public RootParticle(String root) {
-        this.root = root;
-    }
-
     public String getRoot() {
         return root;
     }
 
     public void setRoot(String root) {
         this.root = root;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RootParticle)) return false;
+        if (!super.equals(o)) return false;
+
+        RootParticle that = (RootParticle) o;
+
+        return root != null ? root.equals(that.root) : that.root == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (root != null ? root.hashCode() : 0);
+        return result;
     }
 
     @Override

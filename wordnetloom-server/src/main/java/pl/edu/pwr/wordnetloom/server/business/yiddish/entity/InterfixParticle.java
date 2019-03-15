@@ -14,25 +14,30 @@ public class InterfixParticle extends Particle {
     @JoinColumn(name = "particle_id")
     private InterfixDictionary interfix;
 
-    public InterfixParticle() {
-    }
-
-    public InterfixParticle(InterfixParticle p, YiddishSenseExtension ext) {
-        setExtension(ext);
-        setPosition(p.getPosition());
-        interfix = p.getInterfix();
-    }
-
-    public InterfixParticle(InterfixDictionary dic) {
-        interfix = dic;
-    }
-
     public InterfixDictionary getInterfix() {
         return interfix;
     }
 
     public void setInterfix(InterfixDictionary interfix) {
         this.interfix = interfix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof InterfixParticle)) return false;
+        if (!super.equals(o)) return false;
+
+        InterfixParticle that = (InterfixParticle) o;
+
+        return interfix != null ? interfix.equals(that.interfix) : that.interfix == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (interfix != null ? interfix.hashCode() : 0);
+        return result;
     }
 
     @Override

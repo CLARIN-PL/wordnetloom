@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 NAME=wordnetloom
 mvn clean install -DskipTests && docker build -t clarinpl/${NAME} .
 docker kill ${NAME}

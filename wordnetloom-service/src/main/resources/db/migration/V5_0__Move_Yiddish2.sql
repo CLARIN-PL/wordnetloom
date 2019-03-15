@@ -179,7 +179,7 @@ SELECT id, uuid FROM synset WHERE id NOT IN (SELECT synset_id FROM synset_attrib
 
 # przeniesienie relacji jednostek
 
-INSERT INTO sense_relation(child_sense_id, parent_sense_id, relation_type_id)
+INSERT INTO sense_relation(parent_sense_id, child_sense_id, relation_type_id)
 SELECT sense_from, sense_to, relation
 FROM `plwordnet3-prod`.sense_relation SR
 WHERE (sense_to, sense_from, relation) NOT IN (SELECT child_sense_id, parent_sense_id, relation_type_id FROM sense_relation)
@@ -201,7 +201,7 @@ SET SR.relation_type_fk = T.new_uuid
 WHERE SR.relation_type_fk IS NULL;
 
 #przenoszenie relacji synsetów
-INSERT INTO synset_relation(child_synset_id, parent_synset_id, synset_relation_type_id)
+INSERT INTO synset_relation(parent_synset_id, child_synset_id, synset_relation_type_id)
 SELECT synset_from, synset_to, relation
 FROM `plwordnet3-prod`.synset_relation SR
 WHERE (synset_to, synset_from, relation) NOT IN (SELECT child_synset_id, parent_synset_id, synset_relation_type_id FROM synset_relation)

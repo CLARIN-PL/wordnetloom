@@ -80,7 +80,6 @@ public class RelationTypeResource {
     public Response updateRelationType(@HeaderParam("Accept-Language") Locale locale,
                                        @PathParam("id") final UUID id,
                                        JsonObject rt) {
-        System.out.println(sayHello());
         OperationResult<RelationType> s = command.update(id, locale, rt);
         if (s.hasErrors()) {
             return Response.status(Response.Status.BAD_REQUEST)

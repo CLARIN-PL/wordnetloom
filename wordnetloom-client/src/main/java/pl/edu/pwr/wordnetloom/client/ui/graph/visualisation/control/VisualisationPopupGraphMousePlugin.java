@@ -1,9 +1,6 @@
 package pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.control;
 
-import de.saxsys.mvvmfx.Context;
-import de.saxsys.mvvmfx.FluentViewLoader;
-import de.saxsys.mvvmfx.InjectContext;
-import de.saxsys.mvvmfx.ViewTuple;
+import de.saxsys.mvvmfx.*;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -17,12 +14,12 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuItem;
-import pl.edu.pwr.wordnetloom.client.events.LoadGraphEvent;
-import pl.edu.pwr.wordnetloom.client.events.PathToHyperonymEvent;
-import pl.edu.pwr.wordnetloom.client.events.RemoveRelationEvent;
-import pl.edu.pwr.wordnetloom.client.events.UpdateCursorEvent;
+import pl.edu.pwr.wordnetloom.client.events.*;
+import pl.edu.pwr.wordnetloom.client.model.Sense;
+import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.GraphController;
 import pl.edu.pwr.wordnetloom.client.ui.graph.visualisation.structure.*;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.SenseRelationDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.SynsetRelationScope;
 
 import javax.enterprise.event.Event;
@@ -57,6 +54,10 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
 
     @Inject
     Event<PathToHyperonymEvent> pathToHyperonymEvent;
+
+    @Inject
+    Event<CreateSenseRelationEvent> createSenseRelationEvent;
+
 
     private List<MenuItem> currentMenuItems;
 
@@ -113,6 +114,8 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
             } else if (vertex instanceof SynsetNode) {
                 if(((SynsetNode) vertex).isSynsetMode()) {
                     createSynsetNodeMenu(vertex, pickedVertexState);
+                }else{
+                    createSenseNodeMenu(vertex, pickedVertexState);
                 }
             } else if (vertex instanceof NodeSet) {
                 createNodeSetMenu(vertex);
@@ -128,6 +131,8 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
                 }
         );
     }
+
+
 
     private void updateCursorState() {
         if (synsetRelationDialogScope.isMakeSynsetRelationMode()) {
@@ -233,6 +238,15 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
         }
     }
 
+    private void createSenseNodeMenu(Node vertex, PickedState<Node> pickedVertexState) {
+        SynsetNode synsetNode = (SynsetNode) vertex;
+        addCreateSenseRelationWithOption(synsetNode);
+        if (vertex != graphController.getRootNode()) {
+            addGroupSynsetsOption(vertex, pickedVertexState);
+        }
+    }
+
+
     private void createOpenInNewTabOption(SynsetNode vertex) {
         MenuItem openInNewTab = new MenuItem(resourceBundle.getString("context.menu.open.in.new.tab"));
         openInNewTab.setOnAction(event -> {
@@ -259,6 +273,13 @@ public class VisualisationPopupGraphMousePlugin extends AbstractPopupGraphMouseP
             synsetRelationDialogScope.setFirstSelectedSynset(vertex.getSynsetId());
             synsetRelationDialogScope.setMakeSynsetRelationMode(true);
             updateCursorState();
+        });
+        currentMenuItems.add(createRelationItem);
+    }
+    private void addCreateSenseRelationWithOption(SynsetNode synsetNode) {
+        MenuItem createRelationItem = new MenuItem(resourceBundle.getString("context.menu.create.sense.relation"));
+        createRelationItem.setOnAction(event -> {
+            createSenseRelationEvent.fire(new CreateSenseRelationEvent(synsetNode.getSynsetId()));
         });
         currentMenuItems.add(createRelationItem);
     }

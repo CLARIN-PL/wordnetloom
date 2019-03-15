@@ -52,6 +52,7 @@ public class DictionaryDialogViewModel implements ViewModel {
     private void save() {
         dialogScope.publish(ExampleDialogScope.COMMIT);
         Dictionary dic = dialogScope.getDictionaryToEdit();
+        System.out.println(dic);
     }
 
     public StringProperty titleProperty() {

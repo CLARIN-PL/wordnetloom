@@ -75,10 +75,6 @@ public class SenseFormViewModel implements ViewModel {
     private final ObjectProperty<Dictionary> status = new SimpleObjectProperty<>();
     private final StringProperty selectedStatus = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
 
-    private ObservableList<String> aspects;
-    private final ObjectProperty<Dictionary> aspect = new SimpleObjectProperty<>();
-    private final StringProperty selectedAspect = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
-
     private ObservableList<String> registers;
     private final ObjectProperty<Dictionary> register = new SimpleObjectProperty<>();
     private final StringProperty selectedRegister = new SimpleStringProperty(NOTHING_SELECTED_MARKER);
@@ -92,7 +88,6 @@ public class SenseFormViewModel implements ViewModel {
     private ItemList<Dictionary> domainItemList;
     private ItemList<Dictionary> statusItemList;
     private ItemList<Dictionary> registerItemList;
-    private ItemList<Dictionary> aspectItemList;
 
     private ObservableList<ExampleListItemViewModel> exampleList = FXCollections.observableArrayList();
     private ObjectProperty<ExampleListItemViewModel> selectedExampleListItem = new SimpleObjectProperty<>();
@@ -149,7 +144,6 @@ public class SenseFormViewModel implements ViewModel {
         initDomainList();
         initStatusList();
         initRegisterList();
-        initAspectsList();
         initLexiconList();
 
         addExampleCommand = new DelegateCommand(() -> new Action() {
@@ -200,10 +194,6 @@ public class SenseFormViewModel implements ViewModel {
 
         selectedRegister.addListener((obs, oldV, newV) -> {
             Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.REGISTER_DICTIONARY, NOTHING_SELECTED_MARKER, register);
-        });
-
-        selectedAspect.addListener((obs, oldV, newV) -> {
-            Dictionaries.dictionarySelected(obs, oldV, newV, Dictionaries.ASPECT_DICTIONARY, NOTHING_SELECTED_MARKER, aspect);
         });
 
         exampleDialogScope.subscribe(ExampleDialogScope.AFTER_COMMIT, (s, objects) -> {
@@ -339,10 +329,6 @@ public class SenseFormViewModel implements ViewModel {
             selectedLexicon.set(Dictionaries.getDictionaryItemById(LEXICON_DICTIONARY, sense.getLexicon()));
         }
 
-        if (sense.getAspect() != null) {
-            selectedAspect.set(Dictionaries.getDictionaryItemById(ASPECT_DICTIONARY, sense.getAspect()));
-        }
-
         if (sense.getExamples() != null) {
             sense.getExamples().forEach(e -> exampleList.add(new ExampleListItemViewModel(e)));
         }
@@ -362,12 +348,6 @@ public class SenseFormViewModel implements ViewModel {
         }
         if (domain.get() != null) {
             sense.setDomain(domain.get().getId());
-        }
-
-        if (aspect.get() != null) {
-            sense.setAspect(aspect.get().getId());
-        } else {
-            sense.setAspect(null);
         }
 
         if (register.get() != null) {
@@ -403,7 +383,6 @@ public class SenseFormViewModel implements ViewModel {
         technicalComment.set(null);
         link.set(null);
         selectedPartOfSpeech.set(null);
-        selectedAspect.set(null);
         selectedDomain.set(null);
         selectedPartOfSpeech.set(null);
         selectedLexicon.set(null);
@@ -427,13 +406,6 @@ public class SenseFormViewModel implements ViewModel {
         ObservableList<String> mappedList = partOfSpeechItemList.getTargetList();
         partsOfSpeech = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
         partsOfSpeech.addListener((ListChangeListener<String>) p -> selectedPartOfSpeech.set(NOTHING_SELECTED_MARKER));
-    }
-
-    private void initAspectsList() {
-        aspectItemList = Dictionaries.initDictionaryItemList(Dictionaries.ASPECT_DICTIONARY);
-        ObservableList<String> mappedList = aspectItemList.getTargetList();
-        aspects = Dictionaries.createListWithNothingSelectedMarker(mappedList, NOTHING_SELECTED_MARKER);
-        aspects.addListener((ListChangeListener<String>) p -> selectedAspect.set(NOTHING_SELECTED_MARKER));
     }
 
     private void initDomainList() {
@@ -491,14 +463,6 @@ public class SenseFormViewModel implements ViewModel {
 
     public Property<String> selectedLexiconProperty() {
         return selectedLexicon;
-    }
-
-    public ObservableList<String> aspectList() {
-        return aspects;
-    }
-
-    public Property<String> selectedAspectProperty() {
-        return selectedAspect;
     }
 
     public ObservableList<String> partOfSpeechList() {

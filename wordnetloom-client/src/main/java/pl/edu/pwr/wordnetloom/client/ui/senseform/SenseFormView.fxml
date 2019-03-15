@@ -78,12 +78,6 @@
                     </font>
                 </Label>
                 <ComboBox fx:id="registerCombo" maxWidth="1.7976931348623157E308"/>
-                <Label maxWidth="1.7976931348623157E308" text="Aspect:">
-                    <font>
-                        <Font name="System Bold Italic" size="11.0"/>
-                    </font>
-                </Label>
-                <ComboBox fx:id="aspectCombo" maxWidth="1.7976931348623157E308"/>
                 <Label maxWidth="1.7976931348623157E308" text="Definition:">
                     <font>
                         <Font name="System Bold Italic" size="11.0"/>

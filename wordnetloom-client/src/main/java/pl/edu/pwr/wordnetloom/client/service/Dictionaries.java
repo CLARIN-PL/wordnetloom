@@ -30,10 +30,9 @@ public class Dictionaries {
 
     public static final String PART_OF_SPEECH_DICTIONARY = "parts_of_speech";
     public static final String DOMAIN_DICTIONARY = "domains";
-    public static final String ASPECT_DICTIONARY = "aspects";
     public static final String STATUS_DICTIONARY = "statuses";
-    public static final String REGISTER_DICTIONARY = "register";
-    public static final String LEXICON_DICTIONARY = "lexicon";
+    public static final String REGISTER_DICTIONARY = "registers";
+    public static final String LEXICON_DICTIONARY = "lexicons";
 
     private static final Map<String, ObservableList<Dictionary>> dictionaries = new ConcurrentHashMap<>();
     private static final ObservableList<Dictionary> userChosenLexicon = FXCollections.observableArrayList();

@@ -19,7 +19,7 @@
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <?import pl.edu.pwr.wordnetloom.client.ui.search.LazyListView?>
 
-<VBox maxHeight="1.7976931348623157E308" minWidth="200.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.search.SearchView">
+<VBox minWidth="200.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.search.SearchView">
 
     <HBox alignment="CENTER_LEFT" spacing="3.0">
         <CustomTextField fx:id="fieldSearch" onAction="#search" promptText="Lemma" styleClass="searchField" HBox.hgrow="ALWAYS">
@@ -86,10 +86,10 @@
         </VBox.margin>
     </HBox>
     <TitledPane animated="false" collapsible="false" maxHeight="1.7976931348623157E308" text="Search results" VBox.vgrow="ALWAYS">
-        <VBox maxHeight="1.7976931348623157E308" spacing="8.0">
+        <VBox spacing="8.0">
             <StackPane VBox.vgrow="ALWAYS">
                 <children>
-                    <LazyListView fx:id="searchResultList" maxHeight="1.7976931348623157E308" />
+                    <LazyListView fx:id="searchResultList" />
                     <StackPane fx:id="progressOverlay" StackPane.alignment="CENTER">
                         <children>
                             <ProgressIndicator maxHeight="40.0" maxWidth="40.0" StackPane.alignment="CENTER" />

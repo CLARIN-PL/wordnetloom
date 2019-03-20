@@ -45,6 +45,7 @@ public class DictionaryResource {
                 .add("parts_of_speech", this.linkBuilder.forPartsOfSpeech(uriInfo).toString())
                 .add("statuses", this.linkBuilder.forStatutes(uriInfo).toString())
                 .add("registers", this.linkBuilder.forRegisters(uriInfo).toString())
+                .add("emotions", this.linkBuilder.forEmotions(uriInfo).toString())
                 .build());
 
         return linkBuilder.build();
@@ -86,7 +87,12 @@ public class DictionaryResource {
         return query.findDomain(id)
                 .map(d -> entityBuilder.buildDomain(d, linkBuilder.forDomain(d, uriInfo), locale))
                 .orElse(Json.createObjectBuilder().build());
+    }
 
+    @GET
+    @Path("emotions")
+    public JsonObject getEmotions(@HeaderParam("Accept-Language") Locale locale) {
+        return entityBuilder.buildDictionaryEmotions(query.findAllEmotions(), uriInfo, locale);
     }
 
     @GET

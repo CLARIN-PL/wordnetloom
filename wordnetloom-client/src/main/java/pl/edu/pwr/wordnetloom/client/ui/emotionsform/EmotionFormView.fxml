@@ -54,7 +54,7 @@
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
         </Label>
-        <GridPane alignment="CENTER_LEFT">
+        <GridPane alignment="CENTER_LEFT" fx:id="emotionGrid">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -65,48 +65,48 @@
                 <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
             </rowConstraints>
-            <children>
-                <CheckBox mnemonicParsing="false" text="CheckBox">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="1">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="3">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-                <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </CheckBox>
-            </children>
+            <!--<children>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="1">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="2">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="3">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="1">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="2">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+                <!--<CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="3">-->
+                    <!--<font>-->
+                        <!--<Font size="11.0" />-->
+                    <!--</font>-->
+                <!--</CheckBox>-->
+            <!--</children>-->
             <VBox.margin>
                 <Insets left="15.0" right="15.0" />
             </VBox.margin>

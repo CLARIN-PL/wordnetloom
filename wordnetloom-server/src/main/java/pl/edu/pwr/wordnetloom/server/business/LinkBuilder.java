@@ -4,6 +4,7 @@ import pl.edu.pwr.wordnetloom.server.business.corpusexample.boundary.CorpusExamp
 import pl.edu.pwr.wordnetloom.server.business.dictionary.boundary.DictionaryResource;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Emotion;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.boundary.LexiconResource;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
@@ -81,6 +82,14 @@ public class LinkBuilder {
         return createResourceUri(SenseResource.class, "search", uriInfo, page, perPage);
     }
 
+    // TODO:
+    public URI forEmotions(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getEmotions", uriInfo);
+    }
+
+    public URI forEmotion(Emotion emotion, UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getEmotion", emotion.getId(), uriInfo);
+    }
 
     public URI forSense(Sense s, UriInfo uriInfo) {
         return createResourceUri(SenseResource.class, "sense", s.getId(), uriInfo);

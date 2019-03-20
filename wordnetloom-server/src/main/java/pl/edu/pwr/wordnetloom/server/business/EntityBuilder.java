@@ -1,9 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business;
 
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStringsQueryService;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.GlobalWordnetRelationType;
@@ -598,6 +596,22 @@ public class EntityBuilder {
     public JsonObject buildDictionaryDomain(Domain d, UriInfo uriInfo, Locale locale) {
         JsonObjectBuilder builder = dictionaryObjectBuilder(d.getId(), d.getName(), locale);
         builder.add("_links", selfLinkBuilder(this.linkBuilder.forDomain(d, uriInfo).toString()));
+        return builder.build();
+    }
+
+    public JsonObject buildDictionaryEmotions(List<Emotion> emotions, UriInfo uriInfo, Locale locale){
+        JsonArray array = emotions.stream()
+                .map(emotion->buildDictionaryEmotion(emotion, uriInfo, locale))
+                .collect(JsonCollectors.toJsonArray());
+        return Json.createObjectBuilder()
+                .add("rows", array)
+                .add("_emotions", createObjectBuilder()
+                        .add("self", uriInfo.getRequestUri().toString())).build();
+    }
+
+    public JsonObject buildDictionaryEmotion(Emotion emotion, UriInfo uriInfo, Locale locale) {
+        JsonObjectBuilder builder = dictionaryObjectBuilder(emotion.getId(), emotion.getName(), locale);
+        builder.add("_emotions", selfLinkBuilder(this.linkBuilder.forEmotion(emotion, uriInfo).toString()));
         return builder.build();
     }
 

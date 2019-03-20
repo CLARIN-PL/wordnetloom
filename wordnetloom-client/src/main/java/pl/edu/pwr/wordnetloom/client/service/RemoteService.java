@@ -166,6 +166,7 @@ public class RemoteService {
             dic.put(DOMAIN_DICTIONARY, _links.getString("domains"));
             dic.put(STATUS_DICTIONARY, _links.getString("statuses"));
             dic.put(REGISTER_DICTIONARY, _links.getString("registers"));
+            dic.put(EMOTION_DICTIONARY, _links.getString("emotions"));
             dic.put(LEXICON_DICTIONARY, SERVER_TARGET_URL + PATH_LEXICONS);
         }
         response.close();

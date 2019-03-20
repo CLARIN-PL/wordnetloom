@@ -1,9 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.control;
 
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -49,6 +46,12 @@ public class DictionaryQueryService {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public List<Emotion> findAllEmotions(){
+        return em.createNamedQuery(Dictionary.FIND_ALL_BY_TYPE, Emotion.class)
+                .setParameter("type", Emotion.class)
+                .getResultList();
     }
 
     public List<PartOfSpeech> findAllPartsOfSpeech() {

@@ -599,6 +599,7 @@ public class EntityBuilder {
         return builder.build();
     }
 
+    // TODO: usunać _emotions
     public JsonObject buildDictionaryEmotions(List<Emotion> emotions, UriInfo uriInfo, Locale locale){
         JsonArray array = emotions.stream()
                 .map(emotion->buildDictionaryEmotion(emotion, uriInfo, locale))

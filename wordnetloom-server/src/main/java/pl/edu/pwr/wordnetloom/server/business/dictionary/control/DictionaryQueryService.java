@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,10 +50,33 @@ public class DictionaryQueryService {
     }
 
     public List<Emotion> findAllEmotions(){
-        return em.createNamedQuery(Dictionary.FIND_ALL_BY_TYPE, Emotion.class)
+        List<Dictionary> dictionaries = em.createNamedQuery(Dictionary.FIND_ALL_BY_TYPE, Dictionary.class)
                 .setParameter("type", Emotion.class)
                 .getResultList();
+
+        // TODO: temporary solution, change this
+        List<Emotion> emotions = new ArrayList<>();
+        for(Dictionary dictionary : dictionaries){
+            emotions.add((Emotion)dictionary);
+        }
+        return emotions;
     }
+
+    public Optional<Emotion> findEmotion(long id){
+        try{
+            return Optional.of(em.createNamedQuery(Emotion.FIND_BY_ID, Emotion.class)
+                    .setParameter("type", Emotion.class)
+                    .getSingleResult());
+        } catch (NoResultException e){
+            return Optional.empty();
+        }
+    }
+
+//    public List<Dictionary> findAllEmotions(){
+//        return em.createNamedQuery(Dictionary.FIND_ALL_BY_TYPE, Dictionary.class)
+//                .setParameter("type", Emotion.class)
+//                .getResultList();
+//    }
 
     public List<PartOfSpeech> findAllPartsOfSpeech() {
         return em.createNamedQuery(PartOfSpeech.FIND_ALL, PartOfSpeech.class).getResultList();

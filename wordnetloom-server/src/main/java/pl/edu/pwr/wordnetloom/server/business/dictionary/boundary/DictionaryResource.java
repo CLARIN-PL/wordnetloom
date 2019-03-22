@@ -46,6 +46,8 @@ public class DictionaryResource {
                 .add("statuses", this.linkBuilder.forStatutes(uriInfo).toString())
                 .add("registers", this.linkBuilder.forRegisters(uriInfo).toString())
                 .add("emotions", this.linkBuilder.forEmotions(uriInfo).toString())
+                .add("valuations", this.linkBuilder.forValuations(uriInfo).toString())
+                .add("markednesses", this.linkBuilder.forMarkednesses(uriInfo).toString())
                 .build());
 
         return linkBuilder.build();
@@ -92,7 +94,37 @@ public class DictionaryResource {
     @GET
     @Path("emotions")
     public JsonObject getEmotions(@HeaderParam("Accept-Language") Locale locale) {
-        return entityBuilder.buildDictionaryEmotions(query.findAllEmotions(), uriInfo, locale);
+        return buildDictionaryArray(Emotion.class, "getEmotion", locale);
+    }
+
+    @GET
+    @Path("emotion/{id:\\d+}")
+    public JsonObject getEmotion(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
+        return buildDictionary(id, "getEmotion", locale);
+    }
+
+    @GET
+    @Path("valuations")
+    public JsonObject getValuations(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(Valuation.class, "getValuation", locale);
+    }
+
+    @GET
+    @Path("valuation/{id:\\d+}")
+    public JsonObject getValuation(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
+        return buildDictionary(id, "getValuation", locale);
+    }
+
+    @GET
+    @Path("markednesses")
+    public JsonObject getMarkednesses(@HeaderParam("Accept-Language") Locale locale) {
+        return buildDictionaryArray(Markedness.class, "getMarkedness", locale);
+    }
+
+    @GET
+    @Path("markedness/{id:\\d+}")
+    public JsonObject getMarkedness(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id){
+        return buildDictionary(id, "getMarkedness", locale);
     }
 
     @GET
@@ -117,6 +149,5 @@ public class DictionaryResource {
          return query.findDictionaryById(id)
                 .map(d -> entityBuilder.buildDictionary(d, linkBuilder.forDictionary(d, methodName, uriInfo), locale))
                 .orElse(Json.createObjectBuilder().build());
-
     }
 }

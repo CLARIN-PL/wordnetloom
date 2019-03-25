@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.client.ui.emotionsform;
 
+import de.saxsys.mvvmfx.InjectScope;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.itemlist.ItemList;
 import javafx.beans.property.*;
@@ -7,8 +8,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import pl.edu.pwr.wordnetloom.client.model.Dictionary;
+import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
+import pl.edu.pwr.wordnetloom.client.ui.scopes.SensePropertiesDialogScope;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -21,6 +24,11 @@ public class EmotionFormViewModel implements ViewModel {
 
     @Inject
     private RemoteService remoteService;
+
+    @InjectScope
+    SensePropertiesDialogScope sensePropertiesDialogScope;
+
+    private Sense sense;
 
     private ObservableList<Dictionary> emotionsList;
     private ObservableList<Dictionary> valuationsList;
@@ -97,6 +105,10 @@ public class EmotionFormViewModel implements ViewModel {
 
     public StringProperty selectedMarkednessProperty() {
         return selectedMarkedness;
+    }
+
+    private void commitChanges() {
+        // TODO: dokończyć
     }
 }
 

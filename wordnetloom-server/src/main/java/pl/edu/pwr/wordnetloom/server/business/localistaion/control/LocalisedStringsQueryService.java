@@ -8,10 +8,7 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -31,11 +28,13 @@ public class LocalisedStringsQueryService {
         reload();
     }
 
-
     public void reload() {
         localisedStrings = new ConcurrentHashMap<>(findAll());
     }
 
+    public Set<String> getSupportedLanguages(){
+        return localisedStrings.keySet();
+    }
     public String find(final Long id, final Locale locale) {
         String lang = defaultLanguage;
         if (locale != null) {

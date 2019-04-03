@@ -68,6 +68,13 @@ public class DictionaryResource {
         return buildDictionary(id, "getStatus", locale);
     }
 
+    @POST
+    @Path("statuses")
+    public JsonObject addStatus(@HeaderParam("Accept-Language") Locale locale, JsonObject dic) {
+        return command.addStatus(locale, dic)
+                .map(d -> entityBuilder.buildDictionary(d, linkBuilder.forDictionary(d, "getStatus", uriInfo), locale))
+                .orElse(Json.createObjectBuilder().build());
+    }
     @PUT
     @Path("statuses/{id:\\d+}")
     public JsonObject getStatus(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {
@@ -86,6 +93,21 @@ public class DictionaryResource {
     @Path("registers/{id:\\d+}")
     public JsonObject getRegister(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id) {
         return buildDictionary(id, "getRegister", locale);
+    }
+
+    @POST
+    @Path("registers")
+    public JsonObject addRegister(@HeaderParam("Accept-Language") Locale locale, JsonObject dic) {
+        return command.addRegister(locale, dic)
+                .map(d -> entityBuilder.buildDictionary(d, linkBuilder.forDictionary(d, "getRegister", uriInfo), locale))
+                .orElse(Json.createObjectBuilder().build());
+    }
+    @PUT
+    @Path("registers/{id:\\d+}")
+    public JsonObject updateRegister(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {
+        return command.updateRegister(id, locale, dic)
+                .map(d -> entityBuilder.buildDictionary(d, linkBuilder.forDictionary(d, "getRegister", uriInfo), locale))
+                .orElse(Json.createObjectBuilder().build());
     }
 
     @GET

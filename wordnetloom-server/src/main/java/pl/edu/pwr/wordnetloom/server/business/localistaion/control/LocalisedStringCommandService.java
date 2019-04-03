@@ -19,8 +19,13 @@ public class LocalisedStringCommandService {
 
     public LocalisedString save(LocalisedString str) {
         if (str.getKey().getId() == null) {
-            str.getKey().setId(locator.findMax().get() + 1);
-            em.persist(str);
+            Long id = locator.findMax().get() + 1;
+            locator.getSupportedLanguages()
+                    .forEach(lang -> {
+                        str.getKey().setId(id);
+                        str.getKey().setLanguage(lang);
+                        em.persist(str);
+                    });
         } else {
             em.merge(str);
         }

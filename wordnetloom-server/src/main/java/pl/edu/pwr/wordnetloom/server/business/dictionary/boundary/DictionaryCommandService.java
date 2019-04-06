@@ -52,6 +52,22 @@ public class DictionaryCommandService {
         return Optional.of(s);
     }
 
+    public Optional<Status> addStatus(Locale locale, JsonObject json) {
+        Status s = new Status();
+
+        String lang = localisedStringsQueryService.defaultLanguage;
+        if (locale != null) {
+            lang = locale.getLanguage().substring(0, 2);
+        }
+        String finalLang = lang;
+        saveCommonFields(json, finalLang, s);
+        if (!json.isNull("color")) {
+            s.setColor(json.getString("color"));
+        }
+        em.persist(s);
+        return Optional.of(s);
+    }
+
     public Optional<Register> updateRegister(long id, Locale locale, JsonObject json) {
 
         String lang = localisedStringsQueryService.defaultLanguage;
@@ -69,6 +85,47 @@ public class DictionaryCommandService {
         em.merge(r);
 
         return Optional.of(r);
+    }
+
+    public Optional<Register> addRegister(Locale locale, JsonObject json) {
+        Register register = new Register();
+
+        String lang = localisedStringsQueryService.defaultLanguage;
+        if (locale != null) {
+            lang = locale.getLanguage().substring(0, 2);
+        }
+        String finalLang = lang;
+        saveCommonFields(json, finalLang, register);
+        em.persist(register);
+        return Optional.of(register);
+    }
+
+    private void saveCommonFields(JsonObject json, String lang, Dictionary dic) {
+        String name = "";
+        if (!json.isNull("name")) {
+            name = json.getString("name");
+        }
+
+        LocalisedString locName =  new LocalisedString();
+        locName.getKey().setLanguage(lang);
+        locName.setValue(name);
+        localisedStringCommandService.save(locName);
+        dic.setName(locName.getKey().getId());
+
+        String dsc = "";
+        if (!json.isNull("description")) {
+            dsc = json.getString("description");
+        }
+        LocalisedString locDesc =  new LocalisedString();
+        locDesc.getKey().setLanguage(lang);
+        locDesc.setValue(dsc);
+        localisedStringCommandService.save(locDesc);
+        dic.setDescription(locDesc.getKey().getId());
+
+        if (!json.isNull("is_default")) {
+            dic.setDefault(json.getBoolean("is_default"));
+        }
+
     }
 
     private void updateCommonFields(JsonObject json, String lang, Dictionary dic) {
@@ -96,4 +153,5 @@ public class DictionaryCommandService {
             dic.setDefault(json.getBoolean("is_default"));
         }
     }
+
 }

@@ -13,6 +13,7 @@ services:
       MYSQL_DATABASE: wordnet
     ports:
       - "33366:3306"
+
   application_server:
     build: .
     restart: always
@@ -22,9 +23,6 @@ services:
         WAIT_HOSTS: mysql:3306
     ports:
      - "8080:8080"
-     - "9990:9990"
-     - "8081:8081"
-     - "8787:8787"
     links:
     - db:db
 

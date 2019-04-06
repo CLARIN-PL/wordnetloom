@@ -77,7 +77,7 @@ public class DictionaryResource {
     }
     @PUT
     @Path("statuses/{id:\\d+}")
-    public JsonObject getStatus(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {
+    public JsonObject updateStatus(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {
          return command.updateStatus(id, locale, dic)
         .map(d -> entityBuilder.buildDictionary(d, linkBuilder.forDictionary(d, "getStatus", uriInfo), locale))
                 .orElse(Json.createObjectBuilder().build());

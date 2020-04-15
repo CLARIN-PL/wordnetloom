@@ -91,11 +91,13 @@ public class GraphViewModel implements ViewModel {
             RelationType relationType = remoteService.getRelationType(relation.getRelationType().getLinks().getSelf());
             remoteService.delete(relation.getLinks().getSelf());
             removeRelationFromGraph(relation.getSource().getId(), relation.getTarget().getId(), relation.getRelationType().getId());
-            if(relationType.getReverseRelation() != null && checkRemoveReverseRelation(relation, relationType)){
+/*            if(relationType.getReverseRelation() != null && checkRemoveReverseRelation(relation, relationType)){
                 UUID reverseRelationId = relationType.getReverseRelation().getId();
-                remoteService.delete(relation.getLinks().getReverseRelation());
-                removeRelationFromGraph(relation.getTarget().getId(), relation.getSource().getId(), reverseRelationId);
-            }
+                if(reverseRelationId != null) {
+                    remoteService.delete(relation.getLinks().getReverseRelation());
+                    removeRelationFromGraph(relation.getTarget().getId(), relation.getSource().getId(), reverseRelationId);
+                }
+            }*/
         }
 
         // TODO: temporary solution

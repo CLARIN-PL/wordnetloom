@@ -8,6 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationArgume
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -17,6 +18,7 @@ import java.security.Principal;
 import java.util.Locale;
 import java.util.UUID;
 
+@RequestScoped
 @Path("/relation-types")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

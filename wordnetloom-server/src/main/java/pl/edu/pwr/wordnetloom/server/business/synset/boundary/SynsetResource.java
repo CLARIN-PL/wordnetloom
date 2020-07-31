@@ -76,7 +76,6 @@ public class SynsetResource {
     @Path("{id}")
     public Response updateSynset(JsonObject synset,
                                  @PathParam("id") final UUID id){
-        System.out.println("Updating synset ");
         OperationResult<Synset> updatingSynsetResult = synsetCommandService.update(id, synset);
         if(updatingSynsetResult.hasErrors()){
             return Response.status(Response.Status.BAD_REQUEST)

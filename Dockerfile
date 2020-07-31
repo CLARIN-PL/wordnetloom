@@ -1,18 +1,10 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER Tomasz Naskręt, tomasz.naskret@pwr.edu.pl
 
 # Install Java.
-RUN apt-get update && apt-get upgrade -y && apt-get -y install software-properties-common xmlstarlet bsdtar unzip curl netcat
+RUN apt-get update && apt-get upgrade -y && apt-get -y install software-properties-common xmlstarlet unzip curl netcat
 
-RUN echo oracle-java11-installer shared/accepted-oracle-license-v1-2 select true | debconf-set-selections && \
-  add-apt-repository ppa:linuxuprising/java && \
-  apt-get update && \
-  apt-get install -y oracle-java11-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk11-installer
-
-# Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-11-oracle
+RUN apt-get install -y default-jdk
 
 # Define Wildfly variables
 ENV VERSION 16.0.0.Final
@@ -26,6 +18,7 @@ ENV WILDFLY_CLI $WILDFLY_HOME/bin/jboss-cli.sh
 ENV MYSQL_VERSION 8.0.13
 
 RUN useradd -b /opt -m -s /bin/sh -d ${INSTALL_DIR} serveradmin && echo serveradmin:serveradmin | chpasswd
+
 RUN curl -O https://download.jboss.org/wildfly/${VERSION}/wildfly-${VERSION}.zip \
     && unzip wildfly-${VERSION}.zip -d ${INSTALL_DIR} \
     && rm wildfly-${VERSION}.zip \

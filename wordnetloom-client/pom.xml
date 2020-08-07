@@ -13,6 +13,22 @@
 
     <build>
         <plugins>
+        
+	    <plugin>
+		<groupId>org.openjfx</groupId>
+		<artifactId>javafx-maven-plugin</artifactId>
+		<version>0.0.4</version>
+		<configuration>
+		    <archive>
+                        <manifest>
+                            <mainClass>pl.edu.pwr.wordnetloom.client.Application</mainClass>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+		</configuration>
+	    </plugin>
+	    
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -59,6 +75,49 @@
     </build>
 
     <dependencies>
+	  
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-base</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-controls</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-fxml</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-graphics</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-media</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-swing</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-web</artifactId>
+	    <version>16-ea+1</version>
+	</dependency>
+	  
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx</artifactId>

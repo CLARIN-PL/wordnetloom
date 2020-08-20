@@ -6,26 +6,20 @@ import java.util.ResourceBundle;
 import de.saxsys.mvvmfx.*;
 import javafx.application.Platform;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.swing.*;
 
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.saxsys.mvvmfx.cdi.MvvmfxCdiApplication;
-import pl.edu.pwr.wordnetloom.client.events.OpenMainApplicationEvent;
 import pl.edu.pwr.wordnetloom.client.events.TriggerShutdownEvent;
 import pl.edu.pwr.wordnetloom.client.ui.DialogHelper;
 import pl.edu.pwr.wordnetloom.client.ui.logindialog.LoginDialogView;
 import pl.edu.pwr.wordnetloom.client.ui.logindialog.LoginDialogViewModel;
-import pl.edu.pwr.wordnetloom.client.ui.main.MainView;
-import pl.edu.pwr.wordnetloom.client.ui.main.MainViewModel;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.LoginDialogScope;
 
 public class Application extends MvvmfxCdiApplication {

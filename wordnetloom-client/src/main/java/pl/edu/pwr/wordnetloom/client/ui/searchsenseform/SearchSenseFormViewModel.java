@@ -5,7 +5,6 @@ import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
-import de.saxsys.mvvmfx.utils.mapping.ModelWrapper;
 import de.saxsys.mvvmfx.utils.validation.CompositeValidator;
 import de.saxsys.mvvmfx.utils.validation.FunctionBasedValidator;
 import de.saxsys.mvvmfx.utils.validation.ValidationMessage;
@@ -29,8 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static jdk.nashorn.internal.codegen.OptimisticTypesPersistence.load;
 
 public class SearchSenseFormViewModel implements ViewModel {
 

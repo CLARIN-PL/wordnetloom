@@ -1,12 +1,12 @@
 package pl.edu.pwr.wordnetloom.client.ui.search;
 
-import javafx.scene.control.skin.ListViewSkin;
-import javafx.scene.control.skin.VirtualFlow;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.skin.ListViewSkin;
+import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 

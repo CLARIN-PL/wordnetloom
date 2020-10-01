@@ -46,6 +46,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <compilerArgs>
+                        <arg>--module-path</arg>
+                        <arg>/javafx-sdk-11.0.2/lib</arg>
+                        <arg>--add-modules</arg>
+                        <arg>javafx.controls,javafx.fxml,javafx.swing,javafx.web</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
         </plugins>
 
         <resources>
@@ -62,17 +76,17 @@
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx-cdi</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx-validation</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
@@ -92,7 +106,7 @@
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>8.40.12</version>
+            <version>11.0.2</version>
         </dependency>
         <dependency>
             <groupId>eu.lestard</groupId>
@@ -139,7 +153,7 @@
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx-testing-utils</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -203,6 +217,33 @@
             <groupId>net.sf.jung</groupId>
             <artifactId>jung-visualization</artifactId>
             <version>2.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>11</version>
+            <classifier>linux</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>11</version>
+            <classifier>mac</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>11</version>
+            <classifier>win</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>11</version>
         </dependency>
     </dependencies>
 

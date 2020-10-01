@@ -30,8 +30,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static jdk.nashorn.internal.codegen.OptimisticTypesPersistence.load;
-
 public class SearchSenseFormViewModel implements ViewModel {
 
     @Inject

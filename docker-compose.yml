@@ -14,8 +14,10 @@ services:
     ports:
       - "33366:3306"
 
-  application_server:
-    build: .
+  wildfly:
+    build:
+      context: .
+      dockerfile: wildfly.dockerfile
     restart: always
     depends_on:
       - db
@@ -25,6 +27,16 @@ services:
      - "8080:8080"
     links:
     - db:db
+
+  maven:
+    build:
+      context: .
+      dockerfile: maven.dockerfile
+    container_name: maven
+    volumes:
+      - .:/wordnetloom
+    working_dir: /wordnetloom
+    entrypoint: [ 'mvn' ]
 
 volumes:
   db_data:

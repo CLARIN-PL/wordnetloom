@@ -66,11 +66,10 @@ public class ListTooltip extends Tooltip {
             }
             ttbehaviourField.setAccessible(true);
 
-//            Object defaultTTBehavior = ttbehaviourField.get(Tooltip.class);
             ttbehaviourField.set(Tooltip.class, newTTBehaviour);
 
         } catch (Exception e) {
-            System.out.println("Aborted setup due to error:" + e.getMessage());
+
         }
     }
 }

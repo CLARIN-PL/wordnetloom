@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 public class User {
 
     @JsonIgnore
-    private String username = "admin@clarin-pl.eu";
+    private String username = "";
 
     @JsonIgnore
-    private String password = "password";
+    private String password = "";
 
     @JsonIgnore
     private Language language;

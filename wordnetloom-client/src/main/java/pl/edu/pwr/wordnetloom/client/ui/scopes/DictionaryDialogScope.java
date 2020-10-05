@@ -10,10 +10,10 @@ import pl.edu.pwr.wordnetloom.client.model.Example;
 
 public class DictionaryDialogScope implements Scope {
 
-    public static String RESET_DIALOG_PAGE = "exa_reset_dialog_page";
-    public static String OK_BEFORE_COMMIT = "example_ok_before_commit";
-    public static String COMMIT = "example_commit";
-    public static String RESET_FORMS = "example_reset";
+    public static String RESET_DIALOG_PAGE = "dic_reset_dialog_page";
+    public static String OK_BEFORE_COMMIT = "dic_ok_before_commit";
+    public static String COMMIT = "dic_commit";
+    public static String RESET_FORMS = "dic_reset";
 
     private final ObjectProperty<Dictionary> dictionaryToEdit = new SimpleObjectProperty<>(this, "dictionary");
     private final BooleanProperty dictionaryFormValid = new SimpleBooleanProperty();

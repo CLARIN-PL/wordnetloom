@@ -14,6 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
+<?import javafx.scene.control.Tooltip?>
 <TitledPane alignment="TOP_LEFT" animated="false" text="%synset.properties.title" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.pwr.wordnetloom.client.ui.synsetproperties.SynsetPropertiesView">
     <VBox spacing="3.0">
         <children>
@@ -40,21 +41,25 @@
                                         <font>
                                             <Font size="12.0" />
                                         </font>
+                                        <tooltip><Tooltip text="Move sense up" /></tooltip>
                                     </Button>
                                     <Button fx:id="moveSenseDownButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveSenseDown">
                                         <font>
                                             <Font size="12.0" />
                                         </font>
+                                        <tooltip><Tooltip text="Move sense down" /></tooltip>
                                     </Button>
                                     <Button fx:id="attachSenseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#attachSense">
                                         <font>
                                             <Font size="12.0" />
                                         </font>
+                                        <tooltip><Tooltip text="Attach sense to synset" /></tooltip>
                                     </Button>
                                     <Button fx:id="detachSenseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#detachSense">
                                         <font>
                                             <Font size="12.0" />
                                         </font>
+                                        <tooltip><Tooltip text="Detach Sense from synset" /></tooltip>
                                     </Button>
                                 </children>
                                 <padding>

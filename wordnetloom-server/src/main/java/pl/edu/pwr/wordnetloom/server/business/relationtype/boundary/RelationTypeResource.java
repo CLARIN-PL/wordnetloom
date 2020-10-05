@@ -42,23 +42,9 @@ public class RelationTypeResource {
     @Context
     SecurityContext securityContext;
 
-
-    public String sayHello() {
-        if (securityContext != null) {
-            Principal userPrincipal = securityContext.getUserPrincipal();
-
-            System.out.println(securityContext.getAuthenticationScheme());
-            String principalName = userPrincipal == null ? "anonymous" : userPrincipal.getName();
-            return "\"Hello " + principalName + "\" isAdmin:" +
-                    securityContext.isUserInRole("ADMIN") + " isUser:" + securityContext.isUserInRole("USER");
-        }
-        return "princi is null";
-    }
-
     @GET
     public JsonObject relationTypes(@HeaderParam("Accept-Language") Locale locale,
                                     @QueryParam("argument") RelationArgument argument) {
-        System.out.println(sayHello());
         if (argument != null) {
             return entityBuilder.buildRelationTypes(
                     query.findAllByRelationArgument(argument), uriInfo, locale);
@@ -95,7 +81,6 @@ public class RelationTypeResource {
     @GET
     @Path("{id}")
     public JsonObject getRelationType(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") UUID id) {
-        System.out.println(sayHello());
         return query.findRelationTypeById(id)
                 .map(rt -> entityBuilder.buildRelationType(rt, linkBuilder.forRelationType(rt, uriInfo),
                         linkBuilder.forRelationTests(rt, uriInfo), uriInfo, locale))

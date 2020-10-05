@@ -11,6 +11,8 @@ import javafx.beans.property.StringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.pwr.wordnetloom.client.model.Dictionary;
+import pl.edu.pwr.wordnetloom.client.model.Sense;
+import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.DictionaryDialogScope;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.ExampleDialogScope;
 
@@ -33,6 +35,9 @@ public class DictionaryDialogViewModel implements ViewModel {
     @InjectScope
     DictionaryDialogScope dialogScope;
 
+    @Inject
+    AlertDialogHandler dialogHandler;
+
     private Command saveCommand;
 
     public Command getSaveCommand() {
@@ -50,9 +55,17 @@ public class DictionaryDialogViewModel implements ViewModel {
     }
 
     private void save() {
-        dialogScope.publish(ExampleDialogScope.COMMIT);
-        Dictionary dic = dialogScope.getDictionaryToEdit();
-        System.out.println(dic);
+        dialogScope.publish(DictionaryDialogScope.COMMIT);
+        Dictionary d = dialogScope.getDictionaryToEdit();
+        try {
+            if (d.getId() != null) {
+                // TODO add implementation
+            } else {
+                // TODO add implementation
+            }
+        } catch (Exception e) {
+            dialogHandler.handleErrors(e);
+        }
     }
 
     public StringProperty titleProperty() {

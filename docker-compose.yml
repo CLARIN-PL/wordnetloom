@@ -22,11 +22,11 @@ services:
     depends_on:
       - db
     environment:
-        WAIT_HOSTS: mysql:3306
+      WAIT_HOSTS: mysql:3306
     ports:
-     - "8080:8080"
+      - "8080:8080"
     links:
-    - db:db
+      - db:db
 
   maven:
     build:
@@ -37,6 +37,26 @@ services:
       - .:/wordnetloom
     working_dir: /wordnetloom
     entrypoint: [ 'mvn' ]
+
+  jlink:
+    build:
+      context: .
+      dockerfile: maven.dockerfile
+    container_name: jlink
+    volumes:
+      - .:/wordnetloom
+    working_dir: /wordnetloom
+    entrypoint: [ 'jlink' ]
+
+  jpackager:
+    build:
+      context: .
+      dockerfile: maven.dockerfile
+    container_name: jpackager
+    volumes:
+      - .:/wordnetloom
+    working_dir: /wordnetloom
+    entrypoint: [ '/packager/jpackager' ]
 
 volumes:
   db_data:

@@ -22,6 +22,9 @@ wordnet.sql
 bin/
 target/
 build/
+wordnetloom/
+wordnetloom-client-3.0/
+java-runtime/
 node_modules/
 .settings/
 .idea/

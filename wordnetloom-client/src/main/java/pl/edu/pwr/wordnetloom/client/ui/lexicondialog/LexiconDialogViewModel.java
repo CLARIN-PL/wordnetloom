@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.pwr.wordnetloom.client.model.Lexicon;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
+import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.LexiconDialogScope;
 
 import javax.inject.Inject;
@@ -38,6 +39,9 @@ public class LexiconDialogViewModel implements ViewModel {
     @Inject
     RemoteService remoteService;
 
+    @Inject
+    AlertDialogHandler dialogHandler;
+
     private Command saveCommand;
 
     public Command getSaveCommand() {
@@ -61,11 +65,12 @@ public class LexiconDialogViewModel implements ViewModel {
         try {
             if (l.getId() != null) {
                 remoteService.updateLexicon(l);
+                dialogHandler.onShowSuccessNotification("Saved");
             } else {
                 remoteService.addLexicon(l);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+           dialogHandler.handleErrors(e);
         }
     }
 

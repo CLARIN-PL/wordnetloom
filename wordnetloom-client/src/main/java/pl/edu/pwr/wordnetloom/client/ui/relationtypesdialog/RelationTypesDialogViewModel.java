@@ -82,15 +82,13 @@ public class RelationTypesDialogViewModel implements ViewModel {
         RelationType rt = dialogScope.getRelationTypeToEdit();
         if (rt != null) {
             try {
-                if (rt.getId() == null) {
+                if(rt.getId() == null) {
                     RelationType r = service.addRelationType(rt);
                     dialogScope.setRelationTypeToEdit(r);
-                    publish(SUCCESS_NOTIFICATION);
-
                 } else {
                     service.updateRelationType(rt);
-                    publish(SUCCESS_NOTIFICATION);
                 }
+                publish(SUCCESS_NOTIFICATION);
             } catch (Exception e) {
                 dialogHandler.handleErrors(e);
                 LOG.error("Error saving relation type", e);

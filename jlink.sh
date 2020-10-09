@@ -1,2 +1,0 @@
-#!/bin/bash
-docker-compose run jlink --no-header-files --no-man-pages --compress=2 --strip-debug --module-path /javafx-jmods-11.0.2 --add-modules java.datatransfer,java.desktop,java.logging,java.management,java.naming,java.sql,java.security.jgss,java.scripting,java.xml,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,javafx.controls,javafx.fxml,javafx.swing,javafx.web --output java-runtime

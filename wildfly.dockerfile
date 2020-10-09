@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get -y install software-properti
 RUN apt-get install -y default-jdk
 
 # Define Wildfly variables
-ENV VERSION 16.0.0.Final
+ENV VERSION 20.0.1.Final
 ENV INSTALL_DIR /opt
 ENV WILDFLY_HOME ${INSTALL_DIR}/wildfly-${VERSION}
 ENV DEPLOYMENT_DIR ${WILDFLY_HOME}/standalone/deployments/

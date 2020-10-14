@@ -25,6 +25,7 @@ services:
       WAIT_HOSTS: mysql:3306
     ports:
       - "8080:8080"
+      - "8009:8009"
     links:
       - db:db
 

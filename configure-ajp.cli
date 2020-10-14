@@ -1,0 +1,13 @@
+# Batch script to enable Elytron on the server
+
+connect 127.0.0.1
+
+batch
+
+/socket-binding-group=standard-sockets/socket-binding=https-external:add(port=443)
+
+/subsystem=undertow/server=default-server/ajp-listener=myListener:add(socket-binding=ajp, redirect-socket="https-external", enabled=true)
+
+run-batch
+
+reload

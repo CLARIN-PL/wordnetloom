@@ -22,8 +22,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 
@@ -80,11 +79,12 @@ public class RemoteService {
     @PostConstruct
     public void init() {
         client = ClientBuilder.newClient();
+
         dictionaries.setService(this);
         relationTypeService.setService(this);
 
         String host = properties.getProperty("server.host");
-        SERVER_TARGET_URL = host +"/wordnetloom-server/resources";
+        SERVER_TARGET_URL = host + "/wordnetloom-server/resources";
     }
 
     @PreDestroy
@@ -108,8 +108,8 @@ public class RemoteService {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
-    private boolean isForbiddenStatus(Response response){
-        if(response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()){
+    private boolean isForbiddenStatus(Response response) {
+        if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
             throw new ForbiddenException();
 
         }
@@ -117,12 +117,13 @@ public class RemoteService {
     }
 
 
-    private void validationErrorRequestHandler(Response response,String name, Object obj) throws IOException, ValidationException {
+    private void validationErrorRequestHandler(Response response, String name, Object obj) throws IOException, ValidationException {
         LOG.debug(name + " validation errors: " + obj);
-        if(isBadRequestStatus(response)){
+        if (isBadRequestStatus(response)) {
             String map = response.readEntity(String.class);
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {});
+            Map<String, String> errors = mapper.readValue(map, new TypeReference<Map<String, String>>() {
+            });
             throw new ValidationException(errors);
         }
     }
@@ -172,9 +173,9 @@ public class RemoteService {
             activeUser().setShowMarkers(jsonObject.getBoolean("show_marker"));
             activeUser().setShowTooltips(jsonObject.getBoolean("show_tooltips"));
             String array = jsonObject.getString("groups");
-            String role = array.replace("[","")
-                    .replace("]","")
-                    .replace("\"","");
+            String role = array.replace("[", "")
+                    .replace("]", "")
+                    .replace("\"", "");
             activeUser().setRole(role);
         }
         response.close();
@@ -228,7 +229,7 @@ public class RemoteService {
         return dictionary;
     }
 
-    public  Dictionary findDictionary(URI target) throws IOException {
+    public Dictionary findDictionary(URI target) throws IOException {
         LOG.debug("Searching dictionary " + target);
 
         WebTarget webTarget = client.target(target);
@@ -339,8 +340,9 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if(isOkStatus(response)) {
-            return response.readEntity(new GenericType<List<NodeExpanded>>(){});
+        if (isOkStatus(response)) {
+            return response.readEntity(new GenericType<List<NodeExpanded>>() {
+            });
         }
         // TODO: obsłużyć błędy
         return null;
@@ -385,8 +387,8 @@ public class RemoteService {
         return new Synset();
     }
 
-    public Synset findSynset(URI link){
-        WebTarget target =  client.target(link);
+    public Synset findSynset(URI link) {
+        WebTarget target = client.target(link);
 
         LOG.debug("Loading synset " + target.getUri());
         Response response = target
@@ -395,7 +397,7 @@ public class RemoteService {
                 .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
                 .get();
 
-        if(isOkStatus(response)){
+        if (isOkStatus(response)) {
             return response.readEntity(Synset.class);
         }
 
@@ -438,7 +440,7 @@ public class RemoteService {
         return new Sense();
     }
 
-    public RelationTypes findRelationTypes(RelationArgument argument){
+    public RelationTypes findRelationTypes(RelationArgument argument) {
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_RELATION_TYPES)
                 .queryParam("argument", argument);
@@ -457,7 +459,7 @@ public class RemoteService {
         return new RelationTypes();
     }
 
-    public Relations findSynsetRelationBetween(UUID source, UUID trg){
+    public Relations findSynsetRelationBetween(UUID source, UUID trg) {
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SYNSET_RELATION_SEARCH)
                 .queryParam("source", source)
@@ -490,7 +492,7 @@ public class RemoteService {
 
         if (isOkStatus(response)) {
             RelationTests tests = response.readEntity(RelationTests.class);
-            if(tests.getRows().isEmpty()) {
+            if (tests.getRows().isEmpty()) {
                 return new ArrayList<>();
             }
             return tests.getRows();
@@ -498,7 +500,7 @@ public class RemoteService {
         return new ArrayList<>();
     }
 
-    public List<Example> findExamples(URI link){
+    public List<Example> findExamples(URI link) {
         WebTarget target = client.target(link);
 
         LOG.debug("Loading examples: " + target.getUri());
@@ -511,7 +513,7 @@ public class RemoteService {
 
         if (isOkStatus(response)) {
             Examples examples = response.readEntity(Examples.class);
-            if(examples.getRows().isEmpty()) {
+            if (examples.getRows().isEmpty()) {
                 return new ArrayList<>();
             }
             return examples.getRows();
@@ -605,14 +607,14 @@ public class RemoteService {
 
         if (isCreatedStatus(response)) {
             LOG.debug("Sense relation created: " + response.getLocation());
-            return  findSenseRelation(response.getLocation());
+            return findSenseRelation(response.getLocation());
         }
 
-        validationErrorRequestHandler(response, "Sense",relation);
+        validationErrorRequestHandler(response, "Sense", relation);
         return null;
     }
 
-    public Relation addSynsetRelation(SynsetRelation relation) throws IOException, ValidationException, ForbiddenException{
+    public Relation addSynsetRelation(SynsetRelation relation) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ADD_SYNSET_RELATION);
@@ -626,7 +628,7 @@ public class RemoteService {
                 .post(Entity.entity(relation, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response, "Synset",relation);
+        validationErrorRequestHandler(response, "Synset", relation);
 
         if (isCreatedStatus(response)) {
             LOG.debug("Synset relation created: " + response.getLocation());
@@ -638,7 +640,7 @@ public class RemoteService {
     }
 
 
-    public Synset addSenseToNewSynset(UUID senseId) throws IOException,ValidationException, ForbiddenException {
+    public Synset addSenseToNewSynset(UUID senseId) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ADD_SENSE_TO_NEW_SYNSET)
@@ -653,23 +655,23 @@ public class RemoteService {
                 .method("PUT");
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Sense", response.getEntity());
+        validationErrorRequestHandler(response, "Sense", response.getEntity());
 
-        if(isCreatedStatus(response)){
+        if (isCreatedStatus(response)) {
             LOG.debug("Sense moved to new synset: " + response.getEntity());
             return findSynset(response.getLocation());
         }
         throw null;
     }
 
-    public Sense attachSenseToSynset(UUID senseId, UUID synsetId) throws ValidationException, IOException, ForbiddenException{
+    public Sense attachSenseToSynset(UUID senseId, UUID synsetId) throws ValidationException, IOException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_ATTACH_SENSE_TO_SYNSET)
                 .resolveTemplate("senseId", senseId)
                 .resolveTemplate("synsetId", synsetId);
 
-        LOG.debug("Attaching sense: "+senseId+" to synset: " + synsetId.toString());
+        LOG.debug("Attaching sense: " + senseId + " to synset: " + synsetId.toString());
 
         Response response = target
                 .request()
@@ -680,7 +682,7 @@ public class RemoteService {
         isForbiddenStatus(response);
         validationErrorRequestHandler(response, "Sense", response.getEntity());
 
-        if(isOkStatus(response)){
+        if (isOkStatus(response)) {
             LOG.debug("Sense moved to new synset: " + response.getEntity());
             return findSense(response.getLocation());
         }
@@ -708,7 +710,7 @@ public class RemoteService {
         return new CorpusExamples();
     }
 
-    public Sense saveSense(Sense sense) throws IOException, ValidationException,ForbiddenException {
+    public Sense saveSense(Sense sense) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SENSES);
@@ -722,7 +724,7 @@ public class RemoteService {
                 .post(Entity.entity(sense, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Sense", sense);
+        validationErrorRequestHandler(response, "Sense", sense);
         if (isCreatedStatus(response)) {
             LOG.debug("Sense created: " + sense);
             return findSense(response.getLocation());
@@ -730,7 +732,7 @@ public class RemoteService {
         return null;
     }
 
-    public Sense updateSense(Sense sense) throws IOException, ValidationException,ForbiddenException {
+    public Sense updateSense(Sense sense) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(sense.getLinks().getSelf());
 
@@ -743,7 +745,7 @@ public class RemoteService {
                 .put(Entity.entity(sense, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Sense", sense);
+        validationErrorRequestHandler(response, "Sense", sense);
 
         if (isOkStatus(response)) {
             LOG.debug("Sense updated: " + sense);
@@ -753,7 +755,7 @@ public class RemoteService {
         return null;
     }
 
-    public Synset updateSynset(Synset synset) throws IOException, ValidationException,ForbiddenException {
+    public Synset updateSynset(Synset synset) throws IOException, ValidationException, ForbiddenException {
         WebTarget target = client.target(synset.getLinks().getSelf());
 
         LOG.debug("Updating synset " + synset);
@@ -765,9 +767,9 @@ public class RemoteService {
                 .put(Entity.entity(synset, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Synset", synset);
+        validationErrorRequestHandler(response, "Synset", synset);
 
-        if(isOkStatus(response)){
+        if (isOkStatus(response)) {
             LOG.debug("Synset updated " + synset);
             return findSynset(response.getLocation());
         }
@@ -775,7 +777,7 @@ public class RemoteService {
         return null;
     }
 
-    public boolean updateUser() throws IOException, ValidationException,ForbiddenException {
+    public boolean updateUser() throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SECURITY_USER);
@@ -789,7 +791,7 @@ public class RemoteService {
                 .put(Entity.entity(activeUser(), MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"User", activeUser());
+        validationErrorRequestHandler(response, "User", activeUser());
 
         if (isOkStatus(response)) {
             LOG.debug("User updated: " + activeUser());
@@ -812,7 +814,7 @@ public class RemoteService {
                 .put(Entity.entity(example, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Example", example);
+        validationErrorRequestHandler(response, "Example", example);
 
         if (isOkStatus(response)) {
             Example ee = findExample(response.getLocation());
@@ -836,7 +838,7 @@ public class RemoteService {
                 .post(Entity.entity(example, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Example", example);
+        validationErrorRequestHandler(response, "Example", example);
 
         if (isCreatedStatus(response)) {
             Example se = findExample(response.getLocation());
@@ -846,7 +848,6 @@ public class RemoteService {
 
         return null;
     }
-
 
 
     public Example findExample(URI link) {
@@ -917,7 +918,7 @@ public class RemoteService {
                 .post(Entity.entity(lexicon, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Lexicon", lexicon);
+        validationErrorRequestHandler(response, "Lexicon", lexicon);
 
         if (isOkStatus(response)) {
             Lexicon lx = findLexicon(response.getLocation());
@@ -928,7 +929,7 @@ public class RemoteService {
         return null;
     }
 
-    public RelationType addRelationType(RelationType rt) throws IOException, ValidationException,ForbiddenException {
+    public RelationType addRelationType(RelationType rt) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_RELATION_TYPES);
@@ -942,7 +943,7 @@ public class RemoteService {
                 .post(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"RelationType", rt);
+        validationErrorRequestHandler(response, "RelationType", rt);
 
         if (isOkStatus(response)) {
             RelationType res = findRelationType(response.getLocation());
@@ -970,7 +971,7 @@ public class RemoteService {
         return new RelationTest();
     }
 
-    public RelationTest addRelationTest(RelationTest rt) throws IOException, ValidationException,ForbiddenException {
+    public RelationTest addRelationTest(RelationTest rt) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(rt.getLinks().getTests());
 
@@ -983,7 +984,7 @@ public class RemoteService {
                 .post(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Relation test", rt);
+        validationErrorRequestHandler(response, "Relation test", rt);
 
         if (isOkStatus(response)) {
             RelationTest res = findRelationTest(response.getLocation());
@@ -994,7 +995,7 @@ public class RemoteService {
         return null;
     }
 
-    public RelationTest updateRelationTest(RelationTest rt) throws IOException, ValidationException, ForbiddenException{
+    public RelationTest updateRelationTest(RelationTest rt) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(rt.getLinks().getSelf());
 
@@ -1007,7 +1008,7 @@ public class RemoteService {
                 .put(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Relation test", rt);
+        validationErrorRequestHandler(response, "Relation test", rt);
 
         if (isOkStatus(response)) {
             RelationTest res = findRelationTest(response.getLocation());
@@ -1031,7 +1032,7 @@ public class RemoteService {
                 .put(Entity.entity(rt, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Relation type", rt);
+        validationErrorRequestHandler(response, "Relation type", rt);
 
         if (isOkStatus(response)) {
             RelationType res = findRelationType(response.getLocation());
@@ -1042,7 +1043,7 @@ public class RemoteService {
         return null;
     }
 
-    public Lexicon updateLexicon(Lexicon lexicon) throws IOException, ValidationException,ForbiddenException {
+    public Lexicon updateLexicon(Lexicon lexicon) throws IOException, ValidationException, ForbiddenException {
 
         WebTarget target = client.target(lexicon.getLinks().getSelf());
 
@@ -1055,7 +1056,7 @@ public class RemoteService {
                 .put(Entity.entity(lexicon, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Lexicon", lexicon);
+        validationErrorRequestHandler(response, "Lexicon", lexicon);
 
         if (isOkStatus(response)) {
             Lexicon lx = findLexicon(response.getLocation());
@@ -1104,7 +1105,7 @@ public class RemoteService {
         }
     }
 
-    public boolean changePassword(String ps) throws IOException, ValidationException, ForbiddenException{
+    public boolean changePassword(String ps) throws IOException, ValidationException, ForbiddenException {
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_SECURITY_CHANGE_PASSWORD);
 
@@ -1120,7 +1121,7 @@ public class RemoteService {
                 .put(Entity.entity(json, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response,"Password", activeUser());
+        validationErrorRequestHandler(response, "Password", activeUser());
 
         if (isOkStatus(response)) {
             LOG.debug("Password changed ");

@@ -18,6 +18,8 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.boundary.SynsetResource;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
+import pl.edu.pwr.wordnetloom.server.business.user.boundary.UserResource;
+import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -71,6 +73,10 @@ public class LinkBuilder {
 
     public URI forSynset(Synset s, UriInfo uriInfo) {
         return createResourceUri(SynsetResource.class, "synset", s.getId(), uriInfo);
+    }
+
+    public URI forUser(User u, UriInfo uriInfo) {
+        return createResourceUri(UserResource.class, "user", u.getId(),  uriInfo);
     }
 
     public URI forSenses(UriInfo uriInfo) {

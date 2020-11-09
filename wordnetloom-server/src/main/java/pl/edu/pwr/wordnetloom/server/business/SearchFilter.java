@@ -41,6 +41,8 @@ public class SearchFilter {
 
     private Boolean senseWithoutSynset;
 
+    private Boolean negateRelationType;
+
     public SearchFilter() {
     }
 
@@ -194,5 +196,38 @@ public class SearchFilter {
 
     public void setSenseWithoutSynset(Boolean senseWithoutSynset) {
         this.senseWithoutSynset = senseWithoutSynset;
+    }
+
+    public Boolean getNegateRelationType() {
+        return negateRelationType;
+    }
+
+    public void setNegateRelationType(Boolean negateRelationType) {
+        this.negateRelationType = negateRelationType;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchFilter{" +
+                "paginationData=" + paginationData +
+                ", lemma='" + lemma + '\'' +
+                ", lexicon=" + lexicon +
+                ", partOfSpeechId=" + partOfSpeechId +
+                ", domainId=" + domainId +
+                ", statusId=" + statusId +
+                ", definition='" + definition + '\'' +
+                ", comment='" + comment + '\'' +
+                ", example='" + example + '\'' +
+                ", relationTypeId=" + relationTypeId +
+                ", registerId=" + registerId +
+                ", aspectId=" + aspectId +
+                ", synsetId=" + synsetId +
+                ", artificial=" + artificial +
+                ", emotion=" + emotion +
+                ", valuation=" + valuation +
+                ", markedness=" + markedness +
+                ", senseWithoutSynset=" + senseWithoutSynset +
+                ", negateRelationType=" + negateRelationType +
+                '}';
     }
 }

@@ -17,6 +17,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
+import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Inject;
 import javax.json.*;
@@ -1454,6 +1455,7 @@ public class EntityBuilder {
         } else {
             builder.add("label", "");
         }
+        builder.add("lexicon", synset.getStatus().getId());
         JsonObjectBuilder linkBuilder = createObjectBuilder();
         linkBuilder.add("self", this.linkBuilder.forSynset(synset, uriInfo).toString());
         linkBuilder.add("synset-graph", this.linkBuilder.forSynsetsGraph(synset.getId(), uriInfo).toString());
@@ -1722,4 +1724,18 @@ public class EntityBuilder {
                 .build();
     }
 
+    public JsonObject buildUser(User user, UriInfo uriInfo) {
+        return Json.createObjectBuilder()
+                .add("email", user.getEmail())
+                .add("fullname", user.getFullname())
+                .add("_links", createObjectBuilder()
+                        .add("self", linkBuilder.forUser(user, uriInfo).toString()))
+                .build();
+    }
+
+    public JsonArray buildUsers(List<User> users, UriInfo uriInfo) {
+        JsonArrayBuilder builder = createArrayBuilder();
+        users.forEach(user -> builder.add(buildUser(user, uriInfo)));
+        return builder.build();
+    }
 }

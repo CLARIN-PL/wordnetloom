@@ -90,6 +90,12 @@ public class SearchFilterExtractorFromUrl {
         if (senseWithoutSynsets != null) {
             searchFilter.setSenseWithoutSynset(Boolean.parseBoolean(senseWithoutSynsets));
         }
+
+        final String negateRelationType = getUriInfo().getQueryParameters().getFirst("negate_relation_type");
+        if (negateRelationType != null) {
+            searchFilter.setNegateRelationType(Boolean.parseBoolean(negateRelationType));
+        }
+
         return searchFilter;
     }
 

@@ -40,7 +40,11 @@ public class SynsetSpecification {
             }
 
             if (filter.getRelationTypeId() != null) {
-                criteria.addAll(bySynsetRelationType(filter.getRelationTypeId(), root, cb));
+                if(filter.getNegateRelationType() != null && filter.getNegateRelationType()) {
+                    criteria.addAll(byNotSynsetRelationType(filter.getRelationTypeId(), root, cb));
+                }else{
+                    criteria.addAll(bySynsetRelationType(filter.getRelationTypeId(), root, cb));
+                }
             }
 
             if (filter.getLemma() != null || filter.getPartOfSpeechId() != null
@@ -59,6 +63,7 @@ public class SynsetSpecification {
                 Predicate userLexiconsPredicate = expression.in(userLexicons);
                 criteria.add(userLexiconsPredicate);
             }
+
 
             return cb.and(criteria.toArray(new Predicate[0]));
         };
@@ -126,6 +131,12 @@ public class SynsetSpecification {
     public static List<Predicate> bySynsetRelationType(UUID rel, Root<Synset> root, CriteriaBuilder cb) {
         Join<Synset, SynsetRelation> outgoing = root.join("outgoingRelations", JoinType.LEFT);
         Predicate outgoingRelationsPredicate = cb.equal(outgoing.get("relationType").get("id"), rel);
+        return Collections.singletonList(outgoingRelationsPredicate);
+    }
+
+    public static List<Predicate> byNotSynsetRelationType(UUID rel, Root<Synset> root, CriteriaBuilder cb) {
+        Join<Synset, SynsetRelation> outgoing = root.join("outgoingRelations", JoinType.LEFT);
+        Predicate outgoingRelationsPredicate = cb.notEqual(outgoing.get("relationType").get("id"), rel);
         return Collections.singletonList(outgoingRelationsPredicate);
     }
 

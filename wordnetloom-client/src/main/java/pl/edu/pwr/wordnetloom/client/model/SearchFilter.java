@@ -32,6 +32,8 @@ public class SearchFilter implements Cloneable {
 
     private Boolean sensesWithoutSynset;
 
+    private Boolean negateRelationType;
+
     private Boolean artificial;
 
     private Boolean synsetMode;
@@ -233,6 +235,14 @@ public class SearchFilter implements Cloneable {
 
     public void setSensesWithoutSynset(Boolean sensesWithoutSynset) {
         this.sensesWithoutSynset = sensesWithoutSynset;
+    }
+
+    public Boolean getNegateRelationType() {
+        return negateRelationType;
+    }
+
+    public void setNegateRelationType(Boolean negateRelationType) {
+        this.negateRelationType = negateRelationType;
     }
 
     @Override

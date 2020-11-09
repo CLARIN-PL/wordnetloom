@@ -88,7 +88,7 @@ public class SearchViewModel implements ViewModel {
     private ObservableList<String> synsetRelationsTypes;
     private final ObjectProperty<RelationType> synsetRelationType = new SimpleObjectProperty<>();
     private final StringProperty selectedSynsetRelation = new SimpleStringProperty(SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER);
-
+    private final BooleanProperty negateSynsetRelationType = new SimpleBooleanProperty();
 
     // Don't inline this field. It's needed to prevent the list mapping from being garbage collected.
     private ItemList<Dictionary> lexiconItemList;
@@ -393,6 +393,12 @@ public class SearchViewModel implements ViewModel {
             filter.setSensesWithoutSynset(false);
         }
 
+        if (negateSynsetRelationType.get()) {
+            filter.setNegateRelationType(true);
+        } else {
+            filter.setNegateRelationType(false);
+        }
+
         if (selectedSenseRelation.get() != null && !SENSE_RELATION_TYPE_NOTHING_SELECTED_MARKER.equals(selectedSenseRelation.get())) {
             filter.setRelationTypeId(senseRelationType.get().getId());
         } else if (selectedSynsetRelation.get() != null && !SYNSET_RELATION_TYPE_NOTHING_SELECTED_MARKER.equals(selectedSynsetRelation.get())) {
@@ -525,6 +531,7 @@ public class SearchViewModel implements ViewModel {
         filter.setSynsetId(null);
 
         senseOnlyWithoutSynset.set(false);
+        negateSynsetRelationType.setValue(false);
         filter.setSensesWithoutSynset(false);
     }
 
@@ -685,5 +692,8 @@ public class SearchViewModel implements ViewModel {
 
     public Property<Boolean> senseOnlyWithoutSynsetProperty() {
         return senseOnlyWithoutSynset;
+    }
+    public Property<Boolean> negateRelationTypeProperty() {
+        return negateSynsetRelationType;
     }
 }

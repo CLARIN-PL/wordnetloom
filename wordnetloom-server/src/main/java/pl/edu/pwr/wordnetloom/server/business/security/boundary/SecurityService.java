@@ -3,6 +3,7 @@ package pl.edu.pwr.wordnetloom.server.business.security.boundary;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
+import pl.edu.pwr.wordnetloom.server.business.user.entity.UserSettings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

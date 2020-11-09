@@ -2,10 +2,8 @@ package pl.edu.pwr.wordnetloom.server.business.synset.control;
 
 import org.hibernate.Hibernate;
 import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
-import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeExpanded;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
@@ -49,7 +47,6 @@ public class SynsetQueryService {
                 .map(u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
-
         predicates.add(SynsetSpecification.byFilter(filter, lexicons).toPredicate(synset, qc, cb));
 
         List<Order> orders = new ArrayList<>();
@@ -80,11 +77,10 @@ public class SynsetQueryService {
     }
 
     public List<UUID> getRelatedSynsets(UUID synsetId, UUID relationTypeId){
-        List<UUID> result = em.createNamedQuery(SynsetRelation.FIND_RELATED_SYNSETS_IDS, UUID.class)
+        return em.createNamedQuery(SynsetRelation.FIND_RELATED_SYNSETS_IDS, UUID.class)
                 .setParameter("id",synsetId)
                 .setParameter("relation", relationTypeId)
                 .getResultList();
-        return result;
     }
 
     public long countWithFilter(SearchFilter filter) {

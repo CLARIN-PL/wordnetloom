@@ -43,6 +43,9 @@ public class SearchView implements FxmlView<SearchViewModel> {
     public CheckBox onlyWithoutSynset;
 
     @FXML
+    public CheckBox negateSynsetRelationType;
+
+    @FXML
     public TitledPane generalPanel, sensePanel, synsetPanel;
 
     public ComboBox synsetType;
@@ -181,6 +184,7 @@ public class SearchView implements FxmlView<SearchViewModel> {
         synsetRelationTypeInput.valueProperty().bindBidirectional(viewModel.selectedSynsetRelationTypeProperty());
 
         onlyWithoutSynset.selectedProperty().bindBidirectional(viewModel.senseOnlyWithoutSynsetProperty());
+        negateSynsetRelationType.selectedProperty().bindBidirectional(viewModel.negateRelationTypeProperty());
 
         addChangeModeListener(senseMode);
         addChangeModeListener(synsetMode);

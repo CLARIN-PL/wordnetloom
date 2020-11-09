@@ -284,6 +284,9 @@ public class RemoteService {
         if (filter.getSensesWithoutSynset() != null && filter.getSensesWithoutSynset()) {
             target = target.queryParam("senses_without_synset", filter.getSensesWithoutSynset());
         }
+        if (filter.getNegateRelationType() != null && filter.getNegateRelationType()) {
+            target = target.queryParam("negate_relation_type", filter.getNegateRelationType());
+        }
         if (filter.getSynsetId() != null) {
             target = target.queryParam("synset", filter.getSynsetId());
         }

@@ -49,7 +49,6 @@
         </auth-constraint>
     </security-constraint>
 
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Synsets</web-resource-name>

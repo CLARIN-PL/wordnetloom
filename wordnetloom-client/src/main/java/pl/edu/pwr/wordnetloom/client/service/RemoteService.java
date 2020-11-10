@@ -60,6 +60,7 @@ public class RemoteService {
     private static final String PATH_GRAPH_SENSE = "/senses/{id}/graph";
     private static final String PATH_CORPUS_EXAMPLES = "/corpus-examples/search";
     private static final String PATH_PATH_TO_HYPERONYM = "synsets/{id}/path-to-hyperonymy";
+    private static final String PATH_USERS = "/users";
 
     private static User user;
 
@@ -1134,5 +1135,44 @@ public class RemoteService {
         return false;
     }
 
+    public List<UserListItem> getUsers() throws IOException {
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_USERS);
+
+        LOG.debug("Loading users list: " + target.getUri());
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .get();
+
+        if (isOkStatus(response)) {
+            Users users = response.readEntity(Users.class);
+            if (users.getRows().isEmpty()) {
+                return new ArrayList<>();
+            }
+            return users.getRows();
+        }
+        return new ArrayList<>();
+    }
+
+    public UserSimple findUser(URI link) {
+
+        WebTarget target = client.target(link);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .get();
+
+        if (isOkStatus(response)) {
+            UserSimple u = response.readEntity(UserSimple.class);
+            LOG.debug("Relation type found: " + link.toString());
+            return u;
+        }
+        return new UserSimple();
+    }
 
 }

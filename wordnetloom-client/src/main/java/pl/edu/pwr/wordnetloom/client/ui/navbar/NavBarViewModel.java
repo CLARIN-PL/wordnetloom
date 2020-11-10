@@ -18,6 +18,7 @@ public class NavBarViewModel implements ViewModel {
 
     public static final String OPEN_RELATION_TYPES_DIALOG = "open_relation_type_dialog";
     public static final String OPEN_LEXICON_DIALOG = "open_lexicon.dialog";
+    public static final String OPEN_USERS_DIALOG = "open_users.dialog";
     public static final String OPEN_PROFILE_DIALOG = "open_profile_dialog";
     public static final String OPEN_DICTIONARIES_DIALOG = "open_dictionaries_dialog";
 
@@ -52,6 +53,10 @@ public class NavBarViewModel implements ViewModel {
 
     public void showLexiconDialog() {
         publish(OPEN_LEXICON_DIALOG);
+    }
+
+    public void showUsersDialog() {
+        publish(OPEN_USERS_DIALOG);
     }
 
     public void showProfileDialog() {

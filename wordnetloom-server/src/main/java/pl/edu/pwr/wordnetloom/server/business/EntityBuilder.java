@@ -1727,15 +1727,25 @@ public class EntityBuilder {
     public JsonObject buildUser(User user, UriInfo uriInfo) {
         return Json.createObjectBuilder()
                 .add("email", user.getEmail())
-                .add("fullname", user.getFullname())
+                .add("first_name", user.getFirstname())
+                .add("last_name", user.getLastname())
+                .add("role", user.getRole().name())
                 .add("_links", createObjectBuilder()
                         .add("self", linkBuilder.forUser(user, uriInfo).toString()))
                 .build();
     }
 
-    public JsonArray buildUsers(List<User> users, UriInfo uriInfo) {
-        JsonArrayBuilder builder = createArrayBuilder();
-        users.forEach(user -> builder.add(buildUser(user, uriInfo)));
-        return builder.build();
+    public JsonObject buildUsers(List<User> users, UriInfo uriInfo) {
+
+        JsonArray rows = users.stream()
+                .map(u -> buildUser(u, uriInfo))
+                .collect(JsonCollectors.toJsonArray());
+
+        return createObjectBuilder()
+                .add("rows", rows)
+                .add("_links", createObjectBuilder()
+                        .add("self", uriInfo.getRequestUri().toString()))
+                .add("_actions", createArrayBuilder())
+                .build();
     }
 }

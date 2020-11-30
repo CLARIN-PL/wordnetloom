@@ -1135,7 +1135,7 @@ public class RemoteService {
         return false;
     }
 
-    public List<UserListItem> getUsers() throws IOException {
+    public List<UserSimple> getUsers() throws IOException {
         WebTarget target = client.target(SERVER_TARGET_URL)
                 .path(PATH_USERS);
 

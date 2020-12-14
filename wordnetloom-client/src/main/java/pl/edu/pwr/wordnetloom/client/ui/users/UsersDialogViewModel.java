@@ -11,7 +11,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import pl.edu.pwr.wordnetloom.client.events.ReloadUsersEvent;
-import pl.edu.pwr.wordnetloom.client.events.ShowCorpusExampleEvent;
 import pl.edu.pwr.wordnetloom.client.model.UserSimple;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;

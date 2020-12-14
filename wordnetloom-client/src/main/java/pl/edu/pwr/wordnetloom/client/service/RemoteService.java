@@ -1157,6 +1157,28 @@ public class RemoteService {
         return new ArrayList<>();
     }
 
+    public UserSimple saveUser(UserSimple u) throws IOException, ValidationException, ForbiddenException {
+
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_USERS);
+
+        LOG.debug("Saving sense: " + u);
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .post(Entity.entity(u, MediaType.APPLICATION_JSON));
+
+        isForbiddenStatus(response);
+        validationErrorRequestHandler(response, "User", u);
+        if (isCreatedStatus(response)) {
+            LOG.debug("User created: " + user);
+            return findUser(response.getLocation());
+        }
+        return null;
+    }
+
     public UserSimple findUser(URI link) {
 
         WebTarget target = client.target(link);
@@ -1169,7 +1191,7 @@ public class RemoteService {
 
         if (isOkStatus(response)) {
             UserSimple u = response.readEntity(UserSimple.class);
-            LOG.debug("Relation type found: " + link.toString());
+            LOG.debug("User found: " + link.toString());
             return u;
         }
         return new UserSimple();

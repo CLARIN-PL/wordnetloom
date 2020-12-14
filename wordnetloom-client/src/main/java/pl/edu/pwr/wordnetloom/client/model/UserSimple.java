@@ -66,4 +66,17 @@ public class UserSimple {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+    @Override
+    public String toString() {
+        return "UserSimple{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", password='" + password + '\'' +
+                ", links=" + links +
+                '}';
+    }
 }

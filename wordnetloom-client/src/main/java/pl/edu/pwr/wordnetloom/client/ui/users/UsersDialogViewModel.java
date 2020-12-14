@@ -10,20 +10,26 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import pl.edu.pwr.wordnetloom.client.events.ReloadUsersEvent;
+import pl.edu.pwr.wordnetloom.client.events.ShowCorpusExampleEvent;
 import pl.edu.pwr.wordnetloom.client.model.UserSimple;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
 import pl.edu.pwr.wordnetloom.client.ui.scopes.UsersDialogScope;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Singleton
 public class UsersDialogViewModel implements ViewModel {
 
     public static final String OPEN_CREATE_USER_DIALOG = "user_create";
     public static final String OPEN_DELETE_USER_DIALOG = "user_delete";
+    public static final String RELOAD_USER_LIST = "user_delete";
     public static final String OPEN_CHANGE_PASSWORD_DIALOG = "usr_change_password";
     public static final String CLOSE_DIALOG_NOTIFICATION = "close_dialog";
 
@@ -56,6 +62,7 @@ public class UsersDialogViewModel implements ViewModel {
     public Command getChangePasswordCommand() {
         return changePasswordCommand;
     }
+
 
     public UsersDialogViewModel() {
     }
@@ -95,8 +102,13 @@ public class UsersDialogViewModel implements ViewModel {
         });
     }
 
+    public void onOnReloadUsers(@Observes ReloadUsersEvent event){
+        loadUsers();
+    }
+
     private void loadUsers(){
         try {
+            userList.clear();
             List<UserSimple> u = service.getUsers();
             userList.addAll(u.stream()
                     .map(UserListItemViewModel::new)
@@ -110,10 +122,13 @@ public class UsersDialogViewModel implements ViewModel {
     }
 
     private void delete() {
+        if(selectedUserListItem.get() != null) {
+            service.delete(selectedUserListItem.get().getUser().getLinks().getSelf());
+            loadUsers();
+        }
     }
 
     private void changePassword() {
-
     }
 
     public StringProperty titleProperty() {

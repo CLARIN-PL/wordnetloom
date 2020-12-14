@@ -31,7 +31,7 @@
                         <TextField fx:id="lastname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <PasswordField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="role" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="role" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     </children>
                 </GridPane>
             </content>

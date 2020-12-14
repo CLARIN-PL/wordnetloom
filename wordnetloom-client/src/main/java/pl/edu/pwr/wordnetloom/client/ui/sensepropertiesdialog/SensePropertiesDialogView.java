@@ -6,12 +6,9 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-
-import javax.inject.Singleton;
 
 public class SensePropertiesDialogView implements FxmlView<SensePropertiesDialogViewModel> {
 

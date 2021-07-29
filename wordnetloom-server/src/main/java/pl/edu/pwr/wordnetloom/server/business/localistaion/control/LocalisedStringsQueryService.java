@@ -1,10 +1,10 @@
 package pl.edu.pwr.wordnetloom.server.business.localistaion.control;
 
+import io.quarkus.runtime.Startup;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.entity.LocalisedString;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -21,7 +21,7 @@ public class LocalisedStringsQueryService {
 
     private Map<String, Map<Long, String>> localisedStrings;
 
-    public final String defaultLanguage = "en";
+    private final String defaultLanguage = "en";
 
     @PostConstruct
     void init() {
@@ -96,5 +96,9 @@ public class LocalisedStringsQueryService {
         return list.stream()
                 .collect(Collectors.groupingBy(o -> o.getKey().getLanguage(),
                         Collectors.toMap(c -> c.getKey().getId(), LocalisedString::getValue)));
+    }
+
+    public String getDefaultLanguage() {
+        return defaultLanguage;
     }
 }

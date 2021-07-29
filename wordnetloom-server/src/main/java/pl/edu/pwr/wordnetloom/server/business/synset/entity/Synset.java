@@ -6,6 +6,7 @@ import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;

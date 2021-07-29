@@ -5,7 +5,8 @@ import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryServic
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
@@ -14,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class SenseQueryService {
 
     @PersistenceContext

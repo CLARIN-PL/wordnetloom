@@ -12,7 +12,8 @@ import pl.edu.pwr.wordnetloom.server.business.synset.control.SynsetQueryService;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,7 +22,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class GraphQueryService {
 
     @PersistenceContext

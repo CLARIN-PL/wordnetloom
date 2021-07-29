@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.entity;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

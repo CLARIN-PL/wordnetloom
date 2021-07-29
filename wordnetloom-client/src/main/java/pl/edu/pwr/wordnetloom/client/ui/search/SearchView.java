@@ -101,9 +101,8 @@ public class SearchView implements FxmlView<SearchViewModel> {
         viewModel.addSenseToNewSynsetCommand().execute();
         refreshSearchResultList();
         // load graph of created synset
-        viewModel.loadGraphEvent.fireAsync(new LoadGraphEvent(viewModel.selectedSearchListItemProperty()
-                .get().getSearchListItem()
-                .getLinks().getSynsetGraph(), false));
+        viewModel.loadGraphEvent.fireAsync(new LoadGraphEvent(
+                viewModel.selectedSearchListItemProperty().get().getSearchListItem().getLinks().getSynsetGraph(), false));
     }
 
     private void refreshSearchResultList() {

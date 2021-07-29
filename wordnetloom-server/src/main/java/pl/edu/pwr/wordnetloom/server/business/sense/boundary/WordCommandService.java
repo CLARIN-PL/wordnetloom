@@ -4,14 +4,16 @@ import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.control.WordQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Word;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
 import java.util.UUID;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class WordCommandService {
 
     @PersistenceContext

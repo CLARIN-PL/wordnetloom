@@ -19,7 +19,8 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
@@ -28,7 +29,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class SynsetCommandService {
 
     @PersistenceContext

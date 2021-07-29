@@ -8,6 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -138,10 +139,10 @@ public class Sense implements Serializable {
     private Integer synsetPosition = 0;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
-    private final Set<SenseRelation> incomingRelations = new HashSet<>();
+    private Set<SenseRelation> incomingRelations = new HashSet<>();
 
     @OneToMany(mappedBy = "child",  cascade = CascadeType.REMOVE)
-    private final Set<SenseRelation> outgoingRelations = new HashSet<>();
+    private Set<SenseRelation> outgoingRelations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")

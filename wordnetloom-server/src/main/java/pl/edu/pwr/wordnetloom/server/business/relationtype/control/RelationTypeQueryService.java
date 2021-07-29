@@ -5,14 +5,16 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationArgume
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.*;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class RelationTypeQueryService {
 
     @PersistenceContext

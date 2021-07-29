@@ -3,15 +3,16 @@ package pl.edu.pwr.wordnetloom.server.business.user.control;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class UserFinder {
 
     @PersistenceContext

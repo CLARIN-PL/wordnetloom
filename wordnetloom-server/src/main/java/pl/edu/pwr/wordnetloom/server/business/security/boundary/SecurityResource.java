@@ -8,6 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.security.control.JwtManager;
 import pl.edu.pwr.wordnetloom.server.business.security.entity.Jwt;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
@@ -71,19 +72,18 @@ public class SecurityResource {
 
 
     @GET
+    @PermitAll
     @Path("/claims")
     public Response claims(@HeaderParam("Authorization") String auth) {
         if (auth != null && auth.startsWith("Bearer ")) {
-            try {
-                JWT j = JWTParser.parse(auth.substring(7));
-                return Response.ok(j.getJWTClaimsSet().getClaims()).build(); //Note: nimbusds converts token expiration time to milliseconds
-            } catch (ParseException e) {
-                log.warning(e.toString());
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(entityBuilder.buildErrorObject("Invalid token", Response.Status.BAD_REQUEST))
-                        .build();
-            }
+            String token = auth.substring(7);
+            if (jwtManager.checkToken(token))
+                return Response.ok(jwtManager.createUserString()).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(entityBuilder.buildErrorObject("Invalid token", Response.Status.BAD_REQUEST))
+                    .build();
         }
+
         return Response.status(Response.Status.NO_CONTENT)
                 .build(); //no jwt means no claims to extract
     }

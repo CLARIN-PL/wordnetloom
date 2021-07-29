@@ -5,14 +5,16 @@ import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class DictionaryQueryService {
 
     @PersistenceContext

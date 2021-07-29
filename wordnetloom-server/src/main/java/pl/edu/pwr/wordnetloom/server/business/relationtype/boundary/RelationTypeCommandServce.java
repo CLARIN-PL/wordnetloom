@@ -19,7 +19,8 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.control.SynsetQueryService;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -27,7 +28,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.*;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class RelationTypeCommandServce {
 
     @PersistenceContext
@@ -57,7 +59,7 @@ public class RelationTypeCommandServce {
     public OperationResult<RelationType> save(Locale locale, JsonObject json) {
         OperationResult<RelationType> result = new OperationResult<>();
 
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }
@@ -172,7 +174,7 @@ public class RelationTypeCommandServce {
 
     public OperationResult<RelationType> update(UUID id, Locale locale, JsonObject json) {
         OperationResult<RelationType> result = new OperationResult<>();
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }

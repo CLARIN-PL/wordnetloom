@@ -8,7 +8,8 @@ import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStri
 import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStringsQueryService;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.entity.LocalisedString;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
@@ -16,7 +17,8 @@ import javax.persistence.PersistenceContext;
 import java.util.Locale;
 import java.util.Optional;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class DictionaryCommandService {
 
     @PersistenceContext
@@ -33,7 +35,7 @@ public class DictionaryCommandService {
 
     public Optional<Status> updateStatus(long id, Locale locale, JsonObject json) {
 
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }
@@ -55,7 +57,7 @@ public class DictionaryCommandService {
     public Optional<Status> addStatus(Locale locale, JsonObject json) {
         Status s = new Status();
 
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }
@@ -70,7 +72,7 @@ public class DictionaryCommandService {
 
     public Optional<Register> updateRegister(long id, Locale locale, JsonObject json) {
 
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }
@@ -90,7 +92,7 @@ public class DictionaryCommandService {
     public Optional<Register> addRegister(Locale locale, JsonObject json) {
         Register register = new Register();
 
-        String lang = localisedStringsQueryService.defaultLanguage;
+        String lang = localisedStringsQueryService.getDefaultLanguage();
         if (locale != null) {
             lang = locale.getLanguage().substring(0, 2);
         }

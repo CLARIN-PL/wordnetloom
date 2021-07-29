@@ -20,6 +20,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.json.*;
 import javax.json.stream.JsonCollectors;
 import javax.ws.rs.HttpMethod;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 import static javax.json.Json.createArrayBuilder;
 import static javax.json.Json.createObjectBuilder;
 
+@Singleton
 public class EntityBuilder {
 
     @Inject

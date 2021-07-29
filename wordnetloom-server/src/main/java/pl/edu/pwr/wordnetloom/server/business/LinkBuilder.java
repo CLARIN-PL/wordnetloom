@@ -21,10 +21,12 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 import pl.edu.pwr.wordnetloom.server.business.user.boundary.UserResource;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
+import javax.inject.Singleton;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.UUID;
 
+@Singleton
 public class LinkBuilder {
 
     public URI forDictionary(Dictionary dic, String methodName, UriInfo uriInfo) {

@@ -6,6 +6,7 @@ import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;

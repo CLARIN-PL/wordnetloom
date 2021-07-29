@@ -1,3 +1,7 @@
+* {
+    -fx-font-family: 'serif'
+}
+
 .root {
     -tab-text-color: -fx-text-base-color;
 }

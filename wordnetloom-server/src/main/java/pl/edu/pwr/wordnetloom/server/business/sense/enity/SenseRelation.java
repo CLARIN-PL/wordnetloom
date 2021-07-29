@@ -4,6 +4,7 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import java.io.Serializable;
 
 @Entity

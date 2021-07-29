@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.user.entity;
 
+import org.hibernate.annotations.NamedQuery;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

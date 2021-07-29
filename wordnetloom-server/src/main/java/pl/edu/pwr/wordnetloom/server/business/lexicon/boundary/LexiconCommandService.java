@@ -4,21 +4,23 @@ import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class LexiconCommandService {
 
     @PersistenceContext
     EntityManager em;
 
     @Inject
-    private LexiconQueryService query;
+    LexiconQueryService query;
 
     public OperationResult<Lexicon> save(JsonObject json) {
 

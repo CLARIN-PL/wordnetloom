@@ -10,7 +10,8 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -20,7 +21,8 @@ import javax.persistence.criteria.*;
 import java.util.*;
 
 
-@Stateless
+@Transactional
+@RequestScoped
 public class SynsetQueryService {
 
     @PersistenceContext

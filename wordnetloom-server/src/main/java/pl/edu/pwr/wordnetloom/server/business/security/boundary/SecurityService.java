@@ -5,7 +5,8 @@ import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.UserSettings;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.naming.AuthenticationException;
@@ -16,7 +17,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Optional;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class SecurityService {
 
     @Inject

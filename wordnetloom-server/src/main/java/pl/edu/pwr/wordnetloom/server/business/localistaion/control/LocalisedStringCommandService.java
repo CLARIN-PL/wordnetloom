@@ -2,13 +2,15 @@ package pl.edu.pwr.wordnetloom.server.business.localistaion.control;
 
 import pl.edu.pwr.wordnetloom.server.business.localistaion.entity.LocalisedString;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Stateless
+@Transactional
+@RequestScoped
 public class LocalisedStringCommandService {
 
     @PersistenceContext

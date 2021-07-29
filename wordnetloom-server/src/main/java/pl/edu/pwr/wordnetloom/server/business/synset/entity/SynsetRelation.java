@@ -4,6 +4,7 @@ import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
 import javax.persistence.*;
+import org.hibernate.annotations.NamedQuery;
 import java.io.Serializable;
 import java.util.UUID;
 

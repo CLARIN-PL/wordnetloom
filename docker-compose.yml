@@ -14,10 +14,11 @@ services:
     ports:
       - "33366:3306"
 
-  wildfly:
+  quarkus:
     build:
-      context: .
-      dockerfile: wildfly.dockerfile
+      context: ./wordnetloom-server
+      dockerfile: src/main/docker/Dockerfile.jvm
+    container_name: quarkus-server
     restart: always
     depends_on:
       - db
@@ -25,7 +26,6 @@ services:
       WAIT_HOSTS: mysql:3306
     ports:
       - "8080:8080"
-      - "8009:8009"
     links:
       - db:db
 

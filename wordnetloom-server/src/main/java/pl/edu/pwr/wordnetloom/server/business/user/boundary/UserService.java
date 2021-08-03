@@ -10,13 +10,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,25 +25,6 @@ public class UserService {
 
     @PersistenceContext
     EntityManager em;
-
-    public String encryptPassword(final String password) {
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (final NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-        md.update(password.getBytes());
-        return Base64.getMimeEncoder().encodeToString(md.digest());
-    }
-
-    public void changePassword(String email, String password) {
-        service.findByEmail(email)
-                .ifPresent(u -> {
-                    u.setPassword(encryptPassword(password));
-                    em.merge(u);
-                });
-    }
 
     public List<User> findAllUsers() {
         return em.createNamedQuery(User.FIND_ALL, User.class)
@@ -98,18 +75,11 @@ public class UserService {
                 result.addError("last_name", "May not be empty");
             }
 
-            if (!json.isNull("password") && !json.getString("password").isEmpty()) {
-                u.setPassword(encryptPassword(json.getString("password")));
-            } else {
-                result.addError("password", "May not be empty");
-            }
-
             if (!json.isNull("role") && !json.getString("role").isEmpty()) {
                 u.setRole(Role.valueOf(json.getString("role")));
             } else {
                 result.addError("role", "May not be empty");
             }
-
 
             if (!result.hasErrors()) {
                 em.persist(u);

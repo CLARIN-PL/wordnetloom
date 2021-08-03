@@ -1,13 +1,12 @@
 package pl.edu.pwr.wordnetloom.server.business.user.control;
 
+import io.quarkus.security.identity.SecurityIdentity;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
-
-import java.security.Principal;
 import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
@@ -19,7 +18,7 @@ public class UserFinder {
     EntityManager em;
 
     @Inject
-    Principal principal;
+    SecurityIdentity identity;
 
     public Optional<User> findByEmail(String email) {
         try {
@@ -32,8 +31,7 @@ public class UserFinder {
         }
     }
 
-
     public Optional<User> getCurrentUser(){
-        return findByEmail(principal.getName());
+        return findByEmail(identity.getPrincipal().getName());
     }
 }

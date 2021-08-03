@@ -2,20 +2,13 @@ package pl.edu.pwr.wordnetloom.client.ui.relationtestform;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
-import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
-import de.saxsys.mvvmfx.ViewTuple;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
-import pl.edu.pwr.wordnetloom.client.ui.DialogHelper;
-import pl.edu.pwr.wordnetloom.client.ui.passwordchangedialog.ChangePasswordDialogView;
-import pl.edu.pwr.wordnetloom.client.ui.passwordchangedialog.ChangePasswordDialogViewModel;
-import pl.edu.pwr.wordnetloom.client.ui.profiledialog.ProfileDialogViewModel;
 
 public class RelationTestDialogView implements FxmlView<RelationTestDialogViewModel> {
 

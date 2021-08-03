@@ -29,7 +29,6 @@ public class UsersDialogViewModel implements ViewModel {
     public static final String OPEN_CREATE_USER_DIALOG = "user_create";
     public static final String OPEN_DELETE_USER_DIALOG = "user_delete";
     public static final String RELOAD_USER_LIST = "user_delete";
-    public static final String OPEN_CHANGE_PASSWORD_DIALOG = "usr_change_password";
     public static final String CLOSE_DIALOG_NOTIFICATION = "close_dialog";
 
     @Inject
@@ -48,7 +47,6 @@ public class UsersDialogViewModel implements ViewModel {
 
     private Command createCommand;
     private Command deleteCommand;
-    private Command changePasswordCommand;
 
     public Command getCreteCommand() {
         return createCommand;
@@ -57,11 +55,6 @@ public class UsersDialogViewModel implements ViewModel {
     public Command getDeleteCommand() {
         return deleteCommand;
     }
-
-    public Command getChangePasswordCommand() {
-        return changePasswordCommand;
-    }
-
 
     public UsersDialogViewModel() {
     }
@@ -93,12 +86,6 @@ public class UsersDialogViewModel implements ViewModel {
                 delete();
             }
         });
-        changePasswordCommand = new DelegateCommand(() -> new Action() {
-            @Override
-            protected void action() throws Exception {
-                changePassword();
-            }
-        });
     }
 
     public void onOnReloadUsers(@Observes ReloadUsersEvent event){
@@ -125,9 +112,6 @@ public class UsersDialogViewModel implements ViewModel {
             service.delete(selectedUserListItem.get().getUser().getLinks().getSelf());
             loadUsers();
         }
-    }
-
-    private void changePassword() {
     }
 
     public StringProperty titleProperty() {

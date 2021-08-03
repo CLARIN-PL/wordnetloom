@@ -34,7 +34,6 @@ public class ProfileDialogViewModel implements ViewModel {
 
     public static final String SUCCESS_NOTIFICATION = "success_notification";
     public static final String CLOSE_DIALOG_NOTIFICATION = "closeDialog";
-    public static final String OPEN_CHANGE_PASSWORD_DIALOG = "open_change_password";
 
     private static final String TITLE_LABEL_KEY = "profile.dialog.title";
 
@@ -53,7 +52,6 @@ public class ProfileDialogViewModel implements ViewModel {
     Event<UserLexiconUpdatedEvent> eventManager;
 
     private Command saveCommand;
-    private Command changePasswordCommand;
 
     private final ReadOnlyBooleanWrapper disableSave = new ReadOnlyBooleanWrapper();
 
@@ -66,13 +64,6 @@ public class ProfileDialogViewModel implements ViewModel {
                 save();
             }
         });
-        changePasswordCommand = new DelegateCommand(() -> new Action() {
-            @Override
-            protected void action() throws Exception {
-                changePassword();
-            }
-        });
-
         dialogScope.userFormValidProperty().bind(disableSave);
     }
 
@@ -95,20 +86,12 @@ public class ProfileDialogViewModel implements ViewModel {
         }
     }
 
-    private void changePassword() {
-       publish(ProfileDialogViewModel.OPEN_CHANGE_PASSWORD_DIALOG);
-    }
-
     public StringProperty titleProperty() {
         return title;
     }
 
     public Command getSaveCommand() {
         return saveCommand;
-    }
-
-    public Command getChangePasswordCommand() {
-        return changePasswordCommand;
     }
 
     public ReadOnlyBooleanWrapper disableSaveProperty() {

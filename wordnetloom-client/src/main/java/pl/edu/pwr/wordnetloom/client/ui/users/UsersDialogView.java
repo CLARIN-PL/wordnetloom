@@ -21,7 +21,7 @@ public class UsersDialogView implements FxmlView<UsersDialogViewModel> {
     public ListView users;
 
     @FXML
-    public Button createButton, deleteButton;  //changePasswordButton;
+    public Button createButton, deleteButton;
 
     @InjectViewModel
     private UsersDialogViewModel viewModel;
@@ -66,7 +66,6 @@ public class UsersDialogView implements FxmlView<UsersDialogViewModel> {
     private void initIcons(){
         AwesomeDude.setIcon(createButton, AwesomeIcon.USER, "11");
         AwesomeDude.setIcon(deleteButton, AwesomeIcon.TRASH, "11");
-      //  AwesomeDude.setIcon(changePasswordButton, AwesomeIcon.LOCK, "11");
     }
 
 
@@ -78,7 +77,4 @@ public class UsersDialogView implements FxmlView<UsersDialogViewModel> {
         viewModel.getDeleteCommand().execute();
     }
 
-/*    public void changePassword(ActionEvent actionEvent) {
-        viewModel.getChangePasswordCommand().execute();
-    }*/
 }

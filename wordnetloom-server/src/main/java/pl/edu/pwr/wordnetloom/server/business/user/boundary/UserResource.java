@@ -3,7 +3,6 @@ package pl.edu.pwr.wordnetloom.server.business.user.boundary;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
-
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Inject;
@@ -14,15 +13,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.logging.Logger;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
-
-    private static final Logger log = Logger.getLogger(UserResource.class.getName());
-
 
     @Inject
     UserService service;
@@ -67,11 +62,5 @@ public class UserResource {
         service.deleteUser(id);
         return Response.noContent()
                 .build();
-    }
-
-    @PUT
-    @Path("{id:\\d+}/chnage-password")
-    public Response changePassword(@PathParam("id") final Long id, JsonObject json) {
-        return Response.ok().build();
     }
 }

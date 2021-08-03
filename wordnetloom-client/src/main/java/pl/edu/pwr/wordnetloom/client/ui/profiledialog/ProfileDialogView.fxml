@@ -12,7 +12,6 @@
         <ButtonBar minHeight="40.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" style="-fx-background-color: #dddddd; -fx-border-color: #777777; -fx-border-width: 1 0 1 0;" VBox.vgrow="NEVER">
             <buttons>
                 <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#save" text="%common.save" />
-                <Button fx:id="changePassword" mnemonicParsing="false" onAction="#changePassword" text="%common.change.password" />
                 <Button fx:id="closeButton" cancelButton="true" mnemonicParsing="false" onAction="#close" text="%common.close" />
             </buttons>
             <padding>

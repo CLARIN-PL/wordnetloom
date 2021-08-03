@@ -1,9 +1,12 @@
 package pl.edu.pwr.wordnetloom.server.business.security.boundary;
 
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.idm.authorization.AuthorizationRequest;
+import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
+import pl.edu.pwr.wordnetloom.server.business.security.entity.Jwt;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.UserSettings;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -12,9 +15,6 @@ import javax.json.JsonObject;
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Optional;
 
 @Transactional
@@ -27,31 +27,15 @@ public class SecurityService {
     @PersistenceContext
     EntityManager em;
 
-    public User authenticate(final String email, final String password) throws AuthenticationException {
-        User user = service.findByEmail(email).orElseThrow(AuthenticationException::new);
-        if (user.getPassword().equals(encryptPassword(password))) {
-            return user;
-        }
-        throw new AuthenticationException("Failed logging in org.jboss.user with name '" + email + "': unknown username or wrong password");
-    }
+    public Jwt authenticate(final String email, String password) throws AuthenticationException {
+        AuthzClient authzClient = AuthzClient.create();
+        AuthorizationRequest request = new AuthorizationRequest();
+        AuthorizationResponse response = authzClient.authorization(email, password).authorize(request);
 
-    public String encryptPassword(final String password) {
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (final NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-        md.update(password.getBytes());
-        return Base64.getMimeEncoder().encodeToString(md.digest());
-    }
+        if (service.findByEmail(email).isEmpty())
+            throw new AuthenticationException("Failed logging in org.jboss.user with name '" + email + "': unknown username");
 
-    public void changePassword(String email, String password) {
-        service.findByEmail(email)
-                .ifPresent(u -> {
-                    u.setPassword(password);
-                    em.merge(u);
-                });
+        return new Jwt(response.getToken());
     }
 
     public OperationResult<User> updateUser(String email, JsonObject json) {

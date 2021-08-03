@@ -42,7 +42,6 @@ public class RemoteService {
     private static final String PATH_SECURITY_CLAIMS = "/security/claims";
     private static final String PATH_SECURITY_USER = "/security/user";
 
-    private static final String PATH_SECURITY_CHANGE_PASSWORD = "/security/change-password";
     private static final String PATH_DICTIONARIES = "/dictionaries";
     private static final String PATH_LEXICONS = "/lexicons";
     private static final String PATH_SENSES_SEARCH = "/senses/search";
@@ -1107,32 +1106,6 @@ public class RemoteService {
         if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
             LOG.debug("Entity removed: " + link);
         }
-    }
-
-    public boolean changePassword(String ps) throws IOException, ValidationException, ForbiddenException {
-        WebTarget target = client.target(SERVER_TARGET_URL)
-                .path(PATH_SECURITY_CHANGE_PASSWORD);
-
-        LOG.debug("Changing user password ....");
-
-        JsonObject json = Json.createObjectBuilder()
-                .add("password", ps).build();
-
-        Response response = target
-                .request()
-                .header(HEADER_AUTHORIZATION, user.getToken())
-                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
-                .put(Entity.entity(json, MediaType.APPLICATION_JSON));
-
-        isForbiddenStatus(response);
-        validationErrorRequestHandler(response, "Password", activeUser());
-
-        if (isOkStatus(response)) {
-            LOG.debug("Password changed ");
-            return true;
-        }
-
-        return false;
     }
 
     public List<UserSimple> getUsers() throws IOException {

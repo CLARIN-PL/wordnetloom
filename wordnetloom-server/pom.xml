@@ -43,11 +43,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.nimbusds</groupId>
-      <artifactId>nimbus-jose-jwt</artifactId>
-      <version>[7.9,)</version>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
@@ -75,14 +70,6 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-jwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-jwt-build</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
     <dependency>
@@ -90,6 +77,23 @@
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!--    Keycloak dep-->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-authz-client</artifactId>
+      <version>14.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-keycloak-authorization</artifactId>
+    </dependency>
+    <!--    End of Keycloak dep-->
+
   </dependencies>
 
   <build>

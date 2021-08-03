@@ -1,0 +1,12 @@
+{
+  "realm": "master",
+  "auth-server-url": "http://host.docker.internal:8008/auth/",
+  "ssl-required": "external",
+  "resource": "wordnetloom",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "**********"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

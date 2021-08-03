@@ -1,14 +1,11 @@
 package pl.edu.pwr.wordnetloom.server.business.security.boundary;
 
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.security.control.JwtManager;
-import pl.edu.pwr.wordnetloom.server.business.security.entity.Jwt;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
-import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
@@ -16,7 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.text.ParseException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Path("/security")
@@ -38,6 +35,9 @@ public class SecurityResource {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    UserFinder userFinder;
+
     @GET
     public JsonObject getSecurity() {
         return entityBuilder.buildSecurity(uriInfo);
@@ -54,14 +54,7 @@ public class SecurityResource {
                     .build();
         }
         try {
-            User user = service.authenticate(username, password);
-            if (user != null) {
-                if (user.getEmail() != null) {
-                    log.info("Generating JWT for org.jboss.user " + user.getEmail());
-                }
-                String token = jwtManager.createJwt(user);
-                return Response.ok(new Jwt(token)).build();
-            }
+            return Response.ok(service.authenticate(username, password)).build();
         } catch (Exception e) {
             log.info(e.getMessage());
         }
@@ -72,70 +65,27 @@ public class SecurityResource {
 
 
     @GET
-    @PermitAll
     @Path("/claims")
-    public Response claims(@HeaderParam("Authorization") String auth) {
-        if (auth != null && auth.startsWith("Bearer ")) {
-            String token = auth.substring(7);
-            if (jwtManager.checkToken(token))
-                return Response.ok(jwtManager.createUserString()).build();
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(entityBuilder.buildErrorObject("Invalid token", Response.Status.BAD_REQUEST))
+    public Response claims() {
+        Optional<User> optUser = userFinder.getCurrentUser();
+        if (optUser.isEmpty())
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(entityBuilder.buildErrorObject("Username is incorrect", Response.Status.BAD_REQUEST))
                     .build();
-        }
 
-        return Response.status(Response.Status.NO_CONTENT)
-                .build(); //no jwt means no claims to extract
+        return Response.ok(jwtManager.createUserString(optUser.get())).build();
     }
 
     @PUT
     @Path("/user")
-    public Response updateUser(@HeaderParam("Authorization") String auth, JsonObject json) {
-        if (auth != null && auth.startsWith("Bearer ")) {
-            try {
-                JWT j = JWTParser.parse(auth.substring(7));
-                String email = (String) j.getJWTClaimsSet().getClaims().get("sub");
-                OperationResult<User> s = service.updateUser(email, json);
-                if (s.hasErrors()) {
-                    return Response.status(Response.Status.BAD_REQUEST)
-                            .entity(s.getErrors()).build();
-                }
-                return Response.ok().build();
-            } catch (ParseException e) {
-                log.warning(e.toString());
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(entityBuilder.buildErrorObject("Invalid token", Response.Status.BAD_REQUEST))
-                        .build();
-            }
+    public Response updateUser(JsonObject json) {
+        String email = userFinder.getCurrentUser().get().getEmail();
+        OperationResult<User> s = service.updateUser(email, json);
+        if (s.hasErrors()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(s.getErrors()).build();
         }
-        return Response.status(Response.Status.NO_CONTENT)
-                .build();
-    }
-
-    @PUT
-    @Path("/change-password")
-    public Response changePassword(@HeaderParam("Authorization") String auth, JsonObject json) {
-        if (auth != null && auth.startsWith("Bearer ")) {
-            try {
-                JWT j = JWTParser.parse(auth.substring(7));
-                if (json.containsKey("password") && json.getString("password") != null && !json.getString("password").isEmpty()) {
-                    String email = (String) j.getJWTClaimsSet().getClaims().get("sub");
-                    service.changePassword(email, json.getString("password"));
-                    return Response.ok().build();
-                } else {
-                    return Response.status(Response.Status.BAD_REQUEST)
-                            .entity(entityBuilder.buildErrorObject("Invalid password", Response.Status.BAD_REQUEST))
-                            .build();
-                }
-            } catch (ParseException e) {
-                log.warning(e.toString());
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(entityBuilder.buildErrorObject("Invalid token", Response.Status.BAD_REQUEST))
-                        .build();
-            }
-        }
-        return Response.status(Response.Status.NO_CONTENT)
-                .build();
+        return Response.ok().build();
     }
 
 }

@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
@@ -14,7 +15,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.security.Principal;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -22,6 +22,7 @@ import java.util.UUID;
 @Path("/relation-types")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Relation Type Resource", description = "Methods for relation types")
 public class RelationTypeResource {
 
     @Inject

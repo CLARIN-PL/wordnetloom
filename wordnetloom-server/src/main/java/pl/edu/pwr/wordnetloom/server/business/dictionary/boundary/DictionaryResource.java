@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
@@ -25,6 +26,7 @@ import static javax.json.Json.createObjectBuilder;
 @Path("dictionaries")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Dictionaries Resource", description = "Methods for dictionaries")
 public class DictionaryResource {
 
     @Inject

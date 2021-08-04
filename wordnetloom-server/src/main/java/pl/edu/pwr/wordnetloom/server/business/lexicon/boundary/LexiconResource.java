@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.lexicon.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
@@ -19,6 +20,7 @@ import java.util.Locale;
 @Path("/lexicons")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Lexicons Resource", description = "Methods for lexicons")
 public class LexiconResource {
 
     @Inject

@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.user.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "User Resource", description = "Methods for users managements")
 public class UserResource {
 
     @Inject

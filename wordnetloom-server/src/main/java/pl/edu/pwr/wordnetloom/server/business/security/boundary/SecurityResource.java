@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.security.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.security.control.JwtManager;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 @Path("/security")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Security Resource", description = "Methods for security management")
 public class SecurityResource {
 
     private static final Logger log = Logger.getLogger(SecurityResource.class.getName());

@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.*;
 import pl.edu.pwr.wordnetloom.server.business.graph.control.GraphQueryService;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeExpanded;
@@ -28,6 +29,7 @@ import static javax.json.Json.createObjectBuilder;
 @Path("/synsets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Synset Resource", description = "Methods for synsets managements")
 public class SynsetResource {
 
     @Context

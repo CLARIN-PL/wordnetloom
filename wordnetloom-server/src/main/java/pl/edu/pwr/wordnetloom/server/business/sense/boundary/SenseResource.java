@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.*;
 import pl.edu.pwr.wordnetloom.server.business.graph.control.GraphQueryService;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeExpanded;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Path("senses")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Sense Resource", description = "Methods for senses management")
 public class SenseResource {
 
     @Inject

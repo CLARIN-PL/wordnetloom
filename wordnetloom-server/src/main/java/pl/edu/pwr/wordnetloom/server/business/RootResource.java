@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Root Resource", description = "Basic links")
 public class RootResource {
 
     @Inject

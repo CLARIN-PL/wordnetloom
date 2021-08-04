@@ -94,6 +94,13 @@
     </dependency>
     <!--    End of Keycloak dep-->
 
+    <!--    OpenAPI and Swagger dep-->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <!--    End of OpenAPI and Swagger dep-->
+
   </dependencies>
 
   <build>

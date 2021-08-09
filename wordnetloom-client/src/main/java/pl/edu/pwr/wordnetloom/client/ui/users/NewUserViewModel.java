@@ -36,7 +36,6 @@ public class NewUserViewModel implements ViewModel {
     private final StringProperty firstname = new SimpleStringProperty();
     private final StringProperty lastname = new SimpleStringProperty();
     private final StringProperty email = new SimpleStringProperty();
-    private final StringProperty password = new SimpleStringProperty();
 
     private ItemList<Roles> roleItemList;
 
@@ -71,7 +70,7 @@ public class NewUserViewModel implements ViewModel {
         us.setFirstName(firstname.get());
         us.setLastName(lastname.get());
         us.setRole(selectedRole.get());
-        us.setPassword(password.get());
+
         try {
             us = service.saveUser(us);
             publisherReloadUsers.fire( new ReloadUsersEvent());
@@ -173,18 +172,6 @@ public class NewUserViewModel implements ViewModel {
 
     public void setEmail(String email) {
         this.email.set(email);
-    }
-
-    public String getPassword() {
-        return password.get();
-    }
-
-    public StringProperty passwordProperty() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password.set(password);
     }
 
     public ItemList<Roles> getRoleItemList() {

@@ -20,6 +20,8 @@ import java.util.Optional;
 @RequestScoped
 public class UserService {
 
+    public static final String MANDATORY_PASSWORD = "pass"; //TODO: change it with db schema (password cannot be null)
+
     @Inject
     UserFinder service;
 
@@ -62,6 +64,7 @@ public class UserService {
             settings.setShowToolTips(true);
             settings.setLexiconMarker(true);
             u.setEmail(email);
+            u.setPassword(MANDATORY_PASSWORD);
 
             if (!json.isNull("first_name") && !json.getString("first_name").isEmpty()) {
                 u.setFirstname(json.getString("first_name"));

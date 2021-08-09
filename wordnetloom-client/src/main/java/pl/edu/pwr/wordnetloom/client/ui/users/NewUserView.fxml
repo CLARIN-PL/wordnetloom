@@ -25,12 +25,10 @@
                         <Label text="%profile.firstname" />
                         <Label text="%profile.lastname" GridPane.rowIndex="1" />
                         <Label text="%profile.email" GridPane.rowIndex="2" />
-                        <Label text="%profile.password" GridPane.rowIndex="3" />
                         <Label text="%profile.role" GridPane.rowIndex="4" />
                         <TextField fx:id="firstname" GridPane.columnIndex="1" />
                         <TextField fx:id="lastname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <PasswordField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <ComboBox fx:id="role" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     </children>
                 </GridPane>

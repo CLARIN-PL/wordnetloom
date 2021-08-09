@@ -17,9 +17,6 @@ public class NewUserView implements FxmlView<NewUserViewModel> {
     public TextField firstname, lastname, email;
     
     @FXML
-    public PasswordField password;
-    
-    @FXML
     public Button saveButton, closeButton;
 
     @FXML
@@ -38,7 +35,6 @@ public class NewUserView implements FxmlView<NewUserViewModel> {
         firstname.textProperty().bindBidirectional(viewModel.firstnameProperty());
         lastname.textProperty().bindBidirectional(viewModel.lastnameProperty());
         email.textProperty().bindBidirectional(viewModel.emailProperty());
-        password.textProperty().bindBidirectional(viewModel.passwordProperty());
 
         role.setItems(viewModel.getRoles());
         role.valueProperty().bindBidirectional(viewModel.selectedRoleProperty());

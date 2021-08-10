@@ -101,6 +101,13 @@
     </dependency>
     <!--    End of OpenAPI and Swagger dep-->
 
+    <!--    Hibernate Envers extension -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-envers</artifactId>
+    </dependency>
+    <!--    End of Hibernate Envers extension -->
+
   </dependencies>
 
   <build>

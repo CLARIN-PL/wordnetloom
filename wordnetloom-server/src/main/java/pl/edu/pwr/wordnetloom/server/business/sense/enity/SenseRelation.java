@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
@@ -9,6 +10,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_sense_relation")
+@Audited
+
 @NamedQuery(name = SenseRelation.FIND_BY_KEY, query = "SELECT r FROM SenseRelation r " +
         "JOIN FETCH r.parent p " +
         "JOIN FETCH r.child c " +

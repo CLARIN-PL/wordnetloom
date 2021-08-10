@@ -4,17 +4,21 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.UUID;
+
+@Entity
+@Table(name = "tbl_word")
+@Audited
 
 @NamedQuery(name = Word.FIND_BY_WORD,
         query = "SELECT w FROM Word w WHERE CONVERT(w.word, BINARY) = :word")
 
 @NamedQuery(name = Word.COUNT_BY_WORD,
         query = "SELECT COUNT(w.word) FROM Word w WHERE w.word = :word")
-@Entity
-@Table(name = "tbl_word")
 public class Word implements Serializable {
 
     public static final String FIND_BY_WORD = "Word.findByWord";

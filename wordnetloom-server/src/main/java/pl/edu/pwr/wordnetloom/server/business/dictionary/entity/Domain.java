@@ -2,10 +2,14 @@ package pl.edu.pwr.wordnetloom.server.business.dictionary.entity;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_domain")
+@Audited
+
 @NamedQuery(name = Domain.FIND_ALL, query = "SELECT d FROM Domain d")
 @NamedQuery(name = Domain.FIND_BY_ID, query = "SELECT d FROM Domain d WHERE d.id =:id")
 public class Domain implements Serializable {

@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
@@ -14,6 +15,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "tbl_relation_type")
+@Audited
+
 @NamedQuery(name = RelationType.FIND_ALL,
         query = "SELECT distinct rt FROM RelationType rt")
 

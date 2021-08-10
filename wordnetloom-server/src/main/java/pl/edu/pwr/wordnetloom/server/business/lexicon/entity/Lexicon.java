@@ -2,11 +2,15 @@ package pl.edu.pwr.wordnetloom.server.business.lexicon.entity;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_lexicon")
+@Audited
+
 @NamedQuery(name = Lexicon.FIND_ALL, query = "SELECT l FROM Lexicon l")
 @NamedQuery(name = Lexicon.FIND_ALL_ID, query = "SELECT l.id FROM Lexicon l")
 @NamedQuery(name = Lexicon.FIND_BY_ID, query = "SELECT l FROM Lexicon l WHERE l.id = :id")

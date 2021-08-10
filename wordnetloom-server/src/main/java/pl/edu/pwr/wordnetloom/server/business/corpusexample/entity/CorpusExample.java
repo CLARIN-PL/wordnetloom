@@ -1,9 +1,12 @@
 package pl.edu.pwr.wordnetloom.server.business.corpusexample.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_corpus_example")
+@Audited
 @NamedQuery(name = CorpusExample.FIND_BY_WORD,
         query = "SELECT c FROM CorpusExample c WHERE c.word = :word")
 public class CorpusExample {

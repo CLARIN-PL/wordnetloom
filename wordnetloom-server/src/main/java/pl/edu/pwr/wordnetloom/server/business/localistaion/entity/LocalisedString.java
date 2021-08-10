@@ -2,12 +2,16 @@ package pl.edu.pwr.wordnetloom.server.business.localistaion.entity;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_application_localised_string")
+@Audited
+
 @NamedQuery(name = LocalisedString.FIND_ALL ,
         query = "SELECT s FROM  LocalisedString s")
 @NamedQuery(name = LocalisedString.FIND_BY_ID ,

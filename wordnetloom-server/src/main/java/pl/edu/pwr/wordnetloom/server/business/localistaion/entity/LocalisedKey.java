@@ -1,11 +1,14 @@
 package pl.edu.pwr.wordnetloom.server.business.localistaion.entity;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Embeddable
+@Audited
 public class LocalisedKey implements Serializable {
 
     @NotNull

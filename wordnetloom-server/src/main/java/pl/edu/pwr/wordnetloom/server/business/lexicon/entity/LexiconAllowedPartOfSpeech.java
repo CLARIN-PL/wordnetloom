@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.lexicon.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 
@@ -8,6 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tbl_lexicon_allowed_part_of_speech")
+@Audited
 public class LexiconAllowedPartOfSpeech {
 
     @Id

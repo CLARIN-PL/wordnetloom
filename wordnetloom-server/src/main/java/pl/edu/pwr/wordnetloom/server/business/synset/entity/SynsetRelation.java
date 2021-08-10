@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeDirection;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_synset_relation")
+@Audited
 
 @NamedQuery(name = SynsetRelation.FIND_BY_KEY,
         query = "SELECT r FROM SynsetRelation r " +

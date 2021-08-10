@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 
 import javax.persistence.*;
@@ -9,6 +10,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_relation_tests")
+@Audited
+
 @NamedQuery(name = RelationTest.FIND_ALL_BY_RELATION_TYPE_ID,
         query = "SELECT rt  FROM RelationTest rt WHERE rt.relationType.id = :relId")
 @NamedQuery(name = RelationTest.FIND_BY_ID_AND_RELATION_TYPE_ID,

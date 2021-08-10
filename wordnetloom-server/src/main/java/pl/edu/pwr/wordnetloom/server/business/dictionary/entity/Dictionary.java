@@ -2,15 +2,19 @@ package pl.edu.pwr.wordnetloom.server.business.dictionary.entity;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_dictionaries")
+@Audited
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
         name = "dtype",
         discriminatorType = DiscriminatorType.STRING)
+
 @NamedQuery(name = Dictionary.FIND_ALL_BY_TYPE, query = "SELECT d FROM Dictionary d WHERE TYPE(d) = :type")
 @NamedQuery(name = Dictionary.FIND_BY_ID, query = "SELECT d FROM Dictionary d WHERE d.id= :id")
 public abstract class Dictionary implements Serializable {

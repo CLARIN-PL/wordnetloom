@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_word_form")
+@Audited
 public class WordForm implements Serializable {
 
     @Id

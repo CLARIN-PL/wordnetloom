@@ -1,5 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.persistence.*;
@@ -10,6 +11,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_synset_attributes")
+@Audited
+
 @NamedQuery(name = SynsetAttributes.FIND_BY_ID_WITH_EXAMPLES,
         query = "SELECT DISTINCT s " +
                 "FROM SynsetAttributes s " +

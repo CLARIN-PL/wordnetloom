@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
@@ -15,6 +16,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_synset")
+@Audited
+
 @NamedQuery(name = Synset.FIND_BY_ID_WITH_LEXICON_AND_SENSES_WITH_DOMAIN,
         query = "SELECT DISTINCT s " +
                 "FROM Synset s " +

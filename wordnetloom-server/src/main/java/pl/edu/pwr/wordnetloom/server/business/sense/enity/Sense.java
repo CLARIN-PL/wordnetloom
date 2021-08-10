@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
@@ -19,6 +20,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_sense")
+@Audited
+
 @NamedQuery(name = Sense.FIND_BY_ID_WITH_RELATIONS_AND_DOMAINS,
         query = "SELECT DISTINCT s  FROM Sense s " +
                 "LEFT JOIN FETCH s.word " +

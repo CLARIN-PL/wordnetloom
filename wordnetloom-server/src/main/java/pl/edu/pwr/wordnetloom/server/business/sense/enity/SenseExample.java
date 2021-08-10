@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_sense_examples")
+@Audited
+
 @NamedQuery(name = SenseExample.FIND_BY_ID, query = "SELECT ex FROM SenseExample ex WHERE ex.id = :id")
 public class SenseExample implements Serializable {
 

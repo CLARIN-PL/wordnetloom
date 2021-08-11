@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.relationtype.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
@@ -23,6 +25,7 @@ import java.util.UUID;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Relation Type Resource", description = "Methods for relation types")
+@SecurityRequirement(name = "bearerAuth")
 public class RelationTypeResource {
 
     @Inject
@@ -40,10 +43,8 @@ public class RelationTypeResource {
     @Context
     UriInfo uriInfo;
 
-    @Context
-    SecurityContext securityContext;
-
     @GET
+    @Operation(summary = "Get all relation types", description = "Get all available relation types")
     public JsonObject relationTypes(@HeaderParam("Accept-Language") Locale locale,
                                     @QueryParam("argument") RelationArgument argument) {
         if (argument != null) {
@@ -54,6 +55,7 @@ public class RelationTypeResource {
     }
 
     @POST
+    @Operation(summary = "Add new relation type", description = "Add new relation type to database")
     public Response addRelationType(@HeaderParam("Accept-Language") Locale locale, JsonObject json) {
         OperationResult<RelationType> s = command.save(locale, json);
         if (s.hasErrors()) {
@@ -66,6 +68,7 @@ public class RelationTypeResource {
 
     @PUT
     @Path("{id}")
+    @Operation(summary = "Edit relation type by id", description = "Edit the existing relation type by id")
     public Response updateRelationType(@HeaderParam("Accept-Language") Locale locale,
                                        @PathParam("id") final UUID id,
                                        JsonObject rt) {
@@ -81,6 +84,7 @@ public class RelationTypeResource {
 
     @GET
     @Path("{id}")
+    @Operation(summary = "Get relation type by id", description = "Get relation type all infos (by id)")
     public JsonObject getRelationType(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") UUID id) {
         return query.findRelationTypeById(id)
                 .map(rt -> entityBuilder.buildRelationType(rt, linkBuilder.forRelationType(rt, uriInfo),
@@ -90,6 +94,7 @@ public class RelationTypeResource {
 
     @DELETE
     @Path("{id}")
+    @Operation(summary = "Delete relation type by id", description = "Delete the existing relation type by id")
     public Response deleteRelationType(@PathParam("id") final UUID id) {
         command.deleteRelationType(id);
         return Response.noContent()
@@ -99,12 +104,14 @@ public class RelationTypeResource {
 
     @GET
     @Path("{id}/tests")
+    @Operation(summary = "Get all relation tests", description = "Get all available relation tests for relation (by id)")
     public JsonObject getRelationTests(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") UUID relId) {
         return entityBuilder.buildRelationTests(query.findAllRelationTests(relId), uriInfo, locale);
     }
 
     @POST
     @Path("{id}/tests")
+    @Operation(summary = "Add new relation test", description = "Add new relation test for relation (by id)")
     public Response addRelationTest(@HeaderParam("Accept-Language") Locale locale,
                                     @PathParam("id") UUID relId,
                                     JsonObject json) {
@@ -119,6 +126,7 @@ public class RelationTypeResource {
 
     @PUT
     @Path("{id}/tests/{testId}")
+    @Operation(summary = "Get all relation test by id", description = "Get relation test (by id) for relation (by id)")
     public Response addRelationTest(@HeaderParam("Accept-Language") Locale locale,
                                     @PathParam("id") UUID relId, @PathParam("testId") long testId,
                                     JsonObject json) {
@@ -133,6 +141,7 @@ public class RelationTypeResource {
 
     @DELETE
     @Path("{id}/tests/{testId}")
+    @Operation(summary = "Delete relation test by id", description = "Delete relation test (by id) for relation (by id)")
     public Response deleteRelationTest(@PathParam("id") final UUID id) {
         command.deleteRelationType(id);
         return Response.noContent()
@@ -141,6 +150,7 @@ public class RelationTypeResource {
 
     @GET
     @Path("{id}/tests/{testId}")
+    @Operation(summary = "Get relation test by id", description = "Get relation test (by id) for relation (by id)")
     public JsonObject getRelationTest(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") UUID relId, @PathParam("testId") long testId) {
         return query.findRelationTest(relId, testId)
                 .map(rt -> entityBuilder.buildRelationTest(rt, linkBuilder.forRelationTest(rt, uriInfo), locale))

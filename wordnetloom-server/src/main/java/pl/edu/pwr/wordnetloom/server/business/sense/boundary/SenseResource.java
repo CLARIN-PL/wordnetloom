@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.sense.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.*;
 import pl.edu.pwr.wordnetloom.server.business.graph.control.GraphQueryService;
@@ -25,6 +27,7 @@ import java.util.UUID;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Sense Resource", description = "Methods for senses management")
+@SecurityRequirement(name = "bearerAuth")
 public class SenseResource {
 
     @Inject
@@ -46,11 +49,13 @@ public class SenseResource {
     UriInfo uriInfo;
 
     @GET
+    @Operation(summary = "Get senses links", description = "Get all available senses operations with links")
     public JsonObject senses() {
         return entityBuilder.buildSenses(uriInfo);
     }
 
     @POST
+    @Operation(summary = "Add new sense", description = "Add new sense to database")
     public Response addSense(JsonObject sense) {
         OperationResult<Sense> s = senseCommandService.save(sense);
         if (s.hasErrors()) {
@@ -63,6 +68,7 @@ public class SenseResource {
 
     @GET
     @Path("search")
+    @Operation(summary = "Search sense", description = "Search for sense with params")
     public JsonObject search(@HeaderParam("Accept-Language") Locale locale) {
         final SearchFilter searchFilter = new SearchFilterExtractorFromUrl(uriInfo).getFilter();
         long count = queryService.countWithFilter(searchFilter);
@@ -72,6 +78,7 @@ public class SenseResource {
 
     @GET
     @Path("{id}")
+    @Operation(summary = "Get sense by id", description = "Get sense all infos (by id)")
     public JsonObject sense(@HeaderParam("Accept-Language") Locale locale,
                             @PathParam("id") final UUID id) {
         final SenseAttributes attributes = queryService.findSenseAttributes(id).orElse(null);
@@ -82,6 +89,7 @@ public class SenseResource {
 
     @PUT
     @Path("{id}")
+    @Operation(summary = "Edit sense by id", description = "Edit the existing sense by id")
     public Response updateSense(JsonObject sense,
                                 @PathParam("id") UUID id) {
         OperationResult<Sense> s = senseCommandService.update(sense);
@@ -96,15 +104,16 @@ public class SenseResource {
 
     @DELETE
     @Path("{id}")
+    @Operation(summary = "Delete sense by id", description = "Delete the existing sense by id")
     public Response deleteSense(@PathParam("id") final UUID id) {
         senseCommandService.deleteSense(id);
         return Response.noContent()
                 .build();
     }
 
-
     @PUT
     @Path("{id}/move-up")
+    @Operation(summary = "Move sense up", description = "Move sense in synset to upper position")
     public Response moveUp(@HeaderParam("Accept-Language") Locale locale,
                            @PathParam("id") final UUID id) {
         senseCommandService.moveSenseUp(id);
@@ -113,6 +122,7 @@ public class SenseResource {
 
     @PUT
     @Path("{id}/move-down")
+    @Operation(summary = "Move sense down", description = "Move sense in synset to lower position")
     public Response moveDown(@HeaderParam("Accept-Language") Locale locale,
                              @PathParam("id") final UUID id) {
         senseCommandService.moveSenseDown(id);
@@ -121,6 +131,7 @@ public class SenseResource {
 
     @PUT
     @Path("{id}/detach-synset")
+    @Operation(summary = "Detach sense", description = "Detach sense (by id) from synset")
     public Response detachSynset(@HeaderParam("Accept-Language") Locale locale,
                                  @PathParam("id") final UUID id) {
         senseCommandService.detachFromSynset(id);
@@ -129,6 +140,7 @@ public class SenseResource {
 
     @PUT
     @Path("{id}/attach-to-synset/{synsetId}")
+    @Operation(summary = "Attach sense", description = "Attach sense (by id) to synset (by id)")
     public Response attachToSynset(@PathParam("id") final UUID senseId,
                                    @PathParam("synsetId") final UUID synsetId) {
         OperationResult<Sense> s = senseCommandService.attachToSynset(senseId, synsetId);
@@ -142,6 +154,7 @@ public class SenseResource {
 
     @GET
     @Path("{id}/graph")
+    @Operation(summary = "Get sense graph", description = "Get graph for sense (by id)")
     public Response senseGraph(@HeaderParam("Accept-Language") Locale locale,
                                @PathParam("id") final UUID id) {
         NodeExpanded node = graphQuery.senseGraph(id, locale);
@@ -150,6 +163,7 @@ public class SenseResource {
 
     @GET
     @Path("{id}/examples")
+    @Operation(summary = "Get sense examples", description = "Get examples for sense (by id)")
     public JsonObject senseExamples(@HeaderParam("Accept-Language") Locale locale,
                                     @PathParam("id") final UUID id) {
         if (queryService.findSenseAttributes(id).isPresent()) {
@@ -160,6 +174,7 @@ public class SenseResource {
 
     @GET
     @Path("{senseId}/examples/{exampleId}")
+    @Operation(summary = "Get sense example", description = "Get example (by id) infos for sense (by id)")
     public JsonObject senseExample(@HeaderParam("Accept-Language") Locale locale,
                                    @PathParam("senseId") final UUID senseId,
                                    @PathParam("exampleId") final UUID exampleId) {
@@ -170,6 +185,7 @@ public class SenseResource {
 
     @POST
     @Path("{senseId}/examples")
+    @Operation(summary = "Add sense example", description = "Add new example for sense (by id)")
     public Response addExample(@PathParam("senseId") final UUID senseId,
                                JsonObject example) {
         OperationResult<SenseExample> s = senseCommandService.addExample(senseId, example);
@@ -183,6 +199,7 @@ public class SenseResource {
 
     @PUT
     @Path("{senseId}/examples/{exampleId}")
+    @Operation(summary = "Edit sense example", description = "Edit existing example (by id) for sense (by id)")
     public Response updateExample(JsonObject example,
                                   @PathParam("senseId") final UUID senseId,
                                   @PathParam("exampleId") final UUID id) {
@@ -197,6 +214,7 @@ public class SenseResource {
 
     @DELETE
     @Path("{senseId}/examples/{exampleId}")
+    @Operation(summary = "Delete sense example", description = "Delete existing example (by id) for sense (by id)")
     public Response removeSenseExample(@PathParam("senseId") final UUID senseId,
                                        @PathParam("exampleId") final UUID exampleId) {
         senseCommandService.deleteExample(exampleId);
@@ -205,6 +223,7 @@ public class SenseResource {
 
     @GET
     @Path("{id}/relations")
+    @Operation(summary = "Get sense relations", description = "Get all relations for sense (by id)")
     public JsonObject senseRelations(@HeaderParam("Accept-Language") Locale locale,
                                      @PathParam("id") final UUID id) {
         return queryService.findByIdWithRelations(id)
@@ -214,12 +233,14 @@ public class SenseResource {
 
     @GET
     @Path("relations")
+    @Operation(summary = "Get all relations", description = "Get all relations for sense all senses")
     public JsonObject relations(@HeaderParam("Accept-Language") Locale locale) {
         return entityBuilder.buildSenseRelations(uriInfo);
     }
 
     @GET
     @Path("relations/search")
+    @Operation(summary = "Get relation between two senses", description = "Get details of relation between two senses")
     public JsonObject relations(@HeaderParam("Accept-Language") Locale locale,
                                 @QueryParam("target") UUID target,
                                 @QueryParam("source") UUID source,
@@ -231,6 +252,7 @@ public class SenseResource {
 
     @GET
     @Path("relations/{source}/{relationType}/{target}")
+    @Operation(summary = "Get relation between two senses", description = "Get details of relation between two senses")
     public JsonObject relation(@HeaderParam("Accept-Language") Locale locale,
                                @PathParam("source") final UUID source,
                                @PathParam("relationType") final UUID relationType,
@@ -242,6 +264,7 @@ public class SenseResource {
 
     @POST
     @Path("relations")
+    @Operation(summary = "Add new relation", description = "Add new relation between two senses")
     public Response addSenseRelation(@HeaderParam("Accept-Language") Locale locale,
                                      JsonObject relation) {
         OperationResult<SenseRelation> s = senseCommandService.addSenseRelation(relation);
@@ -255,6 +278,7 @@ public class SenseResource {
 
     @DELETE
     @Path("relations/{source}/{relationType}/{target}")
+    @Operation(summary = "Delete relation", description = "Delete relation between two senses")
     public Response deleteSenseRelation(@PathParam("source") final UUID source,
                                         @PathParam("relationType") final UUID relationType,
                                         @PathParam("target") final UUID target) {
@@ -264,6 +288,7 @@ public class SenseResource {
 
     @PUT
     @Path("{id}/emotional-annotations/{annotationId}")
+    @Operation(summary = "Not implemented yet")
     public Response updateEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {
         return Response.status(Response.Status.NOT_IMPLEMENTED)
                 .build();
@@ -271,6 +296,7 @@ public class SenseResource {
 
     @DELETE
     @Path("{id}/emotional-annotations/{annotationId}")
+    @Operation(summary = "Not implemented yet")
     public Response deleteEmotionalAnnotations(@PathParam("id") final UUID id) {
         return Response.status(Response.Status.NOT_IMPLEMENTED)
                 .build();

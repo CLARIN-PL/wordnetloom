@@ -27,5 +27,4 @@ public class NodeStructure {
     public List<NodeHidden> getHidden() {
         return hidden;
     }
-
 }

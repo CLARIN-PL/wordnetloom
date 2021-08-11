@@ -5,7 +5,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.envers.Audited;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.UUID;

@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.*;
 import pl.edu.pwr.wordnetloom.server.business.graph.control.GraphQueryService;
@@ -30,6 +32,7 @@ import static javax.json.Json.createObjectBuilder;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Synset Resource", description = "Methods for synsets managements")
+@SecurityRequirement(name = "bearerAuth")
 public class SynsetResource {
 
     @Context
@@ -51,12 +54,14 @@ public class SynsetResource {
     LinkBuilder linkBuilder;
 
     @GET
+    @Operation(summary = "Get synsets links", description = "Get all available synsets operations with links")
     public JsonObject synsets() {
         return entityBuilder.buildSynsets(uriInfo);
     }
 
     @GET
     @Path("search")
+    @Operation(summary = "Search synset", description = "Search for synset with params")
     public JsonObject search(@HeaderParam("Accept-Language") Locale locale) {
         final SearchFilter filter = new SearchFilterExtractorFromUrl(uriInfo).getFilter();
         final long count = synsetQueryService.countWithFilter(filter);
@@ -66,6 +71,7 @@ public class SynsetResource {
 
     @GET
     @Path("{id}")
+    @Operation(summary = "Get synset by id", description = "Get synset all infos (by id)")
     public JsonObject synset(@HeaderParam("Accept-Language") Locale locale,
                              @PathParam("id") final UUID id) {
         return synsetQueryService.findById(id)
@@ -76,6 +82,7 @@ public class SynsetResource {
 
     @PUT
     @Path("{id}")
+    @Operation(summary = "Edit synset by id", description = "Edit the existing synset by id")
     public Response updateSynset(JsonObject synset,
                                  @PathParam("id") final UUID id){
         OperationResult<Synset> updatingSynsetResult = synsetCommandService.update(id, synset);
@@ -91,6 +98,7 @@ public class SynsetResource {
 
     @GET
     @Path("{id}/path-to-hyperonymy")
+    @Operation(summary = "Get synset hyperonymy path", description = "Get synset hyperonymy path by id")
     public Response pathToHyperonymy(@HeaderParam("Accept-Language") Locale locale,
                                        @PathParam("id") final UUID id){
         // TODO: zrobić ścieżkę do hiperonimu
@@ -100,6 +108,7 @@ public class SynsetResource {
     }
 
     @POST
+    @Operation(summary = "Add new synset", description = "Add new synset to database")
     public Response addSynset(JsonObject synset) {
         OperationResult<Synset> s = synsetCommandService.save(synset);
         if (s.hasErrors()) {
@@ -112,6 +121,7 @@ public class SynsetResource {
 
     @DELETE
     @Path("{id}")
+    @Operation(summary = "Delete synset by id", description = "Delete the existing synset by id")
     public Response deleteSynset(@PathParam("id") final UUID id) {
         synsetCommandService.delete(id);
         return Response.noContent().build();
@@ -119,6 +129,7 @@ public class SynsetResource {
 
     @PUT
     @Path("/add-sense-to-new-synset/{senseId}")
+    @Operation(summary = "Add sense to new synset", description = "Create new synset and add sense by id")
     public Response addSenseToNewSynset(@HeaderParam("Accept-Language") Locale locale,
                              @PathParam("senseId") final UUID senseId) {
         OperationResult<Synset> s = synsetCommandService.addSenseToNewSynset(senseId);
@@ -132,6 +143,7 @@ public class SynsetResource {
 
     @PUT
     @Path("{id}")
+    @Operation(summary = "Edit synset by id", description = "Edit the existing synset by id")
     public Response updateSynset(@PathParam("id") final UUID id, JsonObject synset) {
         OperationResult<Synset> s = synsetCommandService.update(id, synset);
         if (s.hasErrors()) {
@@ -145,6 +157,7 @@ public class SynsetResource {
 
     @GET
     @Path("{id}/graph")
+    @Operation(summary = "Get synset graph", description = "Get graph for synset (by id)")
     public Response synsetGraph(@HeaderParam("Accept-Language") Locale locale,
                                 @PathParam("id") final UUID id) {
         NodeExpanded node = graphQuery.synsetGraph(id, locale);
@@ -153,6 +166,7 @@ public class SynsetResource {
 
     @GET
     @Path("{id}/relations")
+    @Operation(summary = "Get synset relations", description = "Get all relations for synset (by id)")
     public JsonObject synsetRelations(@HeaderParam("Accept-Language") Locale locale,
                                       @PathParam("id") final UUID id) {
         return synsetQueryService.findSynsetRelations(id)
@@ -163,6 +177,7 @@ public class SynsetResource {
 
     @GET
     @Path("relations/{source}/{relationType}/{target}")
+    @Operation(summary = "Get relation between two synsets", description = "Get details of relation between two synsets")
     public JsonObject relation(@HeaderParam("Accept-Language") Locale locale,
                                @PathParam("source") final UUID source,
                                @PathParam("relationType") final UUID relationType,
@@ -177,6 +192,7 @@ public class SynsetResource {
 
     @GET
     @Path("relations")
+    @Operation(summary = "Get synsets relations links", description = "Get all available synsets relations operations with links")
     public JsonObject relations() {
         return entityBuilder.buildSynsetRelations(uriInfo);
     }
@@ -184,6 +200,7 @@ public class SynsetResource {
 
     @POST
     @Path("relations")
+    @Operation(summary = "Add new relation", description = "Add new relation between two synsets")
     public Response addSynsetRelation(JsonObject relation) {
         OperationResult<SynsetRelation> s = synsetCommandService.addSynsetRelation(relation);
         if (s.hasErrors()) {
@@ -196,6 +213,7 @@ public class SynsetResource {
 
     @GET
     @Path("relations/search")
+    @Operation(summary = "Get relation between two synsets", description = "Get details of relation between two synsets")
     public JsonObject searchRelations(@HeaderParam("Accept-Language") Locale locale,
                                 @QueryParam("target") UUID target,
                                 @QueryParam("source") UUID source,
@@ -216,6 +234,7 @@ public class SynsetResource {
 
     @DELETE
     @Path("relations/{source}/{relationType}/{target}")
+    @Operation(summary = "Delete relation", description = "Delete relation between two synsets")
     public Response deleteRelation( @PathParam("source") final UUID source,
                                       @PathParam("relationType") final UUID relationType,
                                       @PathParam("target") final UUID target) {
@@ -225,6 +244,7 @@ public class SynsetResource {
 
     @GET
     @Path("{synsetId}/examples")
+    @Operation(summary = "Get synset examples", description = "Get examples for synset (by id)")
     public Response synsetExamples(@HeaderParam("Accept-Language") Locale locale,
                                    @PathParam("synsetId") final UUID synsetId) {
         Response.ResponseBuilder response = Response.ok();
@@ -236,6 +256,7 @@ public class SynsetResource {
 
     @POST
     @Path("{synsetId}/examples")
+    @Operation(summary = "Add synset example", description = "Add new example for synset (by id)")
     public Response addExample(@PathParam("synsetId") final UUID synsetId, JsonObject example) {
         OperationResult<SynsetExample> s = synsetCommandService.addExample(synsetId, example);
         if (s.hasErrors()) {
@@ -248,6 +269,7 @@ public class SynsetResource {
 
     @GET
     @Path("{synsetId}/examples/{exampleId}")
+    @Operation(summary = "Get synset example", description = "Get example (by id) infos for synset (by id)")
     public JsonObject synsetExample(@HeaderParam("Accept-Language") Locale locale,
                                     @PathParam("synsetId") final UUID synsetId,
                                     @PathParam("exampleId") final UUID exampleId) {
@@ -258,6 +280,7 @@ public class SynsetResource {
 
     @PUT
     @Path("{synsetId}/examples/{exampleId}")
+    @Operation(summary = "Edit synset example", description = "Edit existing example (by id) for synset (by id)")
     public Response updateSynsetExample(@PathParam("synsetId") final UUID synsetId,
                                         @PathParam("exampleId") final UUID exampleId,
                                         JsonObject example) {
@@ -272,10 +295,10 @@ public class SynsetResource {
 
     @DELETE
     @Path("{synsetId}/examples/{exampleId}")
+    @Operation(summary = "Delete synset example", description = "Delete existing example (by id) for synset (by id)")
     public Response deleteSynsetExample(@PathParam("synsetId") final UUID senseId,
                                         @PathParam("exampleId") final UUID exampleId) {
         synsetCommandService.deleteExample(exampleId);
         return Response.noContent().build();
     }
-
 }

@@ -2,6 +2,7 @@ package pl.edu.pwr.wordnetloom.server.business.corpusexample.boundary;
 
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.corpusexample.entity.CorpusExample;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Corpus Example Resource", description = "Methods for corpus examples")
+@SecurityRequirement(name = "bearerAuth")
 public class CorpusExampleResource {
 
         @Inject
@@ -32,6 +34,7 @@ public class CorpusExampleResource {
         CorpusExampleQueryService service;
 
         @GET
+        @Operation(summary = "Corpus examples links", description = "Available operations with links for corpus examples")
         public JsonObject corpusExamples(){
             return entityBuilder.buildExamplesCorpus(uriInfo);
         }
@@ -40,12 +43,11 @@ public class CorpusExampleResource {
         @Path("search")
         @Operation(summary = "Search corpus example", description = "Searching the corpus example by lemma")
         public Response searchCorpusExamples(@QueryParam("lemma") String lemma) {
-            if(lemma == null){
-                    return Response.status(Response.Status.BAD_REQUEST)
-                            .entity(entityBuilder.buildErrorObject("Lemma query param is mandatory",
-                                    Response.Status.BAD_REQUEST))
-                            .build();
-            }
+            if(lemma == null)
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(entityBuilder.buildErrorObject("Lemma query param is mandatory",
+                                Response.Status.BAD_REQUEST))
+                        .build();
 
             return Response.ok().entity(entityBuilder.buildCorpusExample(uriInfo.getRequestUri(), lemma, service
                     .findAllByWord(lemma)

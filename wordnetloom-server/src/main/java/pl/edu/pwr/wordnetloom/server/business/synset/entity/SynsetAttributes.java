@@ -147,5 +147,4 @@ public class SynsetAttributes implements Serializable {
     public void setIliId(String iliId) {
         this.iliId = iliId;
     }
-
 }

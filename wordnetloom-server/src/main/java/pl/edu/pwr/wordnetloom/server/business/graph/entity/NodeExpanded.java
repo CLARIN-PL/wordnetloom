@@ -143,5 +143,3 @@ public class NodeExpanded {
         return synsetMode;
     }
 }
-
-

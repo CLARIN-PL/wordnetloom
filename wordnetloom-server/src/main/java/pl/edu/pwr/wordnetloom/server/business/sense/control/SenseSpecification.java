@@ -12,9 +12,7 @@ import java.util.UUID;
 public class SenseSpecification {
 
     public static Specification<Sense> byFilter(SearchFilter filter, List<Long> userLexicons) {
-
         return (root, query, cb) -> {
-
             List<Predicate> criteria = new ArrayList<>();
 
             if (filter.getLemma() != null && !filter.getLemma().isEmpty()) {
@@ -57,7 +55,6 @@ public class SenseSpecification {
     }
 
     public static Predicate filterSenseAttributes(SearchFilter filter, Root<Sense> root, CriteriaBuilder cb) {
-
         if (filter.getRegisterId() != null || filter.getComment() != null || filter.getDefinition() != null
                 || filter.getExample() != null || filter.getAspectId() != null) {
 
@@ -149,7 +146,4 @@ public class SenseSpecification {
     public static Specification<Sense> byLexiconId(Long id) {
         return (root, query, cb) -> cb.equal(root.get("lexicon").get("id"), id);
     }
-
-
-
 }

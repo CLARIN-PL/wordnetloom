@@ -84,5 +84,4 @@ public enum GlobalWordnetRelationType {
     GlobalWordnetRelationType(RelationArgument... type) {
         this.type = Arrays.asList(type);
     }
-
 }

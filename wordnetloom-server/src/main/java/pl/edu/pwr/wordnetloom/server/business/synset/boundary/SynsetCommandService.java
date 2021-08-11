@@ -221,7 +221,6 @@ public class SynsetCommandService {
 
     public OperationResult<SynsetExample> addExample(UUID synsetId, JsonObject example) {
         OperationResult<SynsetExample> result = new OperationResult<>();
-
         SynsetExample se = new SynsetExample();
 
         if (!example.isNull("example") && !example.getString("example").isEmpty()) {

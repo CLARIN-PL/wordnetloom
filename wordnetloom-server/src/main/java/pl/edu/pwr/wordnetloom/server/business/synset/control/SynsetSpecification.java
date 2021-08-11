@@ -19,9 +19,7 @@ import static pl.edu.pwr.wordnetloom.server.business.sense.control.SenseSpecific
 public class SynsetSpecification {
 
     public static Specification<Synset> byFilter(SearchFilter filter, List<Long> userLexicons) {
-
         return (root, query, cb) -> {
-
             List<Predicate> criteria = new ArrayList<>();
 
             if(filter.getSynsetId() != null){
@@ -70,8 +68,6 @@ public class SynsetSpecification {
     }
 
     public static Predicate filterBySense(SearchFilter filter, Root<Synset> root, CriteriaBuilder cb) {
-
-
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Subquery<Long> subquery = query.subquery(Long.class);
         Root<Sense> senseRoot = subquery.from(Sense.class);
@@ -95,7 +91,6 @@ public class SynsetSpecification {
     }
 
     public static Predicate filterSynsetAttributes(SearchFilter filter, Root<Synset> root, CriteriaBuilder cb) {
-
         if (filter.getComment() != null || filter.getDefinition() != null
                 || filter.getExample() != null) {
 

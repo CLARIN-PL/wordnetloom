@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.user.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
@@ -19,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "User Resource", description = "Methods for users managements")
+@SecurityRequirement(name = "bearerAuth")
 public class UserResource {
 
     @Inject
@@ -33,14 +36,15 @@ public class UserResource {
     @Context
     UriInfo uriInfo;
 
-
     @GET
+    @Operation(summary = "Get user links", description = "Get all available users operations with links")
     public JsonObject users() {
         return entityBuilder.buildUsers(service.findAllUsers(), uriInfo);
     }
 
     @GET
     @Path("{id:\\d+}")
+    @Operation(summary = "Get user by id", description = "Get user all infos (by id)")
     public JsonObject user(@PathParam("id") long id) {
         return service.findById(id)
                 .map(l -> entityBuilder.buildUser(l, uriInfo))
@@ -48,6 +52,7 @@ public class UserResource {
     }
 
     @POST
+    @Operation(summary = "Add new user", description = "Create new user and store it in database")
     public Response createUser(JsonObject json) {
         OperationResult<User> user = service.createUser(json);
         if (user.hasErrors()) {
@@ -60,6 +65,7 @@ public class UserResource {
 
     @DELETE
     @Path("{id:\\d+}")
+    @Operation(summary = "DElete user by id", description = "Delete user (by id)")
     public Response deleteUser(@PathParam("id") final Long id) {
         service.deleteUser(id);
         return Response.noContent()

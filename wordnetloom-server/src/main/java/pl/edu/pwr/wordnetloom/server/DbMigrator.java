@@ -40,5 +40,4 @@ public class DbMigrator {
             log.log(Level.INFO, "Flyway deactivated.");
         }
     }
-
 }

@@ -114,5 +114,4 @@ public class RelationTypeQueryService {
             return Optional.empty();
         }
     }
-
 }

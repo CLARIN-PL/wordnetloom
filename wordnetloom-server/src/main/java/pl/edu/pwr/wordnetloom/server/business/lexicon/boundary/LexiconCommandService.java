@@ -105,5 +105,4 @@ public class LexiconCommandService {
         }
         return result;
     }
-
 }

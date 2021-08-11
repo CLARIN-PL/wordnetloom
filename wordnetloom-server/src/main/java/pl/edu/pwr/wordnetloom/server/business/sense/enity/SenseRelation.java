@@ -2,7 +2,6 @@ package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
-import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;

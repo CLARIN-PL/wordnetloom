@@ -563,5 +563,4 @@ public class SenseCommandService {
         senseQueryService.findSenseRelation(source, target, relationType)
                 .ifPresent(e -> em.remove(e));
     }
-
 }

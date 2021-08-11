@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_corpus_example")
 @Audited
+
 @NamedQuery(name = CorpusExample.FIND_BY_WORD,
         query = "SELECT c FROM CorpusExample c WHERE c.word = :word")
 public class CorpusExample {
@@ -39,10 +40,10 @@ public class CorpusExample {
     public void setWord(String word) {
         this.word = word;
     }
+
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;

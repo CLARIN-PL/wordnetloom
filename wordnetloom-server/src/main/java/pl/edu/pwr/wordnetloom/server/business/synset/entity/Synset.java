@@ -156,5 +156,4 @@ public class Synset implements Serializable {
     public void setAttributes(SynsetAttributes attributes) {
         this.attributes = attributes;
     }
-
 }

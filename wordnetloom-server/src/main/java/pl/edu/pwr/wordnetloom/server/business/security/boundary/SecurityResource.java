@@ -1,5 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.security.boundary;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
@@ -41,6 +43,7 @@ public class SecurityResource {
     UserFinder userFinder;
 
     @GET
+    @Operation(summary = "Get security links", description = "Get all available security operations with links")
     public JsonObject getSecurity() {
         return entityBuilder.buildSecurity(uriInfo);
     }
@@ -48,6 +51,7 @@ public class SecurityResource {
     @POST
     @Path("/authorize")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Operation(summary = "Authorize user", description = "Authorize user with username(email) and password")
     public Response authorize(@FormParam("username") String username, @FormParam("password") String password) {
         log.info("Authenticating " + username);
         if (username == null || password == null) {
@@ -65,9 +69,10 @@ public class SecurityResource {
                 .build();
     }
 
-
     @GET
     @Path("/claims")
+    @Operation(summary = "Get user settings", description = "Get all user settings (only for authorized users)")
+    @SecurityRequirement(name = "bearerAuth")
     public Response claims() {
         Optional<User> optUser = userFinder.getCurrentUser();
         if (optUser.isEmpty())
@@ -80,6 +85,8 @@ public class SecurityResource {
 
     @PUT
     @Path("/user")
+    @Operation(summary = "Update user", description = "Update user settings and data")
+    @SecurityRequirement(name = "bearerAuth")
     public Response updateUser(JsonObject json) {
         String email = userFinder.getCurrentUser().get().getEmail();
         OperationResult<User> s = service.updateUser(email, json);
@@ -89,5 +96,4 @@ public class SecurityResource {
         }
         return Response.ok().build();
     }
-
 }

@@ -10,9 +10,7 @@ import java.util.UUID;
 public class SenseRelationSpecification {
 
     public static Specification<SenseRelation> byFilter(UUID source, UUID target, UUID relType) {
-
         return (root, query, cb) -> {
-
             List<Predicate> criteria = new ArrayList<>();
 
             if (source != null) {
@@ -40,5 +38,4 @@ public class SenseRelationSpecification {
     private static Specification<SenseRelation> byParent(UUID parent) {
         return (root, query, cb) -> cb.equal(root.get("parent").get("id"), parent);
     }
-
 }

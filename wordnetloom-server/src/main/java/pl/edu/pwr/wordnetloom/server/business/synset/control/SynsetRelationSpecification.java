@@ -1,7 +1,6 @@
 package pl.edu.pwr.wordnetloom.server.business.synset.control;
 
 import pl.edu.pwr.wordnetloom.server.business.sense.control.Specification;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
 import javax.persistence.criteria.Predicate;
@@ -12,9 +11,7 @@ import java.util.UUID;
 public class SynsetRelationSpecification {
 
     public static Specification<SynsetRelation> byFilter(UUID source, UUID target, UUID relType) {
-
         return (root, query, cb) -> {
-
             List<Predicate> criteria = new ArrayList<>();
 
             if (source != null) {
@@ -42,5 +39,4 @@ public class SynsetRelationSpecification {
     private static Specification<SynsetRelation> byParent(UUID parent) {
         return (root, query, cb) -> cb.equal(root.get("parent").get("id"), parent);
     }
-
 }

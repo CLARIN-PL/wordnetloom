@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public class SearchFilter {
 
-
     private PaginationData paginationData;
 
     private String lemma;

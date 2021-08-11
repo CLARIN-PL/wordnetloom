@@ -4,7 +4,6 @@ import pl.edu.pwr.wordnetloom.server.business.UuidAdapter;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbPropertyOrder;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import java.math.BigInteger;
 import java.util.ArrayList;

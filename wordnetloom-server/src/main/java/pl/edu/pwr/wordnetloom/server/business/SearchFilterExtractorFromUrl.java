@@ -124,5 +124,4 @@ public class SearchFilterExtractorFromUrl {
         }
         return Integer.parseInt(start);
     }
-
 }

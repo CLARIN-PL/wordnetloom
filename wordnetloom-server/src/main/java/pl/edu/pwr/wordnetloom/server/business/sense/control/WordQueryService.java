@@ -41,5 +41,4 @@ public class WordQueryService {
                             .setParameter("word", word)
                             .getSingleResult();
     }
-
 }

@@ -9,6 +9,7 @@ import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -57,6 +58,7 @@ public class LexiconResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Operation(summary = "Add new lexicon", description = "Add new lexicon to database")
     public Response addLexicon(@HeaderParam("Accept-Language") Locale locale, JsonObject json) {
         OperationResult<Lexicon> s = command.save(json);
@@ -69,6 +71,7 @@ public class LexiconResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Edit lexicon by id", description = "Edit the existing lexicon by id")
     public Response updateLexicon(@HeaderParam("Accept-Language") Locale locale, JsonObject json) {
@@ -82,6 +85,7 @@ public class LexiconResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Delete lexicon by id", description = "Delete the existing lexicon by id")
     public Response deleteLexicon(@PathParam("id") final Long id) {

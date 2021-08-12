@@ -13,7 +13,6 @@ import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -27,11 +26,6 @@ public class UserService {
 
     @PersistenceContext
     EntityManager em;
-
-    public List<User> findAllUsers() {
-        return em.createNamedQuery(User.FIND_ALL, User.class)
-                .getResultList();
-    }
 
     public Optional<User> findById(long id) {
         try {

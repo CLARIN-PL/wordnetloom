@@ -12,6 +12,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -81,6 +82,7 @@ public class SynsetResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Edit synset by id", description = "Edit the existing synset by id")
     public Response updateSynset(JsonObject synset,
@@ -108,6 +110,7 @@ public class SynsetResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Operation(summary = "Add new synset", description = "Add new synset to database")
     public Response addSynset(JsonObject synset) {
         OperationResult<Synset> s = synsetCommandService.save(synset);
@@ -120,6 +123,7 @@ public class SynsetResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Delete synset by id", description = "Delete the existing synset by id")
     public Response deleteSynset(@PathParam("id") final UUID id) {
@@ -128,6 +132,7 @@ public class SynsetResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("/add-sense-to-new-synset/{senseId}")
     @Operation(summary = "Add sense to new synset", description = "Create new synset and add sense by id")
     public Response addSenseToNewSynset(@HeaderParam("Accept-Language") Locale locale,
@@ -142,6 +147,7 @@ public class SynsetResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Edit synset by id", description = "Edit the existing synset by id")
     public Response updateSynset(@PathParam("id") final UUID id, JsonObject synset) {
@@ -199,6 +205,7 @@ public class SynsetResource {
 
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("relations")
     @Operation(summary = "Add new relation", description = "Add new relation between two synsets")
     public Response addSynsetRelation(JsonObject relation) {
@@ -233,6 +240,7 @@ public class SynsetResource {
 
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("relations/{source}/{relationType}/{target}")
     @Operation(summary = "Delete relation", description = "Delete relation between two synsets")
     public Response deleteRelation( @PathParam("source") final UUID source,
@@ -255,6 +263,7 @@ public class SynsetResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("{synsetId}/examples")
     @Operation(summary = "Add synset example", description = "Add new example for synset (by id)")
     public Response addExample(@PathParam("synsetId") final UUID synsetId, JsonObject example) {
@@ -279,6 +288,7 @@ public class SynsetResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{synsetId}/examples/{exampleId}")
     @Operation(summary = "Edit synset example", description = "Edit existing example (by id) for synset (by id)")
     public Response updateSynsetExample(@PathParam("synsetId") final UUID synsetId,
@@ -294,6 +304,7 @@ public class SynsetResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{synsetId}/examples/{exampleId}")
     @Operation(summary = "Delete synset example", description = "Delete existing example (by id) for synset (by id)")
     public Response deleteSynsetExample(@PathParam("synsetId") final UUID senseId,

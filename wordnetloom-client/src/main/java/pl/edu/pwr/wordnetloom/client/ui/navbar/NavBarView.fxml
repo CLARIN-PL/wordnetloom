@@ -17,7 +17,6 @@
                         <MenuItem fx:id="relationTypes" mnemonicParsing="false" onAction="#showRelationTypes" text="%menu.relation.types" />
                         <MenuItem fx:id="dictionaries" mnemonicParsing="false" onAction="#showDictionaries" text="%menu.dictionaries" />
                         <MenuItem fx:id="lexicons" mnemonicParsing="false" onAction="#showLexicons" text="%menu.lexicons" />
-                        <MenuItem fx:id="users" mnemonicParsing="false" onAction="#showUsers" text="%menu.users" />
                     </items>
                 </Menu>
                 <SeparatorMenuItem />

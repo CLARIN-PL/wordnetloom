@@ -11,6 +11,7 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationArgume
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -55,6 +56,7 @@ public class RelationTypeResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Operation(summary = "Add new relation type", description = "Add new relation type to database")
     public Response addRelationType(@HeaderParam("Accept-Language") Locale locale, JsonObject json) {
         OperationResult<RelationType> s = command.save(locale, json);
@@ -67,6 +69,7 @@ public class RelationTypeResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Edit relation type by id", description = "Edit the existing relation type by id")
     public Response updateRelationType(@HeaderParam("Accept-Language") Locale locale,
@@ -93,6 +96,7 @@ public class RelationTypeResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Delete relation type by id", description = "Delete the existing relation type by id")
     public Response deleteRelationType(@PathParam("id") final UUID id) {
@@ -110,6 +114,7 @@ public class RelationTypeResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("{id}/tests")
     @Operation(summary = "Add new relation test", description = "Add new relation test for relation (by id)")
     public Response addRelationTest(@HeaderParam("Accept-Language") Locale locale,
@@ -125,6 +130,7 @@ public class RelationTypeResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/tests/{testId}")
     @Operation(summary = "Get all relation test by id", description = "Get relation test (by id) for relation (by id)")
     public Response addRelationTest(@HeaderParam("Accept-Language") Locale locale,
@@ -140,6 +146,7 @@ public class RelationTypeResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}/tests/{testId}")
     @Operation(summary = "Delete relation test by id", description = "Delete relation test (by id) for relation (by id)")
     public Response deleteRelationTest(@PathParam("id") final UUID id) {

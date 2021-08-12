@@ -8,6 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -37,12 +38,6 @@ public class UserResource {
     UriInfo uriInfo;
 
     @GET
-    @Operation(summary = "Get user links", description = "Get all available users operations with links")
-    public JsonObject users() {
-        return entityBuilder.buildUsers(service.findAllUsers(), uriInfo);
-    }
-
-    @GET
     @Path("{id:\\d+}")
     @Operation(summary = "Get user by id", description = "Get user all infos (by id)")
     public JsonObject user(@PathParam("id") long id) {
@@ -52,6 +47,7 @@ public class UserResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Operation(summary = "Add new user", description = "Create new user and store it in database")
     public Response createUser(JsonObject json) {
         OperationResult<User> user = service.createUser(json);
@@ -64,8 +60,9 @@ public class UserResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id:\\d+}")
-    @Operation(summary = "DElete user by id", description = "Delete user (by id)")
+    @Operation(summary = "Delete user by id", description = "Delete user (by id)")
     public Response deleteUser(@PathParam("id") final Long id) {
         service.deleteUser(id);
         return Response.noContent()

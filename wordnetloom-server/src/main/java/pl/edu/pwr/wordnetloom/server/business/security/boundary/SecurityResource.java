@@ -85,7 +85,7 @@ public class SecurityResource {
 
     @PUT
     @Path("/user")
-    @Operation(summary = "Update user", description = "Update user settings and data")
+    @Operation(summary = "Update user", description = "Update user settings")
     @SecurityRequirement(name = "bearerAuth")
     public Response updateUser(JsonObject json) {
         String email = userFinder.getCurrentUser().get().getEmail();

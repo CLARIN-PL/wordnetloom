@@ -9,6 +9,7 @@ import pl.edu.pwr.wordnetloom.server.business.graph.entity.NodeExpanded;
 import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -55,6 +56,7 @@ public class SenseResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Operation(summary = "Add new sense", description = "Add new sense to database")
     public Response addSense(JsonObject sense) {
         OperationResult<Sense> s = senseCommandService.save(sense);
@@ -88,6 +90,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Edit sense by id", description = "Edit the existing sense by id")
     public Response updateSense(JsonObject sense,
@@ -103,6 +106,7 @@ public class SenseResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}")
     @Operation(summary = "Delete sense by id", description = "Delete the existing sense by id")
     public Response deleteSense(@PathParam("id") final UUID id) {
@@ -112,6 +116,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/move-up")
     @Operation(summary = "Move sense up", description = "Move sense in synset to upper position")
     public Response moveUp(@HeaderParam("Accept-Language") Locale locale,
@@ -121,6 +126,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/move-down")
     @Operation(summary = "Move sense down", description = "Move sense in synset to lower position")
     public Response moveDown(@HeaderParam("Accept-Language") Locale locale,
@@ -130,6 +136,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/detach-synset")
     @Operation(summary = "Detach sense", description = "Detach sense (by id) from synset")
     public Response detachSynset(@HeaderParam("Accept-Language") Locale locale,
@@ -139,6 +146,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/attach-to-synset/{synsetId}")
     @Operation(summary = "Attach sense", description = "Attach sense (by id) to synset (by id)")
     public Response attachToSynset(@PathParam("id") final UUID senseId,
@@ -184,6 +192,7 @@ public class SenseResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("{senseId}/examples")
     @Operation(summary = "Add sense example", description = "Add new example for sense (by id)")
     public Response addExample(@PathParam("senseId") final UUID senseId,
@@ -198,6 +207,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{senseId}/examples/{exampleId}")
     @Operation(summary = "Edit sense example", description = "Edit existing example (by id) for sense (by id)")
     public Response updateExample(JsonObject example,
@@ -213,6 +223,7 @@ public class SenseResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{senseId}/examples/{exampleId}")
     @Operation(summary = "Delete sense example", description = "Delete existing example (by id) for sense (by id)")
     public Response removeSenseExample(@PathParam("senseId") final UUID senseId,
@@ -263,6 +274,7 @@ public class SenseResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("relations")
     @Operation(summary = "Add new relation", description = "Add new relation between two senses")
     public Response addSenseRelation(@HeaderParam("Accept-Language") Locale locale,
@@ -277,6 +289,7 @@ public class SenseResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("relations/{source}/{relationType}/{target}")
     @Operation(summary = "Delete relation", description = "Delete relation between two senses")
     public Response deleteSenseRelation(@PathParam("source") final UUID source,
@@ -287,6 +300,7 @@ public class SenseResource {
     }
 
     @PUT
+    @RolesAllowed({"admin"})
     @Path("{id}/emotional-annotations/{annotationId}")
     @Operation(summary = "Not implemented yet")
     public Response updateEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {
@@ -295,6 +309,7 @@ public class SenseResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("{id}/emotional-annotations/{annotationId}")
     @Operation(summary = "Not implemented yet")
     public Response deleteEmotionalAnnotations(@PathParam("id") final UUID id) {

@@ -8,6 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.LinkBuilder;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.control.DictionaryQueryService;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -72,6 +73,7 @@ public class DictionaryResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("statuses")
     @Operation(summary = "Add new status", description = "Add new status to database")
     public JsonObject addStatus(@HeaderParam("Accept-Language") Locale locale, JsonObject dic) {
@@ -80,6 +82,7 @@ public class DictionaryResource {
                 .orElse(Json.createObjectBuilder().build());
     }
     @PUT
+    @RolesAllowed({"admin"})
     @Path("statuses/{id:\\d+}")
     @Operation(summary = "Edit status by id", description = "Edit the existing status by id")
     public JsonObject updateStatus(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {
@@ -103,6 +106,7 @@ public class DictionaryResource {
     }
 
     @POST
+    @RolesAllowed({"admin"})
     @Path("registers")
     @Operation(summary = "Add new register", description = "Add new register to database")
     public JsonObject addRegister(@HeaderParam("Accept-Language") Locale locale, JsonObject dic) {
@@ -111,6 +115,7 @@ public class DictionaryResource {
                 .orElse(Json.createObjectBuilder().build());
     }
     @PUT
+    @RolesAllowed({"admin"})
     @Path("registers/{id:\\d+}")
     @Operation(summary = "Edit register by id", description = "Edit the existing register by id")
     public JsonObject updateRegister(@HeaderParam("Accept-Language") Locale locale, @PathParam("id") long id, JsonObject dic) {

@@ -19,8 +19,6 @@ import pl.edu.pwr.wordnetloom.client.ui.profiledialog.ProfileDialogView;
 import pl.edu.pwr.wordnetloom.client.ui.profiledialog.ProfileDialogViewModel;
 import pl.edu.pwr.wordnetloom.client.ui.relationtypesdialog.RelationTypesDialogView;
 import pl.edu.pwr.wordnetloom.client.ui.relationtypesdialog.RelationTypesDialogViewModel;
-import pl.edu.pwr.wordnetloom.client.ui.users.UsersDialogView;
-import pl.edu.pwr.wordnetloom.client.ui.users.UsersDialogViewModel;
 
 
 import javax.inject.Inject;
@@ -34,7 +32,7 @@ public class NavBarView implements FxmlView<NavBarViewModel> {
 	MenuButton usernameMenuButton;
 
 	@FXML
-	MenuItem  logout, relationTypes, lexicons, profile, subMenuSettings, dictionaries, users;
+	MenuItem  logout, relationTypes, lexicons, profile, subMenuSettings, dictionaries;
 
 	@InjectContext
 	Context context;
@@ -53,7 +51,6 @@ public class NavBarView implements FxmlView<NavBarViewModel> {
 		AwesomeDude.setIcon(usernameMenuButton, AwesomeIcon.USER, "11");
 		AwesomeDude.setIcon(profile, AwesomeIcon.USER,"11");
 		AwesomeDude.setIcon(lexicons, AwesomeIcon.BOOKMARK,"11");
-		AwesomeDude.setIcon(users, AwesomeIcon.USERS,"11");
 		AwesomeDude.setIcon(dictionaries, AwesomeIcon.BOOK,"11");
 		AwesomeDude.setIcon(relationTypes, AwesomeIcon.EXCHANGE,"11");
 		AwesomeDude.setIcon(logout, AwesomeIcon.SIGN_OUT,"11");
@@ -109,19 +106,6 @@ public class NavBarView implements FxmlView<NavBarViewModel> {
 			load.getCodeBehind().setDisplayingStage(showDialog);
 			showDialog.toFront();
 		});
-
-		viewModel.subscribe(NavBarViewModel.OPEN_USERS_DIALOG, (key, payload) -> {
-
-			ViewTuple<UsersDialogView, UsersDialogViewModel> load = FluentViewLoader
-					.fxmlView(UsersDialogView.class)
-					.context(context)
-					.load();
-
-			Parent view = load.getView();
-			Stage showDialog = DialogHelper.showDialog(view, primaryStage, "/wordnetloom.css");
-			load.getCodeBehind().setDisplayingStage(showDialog);
-			showDialog.toFront();
-		});
 	}
 
 	@FXML
@@ -137,11 +121,6 @@ public class NavBarView implements FxmlView<NavBarViewModel> {
 	@FXML
 	public void showLexicons() {
 		viewModel.showLexiconDialog();
-	}
-
-	@FXML
-	public void showUsers() {
-		viewModel.showUsersDialog();
 	}
 
 	@FXML

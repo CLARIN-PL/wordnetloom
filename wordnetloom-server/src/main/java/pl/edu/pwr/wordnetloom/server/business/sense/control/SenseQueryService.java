@@ -3,7 +3,7 @@ package pl.edu.pwr.wordnetloom.server.business.sense.control;
 import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -23,7 +23,7 @@ public class SenseQueryService {
     EntityManager em;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     @Inject
     LexiconQueryService lexiconQueryService;
@@ -42,7 +42,7 @@ public class SenseQueryService {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        List<Long> lexicons  = userFinder.getCurrentUser()
+        List<Long> lexicons  = userControl.getCurrentUser()
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
@@ -73,7 +73,7 @@ public class SenseQueryService {
         Root<Sense> sense = cq.from(Sense.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        List<Long> lexicons  = userFinder.getCurrentUser()
+        List<Long> lexicons  = userControl.getCurrentUser()
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 

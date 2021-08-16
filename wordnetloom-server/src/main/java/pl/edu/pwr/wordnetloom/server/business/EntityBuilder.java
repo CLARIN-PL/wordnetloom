@@ -139,27 +139,6 @@ public class EntityBuilder {
                                 )
 
                         )
-                        .add(createObjectBuilder()
-                                .add("name", "change-password")
-                                .add("title", "Change authorized user password")
-                                .add("method", HttpMethod.PUT)
-                                .add("href", this.linkBuilder.forSecurityChangePassword(uriInfo).toString())
-                                .add("type", MediaType.APPLICATION_JSON)
-                                .add("headers", Json.createArrayBuilder()
-                                        .add(createObjectBuilder()
-                                                .add("name", "Authorization")
-                                                .add("type", "TEXT")
-                                                .add("required", "true")
-                                        ))
-                                .add("fields", Json.createArrayBuilder()
-                                        .add(createObjectBuilder()
-                                                .add("name", "password")
-                                                .add("type", "TEXT")
-                                                .add("required", "true")
-                                        )
-                                )
-
-                        )
                 );
         return entityBuilder.build();
     }
@@ -838,8 +817,8 @@ public class EntityBuilder {
             builder.add("technical_comment", attributes.getErrorComment());
         }
 
-        if (Objects.nonNull(attributes.getOwner())) {
-            builder.add("owner", attributes.getOwner().getFullname());
+        if (Objects.nonNull(attributes.getUserName())) {
+            builder.add("owner", attributes.getUserName());
         }
 
         builder.add("senses", synset.getSenses().stream()
@@ -1298,8 +1277,8 @@ public class EntityBuilder {
                 builder.add("technical_comment", attributes.getErrorComment());
             }
 
-            if (Objects.nonNull(attributes.getOwner())) {
-                builder.add("owner", attributes.getOwner().getFullname());
+            if (Objects.nonNull(attributes.getUserName())) {
+                builder.add("owner", attributes.getUserName());
             }
 
             if (Objects.nonNull(attributes.getLink())) {
@@ -1723,31 +1702,6 @@ public class EntityBuilder {
                                                 .add("type", "TEXT")
                                                 .add("required", "true")
                                         ))))
-                .build();
-    }
-
-    public JsonObject buildUser(User user, UriInfo uriInfo) {
-        return Json.createObjectBuilder()
-                .add("email", user.getEmail())
-                .add("first_name", user.getFirstname())
-                .add("last_name", user.getLastname())
-                .add("role", user.getRole().name())
-                .add("_links", createObjectBuilder()
-                        .add("self", linkBuilder.forUser(user, uriInfo).toString()))
-                .build();
-    }
-
-    public JsonObject buildUsers(List<User> users, UriInfo uriInfo) {
-
-        JsonArray rows = users.stream()
-                .map(u -> buildUser(u, uriInfo))
-                .collect(JsonCollectors.toJsonArray());
-
-        return createObjectBuilder()
-                .add("rows", rows)
-                .add("_links", createObjectBuilder()
-                        .add("self", uriInfo.getRequestUri().toString()))
-                .add("_actions", createArrayBuilder())
                 .build();
     }
 }

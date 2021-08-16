@@ -10,7 +10,7 @@ import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 import pl.edu.pwr.wordnetloom.server.business.synset.control.SynsetQueryService;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -42,7 +42,7 @@ public class GraphQueryService {
     LocalisedStringsQueryService loc;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     @Inject
     LexiconQueryService lexiconQueryService;
@@ -53,7 +53,7 @@ public class GraphQueryService {
     private static final int NUMBER_OF_EXPANDED_NODES = 4;
     private List<Object[]> fetchSynsetGraphNode(UUID id) {
 
-        List<Long> lexicons  = userFinder.getCurrentUser()
+        List<Long> lexicons  = userControl.getCurrentUser()
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
@@ -99,7 +99,7 @@ public class GraphQueryService {
     }
 
     private List<Object[]> fetchSenseGraphNode(UUID id) {
-        List<Long> lexicons  = userFinder.getCurrentUser()
+        List<Long> lexicons  = userControl.getCurrentUser()
                 .map( u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 

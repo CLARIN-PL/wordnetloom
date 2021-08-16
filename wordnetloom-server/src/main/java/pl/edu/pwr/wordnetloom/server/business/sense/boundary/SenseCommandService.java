@@ -15,8 +15,7 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.synset.control.SynsetQueryService;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -57,7 +56,7 @@ public class SenseCommandService {
     RelationTypeQueryService relationTypeQueryService;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     public OperationResult<Sense> save(JsonObject sense) {
 
@@ -147,15 +146,15 @@ public class SenseCommandService {
             return result;
         }
 
-        User user = userFinder.getCurrentUser().orElse(null);
-        senseAttributes.setOwner(user);
-
         Status newStatus = dictionaryQueryService.findStatusDefaultValue();
         ns.setStatus(newStatus);
 
+        String userName = userControl.getCurrentUser().get().getFullname();
+        senseAttributes.setUserName(userName);
+
         if (sense.getBoolean("create_synset")) {
             synset.setStatus(newStatus);
-            synsetAttributes.setOwner(user);
+            synsetAttributes.setUserName(userName);
             em.persist(synset);
             synsetAttributes.setSynset(synset);
             em.persist(synsetAttributes);

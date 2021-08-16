@@ -32,7 +32,7 @@
                   <Label text="%profile.email" GridPane.rowIndex="2" />
                   <TextField fx:id="firstname" GridPane.columnIndex="1" />
                   <TextField fx:id="lastname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="email" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </content>

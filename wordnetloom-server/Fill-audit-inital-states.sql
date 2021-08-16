@@ -54,8 +54,8 @@ INSERT INTO tbl_relation_type_AUD (id, auto_reverse, color, description_id, disp
     SELECT id, auto_reverse, color, description_id, display_text_id, global_wordnet_relation_type, multilingual, name_id, node_position, relation_argument, short_display_text_id, parent_relation_type_id, reverse_relation_type_id, 1, 0
     FROM tbl_relation_type;
 
-INSERT INTO tbl_sense_attributes_AUD (sense_id, comment, definition, error_comment, link, user_id, register_id, REV, REVTYPE)
-    SELECT sense_id, comment, definition, error_comment, link, user_id, register_id, 1, 0
+INSERT INTO tbl_sense_attributes_AUD (sense_id, comment, definition, error_comment, link, register_id, user_name, REV, REVTYPE)
+    SELECT sense_id, comment, definition, error_comment, link, register_id, user_name, 1, 0
     FROM tbl_sense_attributes;
 
 INSERT INTO tbl_sense_AUD (id, synset_position, variant, domain_id, lexicon_id, part_of_speech_id, status_id, synset_id, word_id, REV, REVTYPE)
@@ -70,8 +70,8 @@ INSERT INTO tbl_sense_relation_AUD (sense_relation_type_id, parent_sense_id, chi
     SELECT sense_relation_type_id, parent_sense_id, child_sense_id, 1, 0
     FROM tbl_sense_relation;
 
-INSERT INTO tbl_synset_attributes_AUD (synset_id, comment, definition, error_comment, ili_id, princeton_id, owner_id, REV, REVTYPE)
-    SELECT synset_id, comment, definition, error_comment, ili_id, princeton_id, owner_id, 1, 0
+INSERT INTO tbl_synset_attributes_AUD (synset_id, comment, definition, error_comment, ili_id, princeton_id, user_name, REV, REVTYPE)
+    SELECT synset_id, comment, definition, error_comment, ili_id, princeton_id, user_name, 1, 0
     FROM tbl_synset_attributes;
 
 INSERT INTO tbl_synset_AUD (id, abstract, lexicon_id, status_id, REV, REVTYPE)
@@ -85,14 +85,6 @@ INSERT INTO tbl_synset_examples_AUD (id, example, type, synset_attribute_id, REV
 INSERT INTO tbl_synset_relation_AUD (synset_relation_type_id, parent_synset_id, child_synset_id, REV, REVTYPE)
     SELECT synset_relation_type_id, parent_synset_id, child_synset_id, 1, 0
     FROM tbl_synset_relation;
-
-INSERT INTO tbl_users_AUD (id, email, firstname, lastname, password, role, REV, REVTYPE)
-    SELECT id, email, firstname, lastname, password, role, 1, 0
-    FROM tbl_users;
-
-INSERT INTO tbl_users_settings_AUD (user_id, chosen_lexicons, lexicon_marker, show_tool_tips, REV, REVTYPE)
-    SELECT user_id, chosen_lexicons, lexicon_marker, show_tool_tips, 1, 0
-    FROM tbl_users_settings;
 
 INSERT INTO tbl_word_AUD (id, word, REV, REVTYPE)
     SELECT id, word, 1, 0

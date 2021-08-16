@@ -16,8 +16,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -49,7 +48,7 @@ public class SynsetCommandService {
     DictionaryQueryService dictionaryQueryService;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     @Inject
     LexiconQueryService lexiconQueryService;
@@ -166,8 +165,6 @@ public class SynsetCommandService {
             synsetAttributes.setIliId(json.getString("ili_id"));
         }
 
-        User user = userFinder.getCurrentUser().orElse(null);
-        synsetAttributes.setOwner(user);
         synsetAttributes.setSynset(synset);
 
         if (!result.hasErrors()) {
@@ -195,7 +192,7 @@ public class SynsetCommandService {
             synset.setStatus(defaultStatus);
             synset.setLexicon(sense.get().getLexicon());
 
-            attributes.setOwner(userFinder.getCurrentUser().orElse(null));
+            attributes.setUserName(userControl.getCurrentUser().get().getFullname());
 
             sense.get().setSynset(synset);
             sense.get().setSynsetPosition(Synset.SYNSET_HEAD_POSITION);

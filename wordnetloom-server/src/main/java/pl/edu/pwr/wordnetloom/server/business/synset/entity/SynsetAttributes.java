@@ -17,7 +17,6 @@ import java.util.UUID;
         query = "SELECT DISTINCT s " +
                 "FROM SynsetAttributes s " +
                 "LEFT JOIN FETCH s.examples " +
-                "LEFT JOIN FETCH s.owner " +
                 "WHERE s.id = :id")
 public class SynsetAttributes implements Serializable {
 
@@ -40,12 +39,11 @@ public class SynsetAttributes implements Serializable {
     @Column(name = "error_comment")
     private String errorComment;
 
+    @Column(name = "user_name")
+    private String userName;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "synsetAttributes", orphanRemoval = true)
     private Set<SynsetExample> examples;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private User owner;
 
     @Column(name = "princeton_id")
     private String princetonId;
@@ -56,16 +54,14 @@ public class SynsetAttributes implements Serializable {
     public SynsetAttributes() {
     }
 
-    public SynsetAttributes(String definition, String comment, User owner) {
+    public SynsetAttributes(String definition, String comment) {
         this.definition = definition;
         this.comment = comment;
-        this.owner = owner;
     }
 
-    public SynsetAttributes(String definition, String comment, User owner, String princetonId) {
+    public SynsetAttributes(String definition, String comment, String princetonId) {
         this.definition = definition;
         this.comment = comment;
-        this.owner = owner;
         this.princetonId = princetonId;
     }
 
@@ -91,14 +87,6 @@ public class SynsetAttributes implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
     }
 
     public Synset getSynset() {
@@ -146,5 +134,13 @@ public class SynsetAttributes implements Serializable {
 
     public void setIliId(String iliId) {
         this.iliId = iliId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

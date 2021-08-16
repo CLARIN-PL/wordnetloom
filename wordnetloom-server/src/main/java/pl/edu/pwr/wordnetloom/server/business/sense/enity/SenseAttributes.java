@@ -2,7 +2,6 @@ package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.envers.Audited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Register;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -49,9 +48,8 @@ public class SenseAttributes implements Serializable {
     @Column(name = "error_comment")
     private String errorComment;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User owner;
+    @Column(name = "user_name")
+    private String userName;
 
     public UUID getId() {
         return id;
@@ -101,14 +99,6 @@ public class SenseAttributes implements Serializable {
         this.sense = sense;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public String getErrorComment() {
         return errorComment;
     }
@@ -130,5 +120,13 @@ public class SenseAttributes implements Serializable {
             examples = new HashSet<>();
         }
         examples.add(e);
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

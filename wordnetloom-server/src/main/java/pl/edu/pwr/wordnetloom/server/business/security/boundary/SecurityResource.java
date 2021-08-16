@@ -6,7 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import pl.edu.pwr.wordnetloom.server.business.EntityBuilder;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.security.control.JwtManager;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class SecurityResource {
     UriInfo uriInfo;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     @GET
     @Operation(summary = "Get security links", description = "Get all available security operations with links")
@@ -74,7 +74,7 @@ public class SecurityResource {
     @Operation(summary = "Get user settings", description = "Get all user settings (only for authorized users)")
     @SecurityRequirement(name = "bearerAuth")
     public Response claims() {
-        Optional<User> optUser = userFinder.getCurrentUser();
+        Optional<User> optUser = userControl.getCurrentUser();
         if (optUser.isEmpty())
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(entityBuilder.buildErrorObject("Username is incorrect", Response.Status.BAD_REQUEST))
@@ -88,8 +88,7 @@ public class SecurityResource {
     @Operation(summary = "Update user", description = "Update user settings")
     @SecurityRequirement(name = "bearerAuth")
     public Response updateUser(JsonObject json) {
-        String email = userFinder.getCurrentUser().get().getEmail();
-        OperationResult<User> s = service.updateUser(email, json);
+        OperationResult<User> s = service.updateUser(json);
         if (s.hasErrors()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(s.getErrors()).build();

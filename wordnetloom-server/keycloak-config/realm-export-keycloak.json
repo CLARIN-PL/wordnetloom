@@ -840,6 +840,21 @@
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
         {
+          "id": "eb26c523-047d-46fc-9a6b-10c3503c0942",
+          "name": "user_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "user_id",
+            "jsonType.label": "String"
+          }
+        },
+        {
           "id": "a35aa3a2-28dd-4797-aa46-acabc0435b30",
           "name": "full name",
           "protocol": "openid-connect",
@@ -882,6 +897,36 @@
           }
         },
         {
+          "id": "a01aa763-312b-427d-b6ef-9d5cff8358e1",
+          "name": "show_tool_tips",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "show_tool_tips",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "show_tool_tips",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "072ec347-a3d2-4489-bce6-beb9a2557c96",
+          "name": "chosen_lexicons",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "chosen_lexicons",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "chosen_lexicons",
+            "jsonType.label": "String"
+          }
+        },
+        {
           "id": "ca01c1fe-8f88-4008-9d75-ca15df3d5462",
           "name": "family name",
           "protocol": "openid-connect",
@@ -908,6 +953,21 @@
             "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "50058798-3a47-47db-8481-ea85ab1b43c0",
+          "name": "lexicon_marker",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "lexicon_marker",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "lexicon_marker",
             "jsonType.label": "String"
           }
         }

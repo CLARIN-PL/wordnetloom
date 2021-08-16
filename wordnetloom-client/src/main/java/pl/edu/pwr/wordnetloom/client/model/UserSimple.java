@@ -12,10 +12,6 @@ public class UserSimple {
 
     private String email;
 
-    private String role;
-
-    private String password;
-
     @JsonProperty("_links")
     private Links links;
 
@@ -43,18 +39,6 @@ public class UserSimple {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public Links getLinks() {
         return links;
     }
@@ -63,19 +47,12 @@ public class UserSimple {
         this.links = links;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
     @Override
     public String toString() {
         return "UserSimple{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", password='" + password + '\'' +
                 ", links=" + links +
                 '}';
     }

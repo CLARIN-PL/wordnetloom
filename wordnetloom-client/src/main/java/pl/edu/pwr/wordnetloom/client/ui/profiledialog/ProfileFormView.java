@@ -34,6 +34,8 @@ public class ProfileFormView implements FxmlView<ProfileFormViewModel> {
         firstname.textProperty().bindBidirectional(viewModel.firstNameProperty());
         lastname.textProperty().bindBidirectional(viewModel.lastNameProperty());
         email.textProperty().bindBidirectional(viewModel.emailProperty());
+        email.setEditable(false);
+        email.setDisable(true);
         lexicons.setItems(viewModel.getLexicons());
         viewModel.setCheckModel(lexicons.getCheckModel());
         markersCheckBox.selectedProperty().bindBidirectional(viewModel.markersProperty());

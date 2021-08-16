@@ -155,36 +155,6 @@ CREATE TABLE `tbl_sense` (
 ) ENGINE=InnoDB;
 
 --
--- Table structure for table `tbl_users`
---
-DROP TABLE IF EXISTS `tbl_users`;
-
-CREATE TABLE `tbl_users` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
-  `firstname` varchar(255)  NOT NULL,
-  `lastname` varchar(255)  NOT NULL,
-  `password` varchar(64)  NOT NULL,
-  `role` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
---
--- Table structure for table `tbl_users_settings`
---
-DROP TABLE IF EXISTS `tbl_users_settings`;
-
-CREATE TABLE `tbl_users_settings` (
-  `user_id` bigint(20) NOT NULL,
-  `lexicon_marker` tinyint(1) DEFAULT NULL,
-  `chosen_lexicons` varchar(255)  NOT NULL,
-  `show_tool_tips` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  CONSTRAINT `users_settings_to_user_constraint` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`id`)
-) ENGINE=InnoDB;
-
-
---
 -- Table structure for table `tbl_relation_tests`
 --
 DROP TABLE IF EXISTS `tbl_relation_tests`;
@@ -275,12 +245,11 @@ CREATE TABLE `tbl_sense_attributes` (
   `definition` text,
   `link` varchar(255) DEFAULT NULL,
   `register_id` bigint(20) DEFAULT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
+  `user_email` varchar(255) DEFAULT NULL,
   `error_comment` text,
+  `user_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`sense_id`),
-  KEY `FKhnsf3ffqr27ceqnrji9g69hxp` (`user_id`),
-  CONSTRAINT `FK_sense_attributes_sense` FOREIGN KEY (`sense_id`) REFERENCES `tbl_sense` (`id`),
-  CONSTRAINT `FKhnsf3ffqr27ceqnrji9g69hxp` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`id`)
+  CONSTRAINT `FK_sense_attributes_sense` FOREIGN KEY (`sense_id`) REFERENCES `tbl_sense` (`id`)
 ) ENGINE=InnoDB;
 
 
@@ -324,14 +293,12 @@ CREATE TABLE `tbl_synset_attributes` (
   `synset_id` binary(16) NOT NULL,
   `comment` text,
   `definition` text,
-  `owner_id` bigint(20) DEFAULT NULL COMMENT 'Synset owner',
   `error_comment` text,
+  `user_name` varchar(255) DEFAULT NULL,
   `princeton_id` varchar(255) DEFAULT NULL COMMENT 'External original Princeton Id',
   `ili_id` varchar(255) DEFAULT NULL COMMENT 'OMW id',
   PRIMARY KEY (`synset_id`),
-  KEY `FKd4daq7s6mjs49n2flpjndk0ob` (`owner_id`),
-  CONSTRAINT `FK_synset_attributes_synset` FOREIGN KEY (`synset_id`) REFERENCES `tbl_synset` (`id`),
-  CONSTRAINT `FKd4daq7s6mjs49n2flpjndk0ob` FOREIGN KEY (`owner_id`) REFERENCES `tbl_users` (`id`)
+  CONSTRAINT `FK_synset_attributes_synset` FOREIGN KEY (`synset_id`) REFERENCES `tbl_synset` (`id`)
 ) ENGINE=InnoDB;
 
 --

@@ -146,7 +146,7 @@ create table tbl_sense_attributes_AUD (
                                           definition longtext,
                                           error_comment varchar(255),
                                           link varchar(255),
-                                          user_id bigint,
+                                          user_name varchar(255),
                                           register_id bigint,
                                           primary key (sense_id, REV)
 ) engine=InnoDB;
@@ -192,9 +192,9 @@ create table tbl_synset_attributes_AUD (
                                            comment longtext,
                                            definition longtext,
                                            error_comment varchar(255),
+                                           user_name varchar(255),
                                            ili_id varchar(255),
                                            princeton_id varchar(255),
-                                           owner_id bigint,
                                            primary key (synset_id, REV)
 ) engine=InnoDB;
 
@@ -225,28 +225,6 @@ create table tbl_synset_relation_AUD (
                                          REV integer not null,
                                          REVTYPE tinyint,
                                          primary key (synset_relation_type_id, parent_synset_id, child_synset_id, REV)
-) engine=InnoDB;
-
-create table tbl_users_AUD (
-                               id bigint not null,
-                               REV integer not null,
-                               REVTYPE tinyint,
-                               email varchar(255),
-                               firstname varchar(255),
-                               lastname varchar(255),
-                               password varchar(255),
-                               role varchar(255),
-                               primary key (id, REV)
-) engine=InnoDB;
-
-create table tbl_users_settings_AUD (
-                                        user_id bigint not null,
-                                        REV integer not null,
-                                        REVTYPE tinyint,
-                                        chosen_lexicons varchar(255),
-                                        lexicon_marker bit,
-                                        show_tool_tips bit,
-                                        primary key (user_id, REV)
 ) engine=InnoDB;
 
 create table tbl_word_AUD (

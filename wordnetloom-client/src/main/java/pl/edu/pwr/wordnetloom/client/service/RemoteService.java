@@ -172,11 +172,6 @@ public class RemoteService {
             activeUser().setLexicons(jsonObject.getString("lexicons"));
             activeUser().setShowMarkers(jsonObject.getBoolean("show_marker"));
             activeUser().setShowTooltips(jsonObject.getBoolean("show_tooltips"));
-            String array = jsonObject.getString("groups");
-            String role = array.replace("[", "")
-                    .replace("]", "")
-                    .replace("\"", "");
-            activeUser().setRole(role);
         }
         response.close();
     }

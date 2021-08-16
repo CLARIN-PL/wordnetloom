@@ -38,9 +38,6 @@ public class User {
     @JsonProperty("lexicons")
     private String lexicons;
 
-    @JsonIgnore
-    private String role;
-
     public String getFirstName() {
         return firstName;
     }
@@ -93,18 +90,6 @@ public class User {
 
     public void setLexicons(String lexicons) {
         this.lexicons = lexicons;
-    }
-
-    public boolean hasRole(String role) {
-        return this.role.equals(role);
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getToken() {

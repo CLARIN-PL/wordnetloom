@@ -8,7 +8,7 @@ import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -29,7 +29,7 @@ public class SynsetQueryService {
     EntityManager em;
 
     @Inject
-    UserFinder userFinder;
+    UserControl userControl;
 
     @Inject
     LexiconQueryService lexiconQueryService;
@@ -45,7 +45,7 @@ public class SynsetQueryService {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        List<Long> lexicons = userFinder.getCurrentUser()
+        List<Long> lexicons = userControl.getCurrentUser()
                 .map(u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 
@@ -93,7 +93,7 @@ public class SynsetQueryService {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        List<Long> lexicons = userFinder.getCurrentUser()
+        List<Long> lexicons = userControl.getCurrentUser()
                 .map(u -> u.getSettings().getSelectedLexicons())
                 .orElse(lexiconQueryService.findLexiconIdsAll());
 

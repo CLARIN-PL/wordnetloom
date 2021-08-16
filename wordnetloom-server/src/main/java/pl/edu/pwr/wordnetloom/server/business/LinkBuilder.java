@@ -18,8 +18,6 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
 import pl.edu.pwr.wordnetloom.server.business.synset.boundary.SynsetResource;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
-import pl.edu.pwr.wordnetloom.server.business.user.boundary.UserResource;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.UriInfo;
@@ -75,10 +73,6 @@ public class LinkBuilder {
 
     public URI forSynset(Synset s, UriInfo uriInfo) {
         return createResourceUri(SynsetResource.class, "synset", s.getId(), uriInfo);
-    }
-
-    public URI forUser(User u, UriInfo uriInfo) {
-        return createResourceUri(UserResource.class, "user", u.getId(),  uriInfo);
     }
 
     public URI forSenses(UriInfo uriInfo) {
@@ -225,9 +219,5 @@ public class LinkBuilder {
 
     public URI forSearchSynsetRelations(UriInfo uriInfo) {
         return createResourceUri(SynsetResource.class, "searchRelations", uriInfo);
-    }
-
-    public Object forSecurityChangePassword(UriInfo uriInfo) {
-        return createResourceUri(SecurityResource.class, "changePassword", uriInfo);
     }
 }

@@ -5,16 +5,13 @@ import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import pl.edu.pwr.wordnetloom.server.business.OperationResult;
 import pl.edu.pwr.wordnetloom.server.business.security.entity.Jwt;
-import pl.edu.pwr.wordnetloom.server.business.user.control.UserFinder;
+import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import javax.naming.AuthenticationException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 @Transactional
@@ -22,33 +19,21 @@ import java.util.Optional;
 public class SecurityService {
 
     @Inject
-    UserFinder service;
+    UserControl service;
 
-    @PersistenceContext
-    EntityManager em;
-
-    public Jwt authenticate(final String email, String password) throws AuthenticationException {
+    public Jwt authenticate(final String email, String password) {
         AuthzClient authzClient = AuthzClient.create();
         AuthorizationRequest request = new AuthorizationRequest();
         AuthorizationResponse response = authzClient.authorization(email, password).authorize(request);
 
-        if (service.findByEmail(email).isEmpty())
-            throw new AuthenticationException("Failed logging in org.jboss.user with name '" + email + "': unknown username");
-
         return new Jwt(response.getToken());
     }
 
-    public OperationResult<User> updateUser(String email, JsonObject json) {
+    public OperationResult<User> updateUser(JsonObject json) {
         OperationResult<User> result = new OperationResult<>();
 
-        Optional<User> u = service.findByEmail(email);
+        Optional<User> u = service.getCurrentUser();
         if (u.isPresent()) {
-            if (!json.isNull("email") && !json.getString("email").isEmpty()) {
-                u.get().setEmail(json.getString("email"));
-            } else {
-                result.addError("email", "May not be empty");
-            }
-
             if (!json.isNull("first_name") && !json.getString("first_name").isEmpty()) {
                 u.get().setFirstname(json.getString("first_name"));
             } else {
@@ -76,7 +61,7 @@ public class SecurityService {
             }
 
             if (!result.hasErrors()) {
-                em.merge(u.get());
+                service.saveUserSettings(u.get());
                 result.setEntity(u.get());
             }
         }

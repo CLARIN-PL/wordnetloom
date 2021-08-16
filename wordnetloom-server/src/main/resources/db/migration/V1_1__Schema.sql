@@ -245,7 +245,6 @@ CREATE TABLE `tbl_sense_attributes` (
   `definition` text,
   `link` varchar(255) DEFAULT NULL,
   `register_id` bigint(20) DEFAULT NULL,
-  `user_email` varchar(255) DEFAULT NULL,
   `error_comment` text,
   `user_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`sense_id`),

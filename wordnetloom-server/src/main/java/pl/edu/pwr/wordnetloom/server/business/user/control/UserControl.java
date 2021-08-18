@@ -115,7 +115,6 @@ public class UserControl {
                 }
             }
             JSONObject json = (JSONObject) new JSONParser().parse(content.toString());
-            log.info("token: " + json.get("access_token").toString());
             return json.get("access_token").toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,9 +144,6 @@ public class UserControl {
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(putData);
             }
-
-            log.info(con.getResponseCode() + " ");
-            log.info(jsonString);
 
         } catch (Exception e) {
             e.printStackTrace();

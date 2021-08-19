@@ -9,20 +9,12 @@ create table REVINFO (
                          primary key (REV)
 ) engine=InnoDB;
 
-create table part_of_speech_allowed_domain_AUD (
-                                                   REV integer not null,
-                                                   lexicon_allowed_part_of_speech_id bigint not null,
-                                                   domain_id bigint not null,
-                                                   REVTYPE tinyint,
-                                                   primary key (REV, lexicon_allowed_part_of_speech_id, domain_id)
-) engine=InnoDB;
-
 create table tbl_application_localised_string_AUD (
                                                       id bigint not null,
                                                       language varchar(255) not null,
                                                       REV integer not null,
                                                       REVTYPE tinyint,
-                                                      value varchar(255),
+                                                      value text,
                                                       primary key (id, language, REV)
 ) engine=InnoDB;
 
@@ -54,15 +46,6 @@ create table tbl_domain_AUD (
                                 description_id bigint,
                                 name_id bigint,
                                 primary key (id, REV)
-) engine=InnoDB;
-
-create table tbl_lexicon_allowed_part_of_speech_AUD (
-                                                        id bigint not null,
-                                                        REV integer not null,
-                                                        REVTYPE tinyint,
-                                                        lexicon_id bigint,
-                                                        part_of_speech_id bigint,
-                                                        primary key (id, REV)
 ) engine=InnoDB;
 
 create table tbl_lexicon_AUD (
@@ -144,7 +127,7 @@ create table tbl_sense_attributes_AUD (
                                           REVTYPE tinyint,
                                           comment longtext,
                                           definition longtext,
-                                          error_comment varchar(255),
+                                          error_comment text,
                                           link varchar(255),
                                           user_name varchar(255),
                                           register_id bigint,
@@ -170,7 +153,7 @@ create table tbl_sense_examples_AUD (
                                         id BINARY(16) not null,
                                         REV integer not null,
                                         REVTYPE tinyint,
-                                        example varchar(255),
+                                        example text,
                                         type varchar(255),
                                         sense_attribute_id binary(255),
                                         primary key (id, REV)
@@ -191,7 +174,7 @@ create table tbl_synset_attributes_AUD (
                                            REVTYPE tinyint,
                                            comment longtext,
                                            definition longtext,
-                                           error_comment varchar(255),
+                                           error_comment text,
                                            user_name varchar(255),
                                            ili_id varchar(255),
                                            princeton_id varchar(255),

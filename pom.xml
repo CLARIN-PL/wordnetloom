@@ -51,6 +51,11 @@
                 <artifactId>wordnetloom-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>pl.edu.pwr</groupId>
+                <artifactId>wordnetloom-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -58,5 +63,6 @@
     <modules>
         <module>wordnetloom-client</module>
         <module>wordnetloom-server</module>
+        <module>wordnetloom-service</module>
     </modules>
 </project>

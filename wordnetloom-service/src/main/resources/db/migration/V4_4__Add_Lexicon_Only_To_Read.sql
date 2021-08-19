@@ -1,0 +1,2 @@
+ALTER TABLE lexicon
+ADD onlyToRead BIT DEFAULT 0;

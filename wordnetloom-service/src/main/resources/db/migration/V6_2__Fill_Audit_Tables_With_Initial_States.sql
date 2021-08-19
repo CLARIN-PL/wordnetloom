@@ -1,14 +1,8 @@
-# Use only for empty audit tables!
-
 INSERT INTO REVINFO (REV, REVTSTMP, user_email)
 VALUES (1, 0, 'init');
 
 insert INTO hibernate_sequence
 values ( 2 );
-
-INSERT INTO part_of_speech_allowed_domain_AUD (lexicon_allowed_part_of_speech_id, domain_id, REV, REVTYPE)
-    SELECT lexicon_allowed_part_of_speech_id, domain_id, 1, 0
-    FROM part_of_speech_allowed_domain;
 
 INSERT INTO tbl_application_localised_string_AUD (id, language, value, REV, REVTYPE)
     SELECT id, language, value, 1, 0
@@ -29,10 +23,6 @@ INSERT INTO tbl_domain_AUD (id, description_id, name_id, REV, REVTYPE)
 INSERT INTO tbl_lexicon_AUD (id, citation, confidence_score, email, identifier, language_name, language_shortcut, lexicon_version, license, name, reference_url, REV, REVTYPE)
     SELECT id, citation, confidence_score, email, identifier, language_name, language_shortcut, lexicon_version, license, name, reference_url, 1, 0
     FROM tbl_lexicon;
-
-INSERT INTO tbl_lexicon_allowed_part_of_speech_AUD (id, lexicon_id, part_of_speech_id, REV, REVTYPE)
-    SELECT id, lexicon_id, part_of_speech_id, 1, 0
-    FROM tbl_lexicon_allowed_part_of_speech;
 
 INSERT INTO tbl_part_of_speech_AUD (id, color, name_id, REV, REVTYPE)
     SELECT id, color, name_id, 1, 0

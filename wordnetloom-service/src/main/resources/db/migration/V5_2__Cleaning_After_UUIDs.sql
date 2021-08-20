@@ -23,7 +23,8 @@ ALTER TABLE sense_attributes
 DROP COLUMN sense_id;
 
 ALTER TABLE sense_examples
-DROP COLUMN sense_attribute_id;
+DROP COLUMN sense_attribute_id,
+DROP COLUMN id;
 
 ALTER TABLE sense_relation
 DROP COLUMN child_sense_id,
@@ -37,7 +38,8 @@ ALTER TABLE synset_attributes
 DROP COLUMN synset_id;
 
 ALTER TABLE synset_examples
-DROP COLUMN synset_attributes_id;
+DROP COLUMN synset_attributes_id,
+DROP COLUMN id;
 
 ALTER TABLE synset_relation
 DROP COLUMN child_synset_id,
@@ -105,7 +107,8 @@ ALTER TABLE sense_attributes
 CHANGE COLUMN sense_fk sense_id BINARY(16);
 
 ALTER TABLE sense_examples
-CHANGE COLUMN sense_attribute_fk sense_attribute_id BINARY(16);
+CHANGE COLUMN sense_attribute_fk sense_attribute_id BINARY(16),
+CHANGE COLUMN uuid id BINARY(16);
 
 ALTER TABLE synset
 CHANGE COLUMN id legacy_id BIGINT(20),
@@ -120,7 +123,8 @@ ALTER TABLE synset_attributes
 CHANGE COLUMN synset_fk synset_id BINARY(16);
 
 ALTER TABLE synset_examples
-CHANGE COLUMN synset_attributes_fk synset_attribute_id BINARY(16);
+CHANGE COLUMN synset_attributes_fk synset_attribute_id BINARY(16),
+CHANGE COLUMN uuid id BINARY(16);
 
 ALTER TABLE word
 CHANGE COLUMN id legacy_id BIGINT(20),

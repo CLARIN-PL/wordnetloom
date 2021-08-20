@@ -18,6 +18,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.bind.JsonbBuilder;
 import javax.json.stream.JsonCollectors;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -73,6 +74,7 @@ public class SynsetResource {
     @GET
     @Path("{id}")
     @Operation(summary = "Get synset by id", description = "Get synset all infos (by id)")
+    @Transactional
     public JsonObject synset(@HeaderParam("Accept-Language") Locale locale,
                              @PathParam("id") final UUID id) {
         return synsetQueryService.findById(id)

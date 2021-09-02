@@ -35,11 +35,26 @@ import java.io.Serializable;
 @NamedQuery(name = SenseRelation.FIND_SENSE_RELATIONS_BY_TYPE,
         query = "SELECT r FROM SenseRelation r " +
                 "WHERE r.relationType.id  = :relTypeId")
+
+@NamedQuery(name = SenseRelation.FIND_SENSE_OUTGOING_RELATIONS,
+        query = "SELECT DISTINCT r FROM SenseRelation r " +
+                "WHERE r.parent.id = :senseId")
+
+@NamedQuery(name = SenseRelation.FIND_SENSE_INCOMING_RELATIONS,
+        query = "SELECT DISTINCT r FROM SenseRelation r " +
+                "WHERE r.child.id = :senseId")
+
+@NamedQuery(name = SenseRelation.FIND_ALL_RELATIONS,
+        query = "SELECT DISTINCT r.relationType FROM SenseRelation r ")
+
 public class SenseRelation implements Serializable {
 
     public static final String FIND_BY_KEY = "SenseRelation.findByKey";
     public static final String FIND_BY_PARENT_LEXICON_ID = "SenseRelation.findByParentLexiconId";
     public static final String FIND_SENSE_RELATIONS_BY_TYPE = "SenseRelation.findSenseRelationsByType";
+    public static final String FIND_SENSE_OUTGOING_RELATIONS = "SenseRelation.findSenseOutgoingRelations";
+    public static final String FIND_SENSE_INCOMING_RELATIONS = "SenseRelation.findSenseIncomingRelations";
+    public static final String FIND_ALL_RELATIONS = "SenseRelation.findAllRelations";
 
     @Id
     @ManyToOne

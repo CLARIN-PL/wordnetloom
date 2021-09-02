@@ -12,9 +12,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -90,6 +88,7 @@ import java.util.UUID;
 @NamedQuery(name = Sense.COUNT_SENSES_BY_SYNSET_ID , query = "SELECT COUNT(s.id) FROM Sense s WHERE s.synset.id = :id")
 @NamedQuery(name = Sense.FIND_SENSE_BY_SYNSET_ID_AND_POSITION,
         query = "SELECT s FROM Sense s WHERE s.synset.id = :id and s.synsetPosition = :position ")
+@NamedQuery(name = Sense.FIND_BY_SYNSET_ID, query = "SELECT s FROM Sense s WHERE s.synset.id = :id ")
 public class Sense implements Serializable {
 
     public static final String FIND_BY_ID_WITH_ATTRIBUTES = "Sense.findByIdWithAttributes";
@@ -104,6 +103,7 @@ public class Sense implements Serializable {
     public static final String COUNT_SENSE_BY_WORD_ID = "Sense.countSenseByWordId";
     public static final String FIND_SENSE_BY_SYNSET_ID_AND_POSITION = "Sense.findSenseBySynsetIdAndPosition";
     public static final String COUNT_SENSES_BY_SYNSET_ID = "Sense.countSensesBySynsetId";
+    public static final String FIND_BY_SYNSET_ID = "Sense.findBySynsetId";
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -255,5 +255,10 @@ public class Sense implements Serializable {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return word.getWord();
     }
 }

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @RequestScoped
@@ -38,5 +39,13 @@ public class LocalisedStringCommandService {
     public void remove(Long id){
         List<LocalisedString> list = locator.findAllById(id);
         list.forEach(s -> em.remove(s));
+    }
+
+    public String getById(Long id) {
+        Optional<LocalisedString> wordOptional = locator.findById(id, locator.getDefaultLanguage());
+
+        if (wordOptional.isPresent())
+            return wordOptional.get().getValue();
+        return " ";
     }
 }

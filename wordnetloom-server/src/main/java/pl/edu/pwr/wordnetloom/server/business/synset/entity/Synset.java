@@ -156,4 +156,9 @@ public class Synset implements Serializable {
     public void setAttributes(SynsetAttributes attributes) {
         this.attributes = attributes;
     }
+
+    @Override
+    public String toString() {
+        return senses.toString();
+    }
 }

@@ -2,6 +2,7 @@ package pl.edu.pwr.wordnetloom.server.business.sense.control;
 
 import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
+import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.user.control.UserControl;
 
@@ -177,9 +178,27 @@ public class SenseQueryService {
         }
     }
 
+    public List<Sense> findSensesBySynsetId(UUID synsetId) {
+        return em.createNamedQuery(Sense.FIND_BY_SYNSET_ID, Sense.class)
+                .setParameter("id", synsetId)
+                .getResultList();
+    }
+
     public List<SenseRelation> findAllSenseRelationsById(UUID relationType) {
         return  em.createNamedQuery(SenseRelation.FIND_SENSE_RELATIONS_BY_TYPE, SenseRelation.class)
                 .setParameter("relTypeId", relationType)
+                .getResultList();
+    }
+
+    public List<SenseRelation> findAllIncomingRelationsById(UUID senseId) {
+        return em.createNamedQuery(SenseRelation.FIND_SENSE_INCOMING_RELATIONS, SenseRelation.class)
+                .setParameter("senseId", senseId)
+                .getResultList();
+    }
+
+    public List<SenseRelation> findAllOutgoingRelationsById(UUID senseId) {
+        return em.createNamedQuery(SenseRelation.FIND_SENSE_OUTGOING_RELATIONS, SenseRelation.class)
+                .setParameter("senseId", senseId)
                 .getResultList();
     }
 
@@ -210,5 +229,10 @@ public class SenseQueryService {
             sr.getChild().getDomain().getId();
         });
         return results;
+    }
+
+    public List<RelationType> findAllRelations() {
+        return em.createNamedQuery(SenseRelation.FIND_ALL_RELATIONS, RelationType.class)
+                .getResultList();
     }
 }

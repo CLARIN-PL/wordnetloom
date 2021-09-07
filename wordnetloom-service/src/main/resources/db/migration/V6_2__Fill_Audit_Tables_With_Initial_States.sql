@@ -83,3 +83,7 @@ INSERT INTO tbl_word_AUD (id, word, REV, REVTYPE)
 INSERT INTO tbl_word_form_AUD (id, form, tag, word, REV, REVTYPE)
     SELECT id, form, tag, word, 1, 0
     FROM tbl_word_form;
+
+INSERT INTO tbl_emotional_annotations_AUD (id, sense_id, has_emotional_characteristic, super_anotation, markedness_id, legacy_id, example1, example2, user_name, REV, REVTYPE)
+    SELECT id, sense_id, has_emotional_characteristic, super_anotation, markedness_id, legacy_id, example1, example2, user_name, 1, 0
+    FROM tbl_emotional_annotations;

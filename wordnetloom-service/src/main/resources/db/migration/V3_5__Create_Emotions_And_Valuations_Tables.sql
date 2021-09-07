@@ -42,13 +42,6 @@ $$
 DELIMITER ;
 
 ALTER TABLE emotional_annotations
-ADD owner BIGINT;
-
-ALTER TABLE emotional_annotations
-ADD CONSTRAINT FK_emotional_annotations_users
-FOREIGN KEY (owner) REFERENCES users(id);
-
-ALTER TABLE emotional_annotations
 ADD markedness_id BIGINT;
 
 ALTER TABLE emotional_annotations

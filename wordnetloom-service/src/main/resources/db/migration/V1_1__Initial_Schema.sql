@@ -94,7 +94,7 @@ CREATE TABLE sense_attributes (
   link          VARCHAR(255),
   register_id   BIGINT,
   aspect_id     BIGINT,
-  user_id       BIGINT,
+  user_name     VARCHAR(255),
   error_comment TEXT,
   PRIMARY KEY (sense_id)
 );
@@ -160,7 +160,7 @@ CREATE TABLE synset_attributes (
   comment       TEXT,
   definition    TEXT,
   princeton_id  VARCHAR(255) COMMENT 'External original Princeton Id',
-  owner_id      BIGINT COMMENT 'Synset owner',
+  user_name     VARCHAR(255),
   error_comment TEXT,
   ili_id        VARCHAR(255) COMMENT 'OMW id',
   PRIMARY KEY (synset_id)
@@ -265,11 +265,6 @@ FOREIGN KEY (word_id)
 REFERENCES word (id);
 
 ALTER TABLE sense_attributes
-  ADD CONSTRAINT FKhnsf3ffqr27ceqnrji9g69hxp
-FOREIGN KEY (user_id)
-REFERENCES users (id);
-
-ALTER TABLE sense_attributes
   ADD CONSTRAINT FKjevbefuvttet3sb4u1h8h4gys
 FOREIGN KEY (sense_id)
 REFERENCES sense (id);
@@ -348,11 +343,6 @@ ALTER TABLE synset
   ADD CONSTRAINT FKfxflmrbnq64hax2r7gs1gbeuj
 FOREIGN KEY (lexicon_id)
 REFERENCES lexicon (id);
-
-ALTER TABLE synset_attributes
-  ADD CONSTRAINT FKd4daq7s6mjs49n2flpjndk0ob
-FOREIGN KEY (owner_id)
-REFERENCES users (id);
 
 ALTER TABLE synset_attributes
   ADD CONSTRAINT FKlru0bqxvyea356fr15w2wdu7i

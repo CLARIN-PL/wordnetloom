@@ -8,6 +8,7 @@ CREATE TABLE emotional_annotations (
   markedness            VARCHAR(255),
   example1              VARCHAR(512),
   example2              VARCHAR(512),
+  user_name             VARCHAR(255),
   PRIMARY KEY (id)
 );
 

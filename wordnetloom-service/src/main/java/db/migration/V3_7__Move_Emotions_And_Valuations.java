@@ -13,7 +13,6 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
     private final String UNIT_VALUATIONS_TABLE = "unit_valuations";
     private final String DICTIONARIES_TABLE = "dictionaries";
     private final String LOCALISED_STRING_TABLE = "application_localised_string";
-    private final String USERS_TABLE = "users";
     private final String EMOTION_TYPE = "Emotion";
     private final String VALUATION_TYPE = "Valuation";
     private final String SPLIT_REGEX = "[\\;\\.\\:]";
@@ -35,9 +34,8 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
         List<Annotation> annotations = getAnnotations(connection);
         Map<String, Element> emotions = getEmotions(connection);
         Map<String, Element> valuation = getValuations(connection);
-        Map<String, User> users = getUsers(connection);
 
-        List<Annotation> filledAnnotations = setIds(annotations, emotions, valuation, users);
+        List<Annotation> filledAnnotations = setIds(annotations, emotions, valuation);
         save(connection, filledAnnotations);
 
         Map<String, Long> dictonaries = getDictionariesMarkednes(connection);
@@ -158,34 +156,12 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
         }
     }
 
-    private Map<String, User> getUsers(Connection connection) throws SQLException {
-        final String SELECT_QUERY = "SELECT id, firstname, lastname FROM " + USERS_TABLE;
-        final int ID = 1;
-        final int FIRSTNAME = 2;
-        final int LASTNAME = 3;
-        Map<String, User> resultMap = new HashMap<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(SELECT_QUERY);
-        User user;
-        while (resultSet.next()) {
-            user = new User();
-            user.setId(resultSet.getLong(ID));
-            user.setFirstName(resultSet.getString(FIRSTNAME));
-            user.setLastName(resultSet.getString(LASTNAME));
-
-            resultMap.put(user.getName(), user);
-        }
-
-        return resultMap;
-    }
-
     private List<Annotation> getAnnotations(Connection connection) throws SQLException {
-        final String SELECT_QUERY = "SELECT DISTINCT id, unitStatus, emotions, valuations, owner FROM " + INPUT_EMOTIONAL_ANNOTATION_TABLE;
+        final String SELECT_QUERY = "SELECT DISTINCT id, unitStatus, emotions, valuations FROM " + INPUT_EMOTIONAL_ANNOTATION_TABLE;
         final int ID = 1;
         final int HAS_EMOTIONAL = 2;
         final int EMOTIONS = 3;
         final int VALUATIONS = 4;
-        final int OWNER = 5;
         List<Annotation> resultList = new ArrayList<>();
         Statement selectStatement = connection.createStatement();
         ResultSet resultSet = selectStatement.executeQuery(SELECT_QUERY);
@@ -196,7 +172,6 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
             annotation.setEmotionalCharacteristic(resultSet.getBoolean(HAS_EMOTIONAL));
             annotation.setEmotions(resultSet.getString(EMOTIONS));
             annotation.setValuations(resultSet.getString(VALUATIONS));
-            annotation.setUserName(resultSet.getString(OWNER));
             resultList.add(annotation);
         }
         resultSet.close();
@@ -239,26 +214,15 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
         System.out.println("Saving");
         final String INSERT_EMOTIONS_STATEMENT = "INSERT INTO " + UNIT_EMOTIONS_TABLE + "(annotation_id, emotion) VALUES(?,?)";
         final String INSERT_VALUATIONS_STATEMENT = "INSERT INTO " + UNIT_VALUATIONS_TABLE + "(annotation_id, valuation) VALUES(?,?)";
-        final String UPDATE_USER_STATEMENT = "UPDATE " + OUTPUT_EMOTIONAL_ANNOTATION_TABLE + " SET owner=? WHERE id = ?";
         PreparedStatement emotionsStatement = connection.prepareStatement(INSERT_EMOTIONS_STATEMENT);
         PreparedStatement valuationsStatement = connection.prepareStatement(INSERT_VALUATIONS_STATEMENT);
-        PreparedStatement usersStatement = connection.prepareStatement(UPDATE_USER_STATEMENT);
         for (Annotation annotation : annotations) {
             save(annotation.getEmotionsIds(), annotation.getId(), emotionsStatement);
             save(annotation.getValuationsIds(), annotation.getId(), valuationsStatement);
-            saveUser(annotation.getId(), annotation.getUser(), usersStatement);
         }
 
         emotionsStatement.close();
         valuationsStatement.close();
-        usersStatement.close();
-    }
-
-    private void saveUser(Long annotationId, Long userId, PreparedStatement statement) throws SQLException {
-        assert userId != null;
-        statement.setLong(1, userId);
-        statement.setLong(2, annotationId);
-        statement.executeUpdate();
     }
 
     private void save(Set<Long> ids, Long annotationId, PreparedStatement statement) throws SQLException {
@@ -273,34 +237,14 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
     }
 
     private List<Annotation> setIds(List<Annotation> annotations, Map<String, Element> emotionsMap
-            , Map<String, Element> valuationsMap, Map<String, User> users) {
+            , Map<String, Element> valuationsMap) {
         for (Annotation annotation : annotations) {
-            setUsers(annotation, users);
             if (annotation.isEmotionalCharacteristic()) {
                 setEmotions(annotation, emotionsMap, valuationsMap);
                 setValuations(annotation, emotionsMap, valuationsMap);
             }
         }
         return annotations;
-    }
-
-    private void setUsers(Annotation annotation, Map<String, User> usersMap) {
-        if (annotation.getUserName() == null || annotation.getUserName().isEmpty()) {
-            return;
-        }
-        String userName = annotation.getUserName();
-        User user = usersMap.get(userName);
-        if (user != null) {
-            annotation.setUser(user.getId());
-        } else {
-            String mostSimilar = getMostSimilar(annotation.getUserName(), usersMap.keySet());
-            user = usersMap.get(mostSimilar);
-            if (user != null) {
-                annotation.setUser(user.getId());
-            } else {
-                throw new RuntimeException("Not found user");
-            }
-        }
     }
 
     private void setEmotions(Annotation annotation, Map<String, Element> emotionsMap, Map<String, Element> valuationMap) {
@@ -484,43 +428,6 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
         }
     }
 
-    private class User {
-        private Long id;
-        private String firstName;
-        private String lastName;
-
-        public String getName() {
-            if (lastName != null && !lastName.isEmpty()) {
-                return firstName + "." + lastName;
-            }
-            return firstName;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        String getLastName() {
-            return lastName;
-        }
-
-        void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-    }
-
     private class Annotation {
         private Long id;
         private String emotions;
@@ -528,30 +435,12 @@ public class V3_7__Move_Emotions_And_Valuations extends BaseJavaMigration {
         private String valuations;
         private Set<Long> valuationsIds;
         private boolean isEmotionalCharacteristic;
-        private String userName;
-        private Long user;
 
         Annotation() {
 //            emotionsIds = new ArrayList<>();
 //            valuationsIds = new ArrayList<>();
             emotionsIds = new LinkedHashSet<>();
             valuationsIds = new LinkedHashSet<>();
-        }
-
-        String getUserName() {
-            return userName;
-        }
-
-        void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public Long getUser() {
-            return user;
-        }
-
-        public void setUser(Long user) {
-            this.user = user;
         }
 
         public Long getId() {

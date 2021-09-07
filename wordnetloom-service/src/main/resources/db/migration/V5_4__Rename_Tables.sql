@@ -60,3 +60,12 @@ RENAME TO tbl_word;
 
 ALTER TABLE word_form
 RENAME TO tbl_word_form;
+
+ALTER TABLE sense_emotions
+RENAME TO tbl_sense_emotions;
+
+ALTER TABLE sense_valuations
+RENAME TO tbl_sense_valuations;
+
+ALTER TABLE emotional_annotations
+RENAME TO tbl_emotional_annotations;

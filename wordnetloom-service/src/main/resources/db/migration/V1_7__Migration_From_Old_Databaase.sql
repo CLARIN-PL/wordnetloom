@@ -200,33 +200,23 @@ INSERT INTO users (email, firstname, lastname, password)
   HAVING firstname != '' AND lastname != '';
 
 # wstawianie atrybutów jednostek
-INSERT INTO sense_attributes (sense_id, comment, user_id, error_comment)
+INSERT INTO sense_attributes (sense_id, comment, user_name, error_comment)
   SELECT
     id,
     comment,
-    (SELECT id
-     FROM users
-     WHERE
-       SUBSTRING_INDEX(TRIM(LOWER(L.owner)), '.', 1) = firstname AND
-       SUBSTRING_INDEX(TRIM(LOWER(L.owner)), '.', -1) = lastname
-     LIMIT 1) AS user,
+    owner,
     error_comment
   FROM wordnet_work.lexicalunit L
   WHERE comment != '' AND comment IS NOT NULL;
 
 # wstawianie atrybótów synsetów
 # złączenia z synsetem dokonujemy aby wyeliminować atrybuty synsetów pustych, które nie zostały przeniesione do nowej bazy
-INSERT INTO synset_attributes (synset_id, comment, definition, owner_id, error_comment)
+INSERT INTO synset_attributes (synset_id, comment, definition, user_name, error_comment)
   SELECT
     S.id,
     S.comment,
     S.definition,
-    (SELECT id
-     FROM users
-     WHERE
-       SUBSTRING_INDEX(TRIM(LOWER(S.owner)), '.', 1) = firstname AND
-       SUBSTRING_INDEX(TRIM(LOWER(S.owner)), '.', -1) = lastname
-     LIMIT 1) AS user,
+    S.owner,
     error_comment
   FROM wordnet_work.synset S
   JOIN synset SY ON S.id = SY.id;

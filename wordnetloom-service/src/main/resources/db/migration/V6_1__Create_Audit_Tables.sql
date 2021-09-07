@@ -122,7 +122,7 @@ create table tbl_relation_type_AUD (
 ) engine=InnoDB;
 
 create table tbl_sense_attributes_AUD (
-                                          sense_id binary(255) not null,
+                                          sense_id BINARY(16) not null,
                                           REV integer not null,
                                           REVTYPE tinyint,
                                           comment longtext,
@@ -169,7 +169,7 @@ create table tbl_sense_relation_AUD (
 ) engine=InnoDB;
 
 create table tbl_synset_attributes_AUD (
-                                           synset_id binary(255) not null,
+                                           synset_id binary(16) not null,
                                            REV integer not null,
                                            REVTYPE tinyint,
                                            comment longtext,
@@ -228,8 +228,23 @@ create table tbl_word_form_AUD (
                                    primary key (id, REV)
 ) engine=InnoDB;
 
-alter table part_of_speech_allowed_domain_AUD
-    add constraint FKq3m6a3milrp2vio4jrdjc19ob
+CREATE TABLE tbl_emotional_annotations_AUD (
+                                       id BINARY(16) not null,
+                                       sense_id BINARY(16) not null,
+                                       REV integer not null,
+                                       REVTYPE tinyint,
+                                       has_emotional_characteristic BIT DEFAULT 0 NOT NULL,
+                                       super_anotation       BIT DEFAULT 0 NOT NULL,
+                                       markedness_id         BIGINT,
+                                       legacy_id         BIGINT,
+                                       example1              VARCHAR(512),
+                                       example2              VARCHAR(512),
+                                       user_name             VARCHAR(255),
+                                       PRIMARY KEY (id, REV)
+) engine=InnoDB;
+
+alter table tbl_emotional_annotations_AUD
+    add constraint FKq3m6a3milrp2vio4ehdjc86ob
         foreign key (REV)
             references REVINFO (REV);
 
@@ -250,11 +265,6 @@ alter table tbl_dictionaries_AUD
 
 alter table tbl_domain_AUD
     add constraint FKc9wv7yu8l4r8sl5hefjil50dr
-        foreign key (REV)
-            references REVINFO (REV);
-
-alter table tbl_lexicon_allowed_part_of_speech_AUD
-    add constraint FKnw3mvsy8uewteeqewt21hmmem
         foreign key (REV)
             references REVINFO (REV);
 

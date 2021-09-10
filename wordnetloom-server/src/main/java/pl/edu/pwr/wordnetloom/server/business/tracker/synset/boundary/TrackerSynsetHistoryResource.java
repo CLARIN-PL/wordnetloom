@@ -59,9 +59,13 @@ public class TrackerSynsetHistoryResource {
     @Path("search")
     public JsonObject searchHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = synsetHistoryQueryService.countSynsetHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetHistorySearchList(
                 synsetHistoryQueryService.findSynsetHistoryByFilter(trackerSearchFilter),
-                synsetHistoryQueryService.countSynsetHistoryByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
         );
     }
 
@@ -69,9 +73,14 @@ public class TrackerSynsetHistoryResource {
     @Path("attributes/search")
     public JsonObject searchAttributesHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = synsetHistoryQueryService.countSynsetAttributesHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetAttributesHistorySearchList(
                 synsetHistoryQueryService.findSynsetAttributesHistoryByFilter(trackerSearchFilter),
-                synsetHistoryQueryService.countSynsetAttributesHistoryByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
+
         );
     }
 
@@ -79,9 +88,13 @@ public class TrackerSynsetHistoryResource {
     @Path("relations/search")
     public JsonObject searchRelationsHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = synsetHistoryQueryService.countSynsetRelationsHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetRelationsHistorySearchList(
                 synsetHistoryQueryService.findSynsetRelationsHistoryByFilter(trackerSearchFilter),
-                synsetHistoryQueryService.countSynsetRelationsHistoryByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
         );
     }
 

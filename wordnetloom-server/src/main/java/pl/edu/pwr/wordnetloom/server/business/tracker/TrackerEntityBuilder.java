@@ -526,24 +526,38 @@ public class TrackerEntityBuilder {
         return builder.build();
     }
 
-    public JsonObject buildSenseHistorySearchList(List<SenseHistory> senseHistoryList, Long count) {
+    public JsonObject buildSenseHistorySearchList(List<SenseHistory> senseHistoryList,
+                                                  Long count,
+                                                  int page,
+                                                  boolean hasNext,
+                                                  boolean hasPrev) {
         JsonArray array = senseHistoryList
                 .stream().map(this::buildSenseHistory)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("senses", array)
                 .build();
     }
 
-    public JsonObject buildSenseAttributesHistorySearchList(List<SenseAttributesHistory> senseAttributesHistoryList, Long count) {
+    public JsonObject buildSenseAttributesHistorySearchList(List<SenseAttributesHistory> senseAttributesHistoryList,
+                                                            Long count,
+                                                            int page,
+                                                            boolean hasNext,
+                                                            boolean hasPrev) {
         JsonArray array = senseAttributesHistoryList
                 .stream().map(this::buildSenseAttributesHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("attributes", array)
                 .build();
     }
@@ -575,13 +589,20 @@ public class TrackerEntityBuilder {
         return builder.build();
     }
 
-    public JsonObject buildSenseRelationsHistorySearchList(List<SenseRelationHistory> senseRelationHistoryList, Long count) {
+    public JsonObject buildSenseRelationsHistorySearchList(List<SenseRelationHistory> senseRelationHistoryList,
+                                                           Long count,
+                                                           int page,
+                                                           boolean hasNext,
+                                                           boolean hasPrev) {
         JsonArray array = senseRelationHistoryList
                 .stream().map(this::buildSenseRelationsHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("sense_relations", array)
                 .build();
     }
@@ -625,24 +646,38 @@ public class TrackerEntityBuilder {
                 .build();
     }
 
-    public JsonObject buildSynsetHistorySearchList(List<SynsetHistory> synsetHistoryList, Long count) {
+    public JsonObject buildSynsetHistorySearchList(List<SynsetHistory> synsetHistoryList,
+                                                   Long count,
+                                                   int page,
+                                                   boolean hasNext,
+                                                   boolean hasPrev) {
         JsonArray array = synsetHistoryList
                 .stream().map(this::buildSynsetHistory)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("synsets", array)
                 .build();
     }
 
-    public JsonObject buildSynsetAttributesHistorySearchList(List<SynsetAttributesHistory> synsetAttributesHistoryList, Long count) {
+    public JsonObject buildSynsetAttributesHistorySearchList(List<SynsetAttributesHistory> synsetAttributesHistoryList,
+                                                             Long count,
+                                                             int page,
+                                                             boolean hasNext,
+                                                             boolean hasPrev) {
         JsonArray array = synsetAttributesHistoryList
                 .stream().map(this::buildSynsetAttributesHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("synset_atttributes", array)
                 .build();
     }
@@ -670,13 +705,20 @@ public class TrackerEntityBuilder {
         return builder.build();
     }
 
-    public JsonObject buildSynsetRelationsHistorySearchList(List<SynsetRelationHistory> synsetRelationHistoryList, Long count) {
+    public JsonObject buildSynsetRelationsHistorySearchList(List<SynsetRelationHistory> synsetRelationHistoryList,
+                                                            Long count,
+                                                            int page,
+                                                            boolean hasNext,
+                                                            boolean hasPrev) {
         JsonArray array = synsetRelationHistoryList
                 .stream().map(this::buildSynsetRelationsHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
                 .add("count", count)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
                 .add("synset_relations", array)
                 .build();
     }

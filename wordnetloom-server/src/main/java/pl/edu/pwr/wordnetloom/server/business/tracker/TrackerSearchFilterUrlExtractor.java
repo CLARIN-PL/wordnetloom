@@ -13,7 +13,7 @@ public class TrackerSearchFilterUrlExtractor {
     private int page;
 
     private static final Logger log =  Logger.getLogger(TrackerSearchFilterUrlExtractor.class.getName());
-    private static final int ELEMENTS_PER_PAGE = 50;
+    public static final int ELEMENTS_PER_PAGE = 50;
 
     public TrackerSearchFilterUrlExtractor(UriInfo uriInfo) {
         this.uriInfo = uriInfo;

@@ -55,9 +55,13 @@ public class TrackerSenseHistoryResource {
     @Path("search")
     public JsonObject searchHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = senseHistoryQueryService.countSenseHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseHistorySearchList(
                 senseHistoryQueryService.findSenseHistoryByFilter(trackerSearchFilter),
-                senseHistoryQueryService.countSenseHistoryByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
         );
     }
 
@@ -65,9 +69,13 @@ public class TrackerSenseHistoryResource {
     @Path("attributes/search")
     public JsonObject searchAttributesHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = senseHistoryQueryService.countSenseAttributesHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseAttributesHistorySearchList(
                 senseHistoryQueryService.findSenseAttributesHistoryByFilter(trackerSearchFilter),
-                senseHistoryQueryService.countSenseAttributesHistoryByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
         );
     }
 
@@ -75,9 +83,13 @@ public class TrackerSenseHistoryResource {
     @Path("relations/search")
     public JsonObject searchRelationsHistory() {
         final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = senseHistoryQueryService.countSenseRelationsByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseRelationsHistorySearchList(
                 senseHistoryQueryService.findSenseRelationsByFilter(trackerSearchFilter),
-                senseHistoryQueryService.countSenseRelationsByFilter(trackerSearchFilter)
+                count,
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
         );
     }
 }

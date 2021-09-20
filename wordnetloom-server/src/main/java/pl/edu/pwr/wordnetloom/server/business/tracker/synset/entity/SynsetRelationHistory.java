@@ -20,15 +20,15 @@ import java.util.Objects;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 
 @NamedQuery(name = SynsetRelationHistory.FIND_SYNSET_HISTORY_OUTGOING_RELATIONS,
-        query = "SELECT r FROM SynsetRelationHistory r " +
+        query = "SELECT DISTINCT r FROM SynsetRelationHistory r " +
                 "WHERE r.parent.id = :synsetId")
 
 @NamedQuery(name = SynsetRelationHistory.FIND_SYNSET_HISTORY_INCOMING_RELATIONS,
-        query = "SELECT r FROM SynsetRelationHistory r " +
+        query = "SELECT distinct r FROM SynsetRelationHistory r " +
                 "WHERE r.child.id = :synsetId")
 
 @NamedQuery(name = SynsetRelationHistory.FIND_BY_TIMESTAMP,
-        query = "SELECT r FROM SynsetRelationHistory r " +
+        query = "SELECT distinct r FROM SynsetRelationHistory r " +
                 "WHERE r.revisionsInfo.timestamp >= :timestamp_start AND r.revisionsInfo.timestamp <= :timestamp_end")
 
 public class SynsetRelationHistory implements Serializable {
@@ -38,7 +38,7 @@ public class SynsetRelationHistory implements Serializable {
     public static final String FIND_BY_TIMESTAMP = "SynsetRelationHistory.findByTimestamp";
 
     @Id
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "synset_relation_type_id", referencedColumnName = "id", nullable = false)
     private RelationType relationType;
 

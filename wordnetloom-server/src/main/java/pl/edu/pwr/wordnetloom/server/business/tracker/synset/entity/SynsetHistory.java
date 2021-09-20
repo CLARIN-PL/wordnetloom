@@ -132,6 +132,10 @@ public class SynsetHistory implements Serializable {
         return concatKeys;
     }
 
+    public void setAttributes(SynsetAttributesHistory attributes) {
+        this.attributes = attributes;
+    }
+
     @Override
     public String toString() {
         return senses.toString();

@@ -37,17 +37,17 @@ public class SenseRelationHistory implements Serializable {
     public static final String FIND_BY_TIMESTAMP = "SenseRelationHistory,findByTimestamp";
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sense_relation_type_id", referencedColumnName = "id", nullable = false)
     private RelationType relationType;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_sense_id", referencedColumnName = "id", nullable = false)
     private Sense parent;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_sense_id", referencedColumnName = "id", nullable = false)
     private Sense child;
 
@@ -108,5 +108,4 @@ public class SenseRelationHistory implements Serializable {
     public int hashCode() {
         return Objects.hash(relationType, parent, child, rev, revisionsInfo, revType);
     }
-
 }

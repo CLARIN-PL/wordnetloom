@@ -3,6 +3,7 @@ package pl.edu.pwr.wordnetloom.server.business.synset.control;
 import org.hibernate.Hibernate;
 import pl.edu.pwr.wordnetloom.server.business.SearchFilter;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.control.LexiconQueryService;
+import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
@@ -66,6 +67,11 @@ public class SynsetQueryService {
                 .getResultList();
         fetchLazyObject(result);
         return result;
+    }
+
+    public List<RelationType> findAllRelations() {
+        return em.createNamedQuery(SynsetRelation.FIND_ALL_RELATIONS, RelationType.class)
+                .getResultList();
     }
 
     private void fetchLazyObject(List<Synset> result) {
@@ -241,6 +247,18 @@ public class SynsetQueryService {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public List<SynsetRelation> findSynsetIncomingRelationsById(UUID synsetId) {
+        return em.createNamedQuery(SynsetRelation.FIND_SYNSET_INCOMING_RELATIONS, SynsetRelation.class)
+                .setParameter("synsetId", synsetId)
+                .getResultList();
+    }
+
+    public List<SynsetRelation> findSynsetOutgoingRelationsById(UUID synsetId) {
+        return em.createNamedQuery(SynsetRelation.FIND_SYNSET_OUTGOING_RELATIONS, SynsetRelation.class)
+                .setParameter("synsetId", synsetId)
+                .getResultList();
     }
 
     public List<SynsetRelation> findSynsetRelations(UUID source, UUID target, UUID relationType) {

@@ -15,7 +15,6 @@ import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequestScoped
@@ -167,15 +166,31 @@ public class SynsetHistoryQueryService {
         List<SynsetHistory> synsetHistories = em.createNamedQuery(SynsetHistory.FIND_BY_ID, SynsetHistory.class)
                 .setParameter("id", synsetId)
                 .getResultList();
+
+        List<SynsetAttributesHistory> synsetAttributesHistoryList = em.createNamedQuery(
+                            SynsetAttributesHistory.FIND_BY_ID, SynsetAttributesHistory.class)
+                .setParameter("id", synsetId)
+                .getResultList();
+
+        addOrMergeAttributes(synsetHistories, synsetAttributesHistoryList);
         synsetHistories.forEach(s -> s.setSenses(senseQueryService.findSensesBySynsetId(s.getId())));
 
-        synsetHistories.addAll(em.createNamedQuery(SynsetAttributesHistory.FIND_BY_ID, SynsetAttributesHistory.class)
-                .setParameter("id", synsetId)
-                .getResultList()
-                .stream().map(s -> new SynsetHistory(s, senseQueryService.findSensesBySynsetId(s.getId())))
-                .collect(Collectors.toList()));
-
         return synsetHistories;
+    }
+
+    private void addOrMergeAttributes(List<SynsetHistory> synsetHistoryList,
+                                      List<SynsetAttributesHistory> synsetAttributesHistoryList) {
+        for (SynsetAttributesHistory synsetAttributesHistory : synsetAttributesHistoryList) {
+            boolean contains = false;
+            for (int senseIter = 0; senseIter < synsetHistoryList.size() && !contains; senseIter++)
+                if(synsetHistoryList.get(senseIter)
+                        .getRevisionsInfo().getId() == synsetAttributesHistory.getRevisionsInfo().getId()) {
+                    contains = true;
+                    synsetHistoryList.get(senseIter).setAttributes(synsetAttributesHistory);
+                }
+            if (!contains)
+                synsetHistoryList.add(new SynsetHistory(synsetAttributesHistory));
+        }
     }
 
     public List<SynsetRelationHistory> findSynsetIncomingRelationsHistory(UUID synsetId) {
@@ -196,12 +211,14 @@ public class SynsetHistoryQueryService {
                 .setParameter("timestamp_end", end)
                 .getResultList();
 
-        synsetHistories.addAll(em.createNamedQuery(SynsetAttributesHistory.FIND_BY_TIMESTAMP, SynsetAttributesHistory.class)
+        List<SynsetAttributesHistory> synsetAttributesHistoryList = em.createNamedQuery(
+                            SynsetAttributesHistory.FIND_BY_TIMESTAMP, SynsetAttributesHistory.class)
                 .setParameter("timestamp_start", begin)
                 .setParameter("timestamp_end", end)
-                .getResultList()
-                .stream().map(SynsetHistory::new)
-                .collect(Collectors.toList()));
+                .getResultList();
+
+        addOrMergeAttributes(synsetHistories, synsetAttributesHistoryList);
+        synsetHistories.forEach(s -> s.setSenses(senseQueryService.findSensesBySynsetId(s.getId())));
 
         return synsetHistories;
     }

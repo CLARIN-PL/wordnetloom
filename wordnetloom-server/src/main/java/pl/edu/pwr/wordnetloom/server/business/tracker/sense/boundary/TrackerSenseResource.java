@@ -48,7 +48,7 @@ public class TrackerSenseResource {
     @GET
     @Path("/relations")
     public JsonObject allSenseRelations() {
-        return trackerEntityBuilder.buildListOfSenseRelations(
+        return trackerEntityBuilder.buildListOfRelations(
                 senseQueryService.findAllRelations()
         );
     }

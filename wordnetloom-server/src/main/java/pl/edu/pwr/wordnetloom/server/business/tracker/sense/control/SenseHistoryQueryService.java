@@ -159,13 +159,28 @@ public class SenseHistoryQueryService {
                 .setParameter("id", senseId)
                 .getResultList();
 
-        senseHistoryList.addAll(em.createNamedQuery(SenseAttributesHistory.FIND_BY_ID, SenseAttributesHistory.class)
+        List<SenseAttributesHistory> senseAttributesHistoryList = em.createNamedQuery(
+                            SenseAttributesHistory.FIND_BY_ID, SenseAttributesHistory.class)
                 .setParameter("id", senseId)
-                .getResultList()
-                .stream().map(SenseHistory::new)
-                .collect(Collectors.toList()));
+                .getResultList();
+        addOrMergeAttributes(senseHistoryList, senseAttributesHistoryList);
 
         return senseHistoryList;
+    }
+
+    private void addOrMergeAttributes(List<SenseHistory> senseHistoryList,
+                                      List<SenseAttributesHistory> senseAttributesHistoryList) {
+        for (SenseAttributesHistory senseAttributesHistory : senseAttributesHistoryList) {
+            boolean contains = false;
+            for (int senseIter = 0; senseIter < senseHistoryList.size() && !contains; senseIter++)
+                if(senseHistoryList.get(senseIter)
+                        .getRevisionsInfo().getId() == senseAttributesHistory.getRevisionsInfo().getId()) {
+                    contains = true;
+                    senseHistoryList.get(senseIter).setSenseAttributesHistory(senseAttributesHistory);
+                }
+            if (!contains)
+                senseHistoryList.add(new SenseHistory(senseAttributesHistory));
+        }
     }
 
     public List<SenseRelationHistory> findSenseIncomingRelationsHistory(UUID senseId) {
@@ -186,12 +201,13 @@ public class SenseHistoryQueryService {
                 .getResultList();
 
         List<UUID> uuidList = senseHistoryList.stream().map(SenseHistory::getId).distinct().collect(Collectors.toList());
-        for (UUID uuid : uuidList)
-            senseHistoryList.addAll(em.createNamedQuery(SenseAttributesHistory.FIND_BY_ID, SenseAttributesHistory.class)
+        for (UUID uuid : uuidList) {
+            List<SenseAttributesHistory> senseAttributesHistoryList = em.createNamedQuery(SenseAttributesHistory.FIND_BY_ID,
+                    SenseAttributesHistory.class)
                     .setParameter("id", uuid)
-                    .getResultList()
-                    .stream().map(SenseHistory::new)
-                    .collect(Collectors.toList()));
+                    .getResultList();
+            addOrMergeAttributes(senseHistoryList, senseAttributesHistoryList);
+        }
 
         return senseHistoryList;
     }
@@ -202,12 +218,12 @@ public class SenseHistoryQueryService {
                 .setParameter("timestamp_end", end)
                 .getResultList();
 
-        senseHistoryList.addAll(em.createNamedQuery(SenseAttributesHistory.FIND_BY_TIMESTAMP, SenseAttributesHistory.class)
+        List<SenseAttributesHistory> senseAttributesHistoryList = em.createNamedQuery(SenseAttributesHistory.FIND_BY_TIMESTAMP,
+                SenseAttributesHistory.class)
                 .setParameter("timestamp_start", begin)
                 .setParameter("timestamp_end", end)
-                .getResultList()
-                .stream().map(SenseHistory::new)
-                .collect(Collectors.toList()));
+                .getResultList();
+        addOrMergeAttributes(senseHistoryList, senseAttributesHistoryList);
 
         return senseHistoryList;
     }

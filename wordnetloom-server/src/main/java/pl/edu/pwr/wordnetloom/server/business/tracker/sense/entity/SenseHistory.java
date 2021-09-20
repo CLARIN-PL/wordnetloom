@@ -159,6 +159,10 @@ public class SenseHistory implements Serializable {
         return concatKeys;
     }
 
+    public void setSenseAttributesHistory(SenseAttributesHistory senseAttributesHistory) {
+        this.senseAttributesHistory = senseAttributesHistory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

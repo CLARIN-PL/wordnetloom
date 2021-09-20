@@ -47,6 +47,17 @@ import java.util.UUID;
         query = "SELECT DISTINCT r.child.id FROM SynsetRelation r " +
                 "WHERE r.parent.id = :id AND r.relationType.id = :relation")
 
+@NamedQuery(name = SynsetRelation.FIND_ALL_RELATIONS,
+        query = "SELECT DISTINCT r.relationType FROM SynsetRelation r ")
+
+@NamedQuery(name = SynsetRelation.FIND_SYNSET_INCOMING_RELATIONS,
+        query = "SELECT DISTINCT r FROM SynsetRelation r " +
+                "WHERE r.child.id = :synsetId")
+
+@NamedQuery(name = SynsetRelation.FIND_SYNSET_OUTGOING_RELATIONS,
+        query = "SELECT DISTINCT r FROM SynsetRelation r " +
+                "WHERE r.parent.id = :synsetId")
+
 public class SynsetRelation implements Serializable {
 
     public static final String FIND_BY_KEY = "SynsetRelation.findByKey";
@@ -54,6 +65,9 @@ public class SynsetRelation implements Serializable {
     public static final String FIND_PARENT_SYNSET_BY_RELATION_TYPE= "SynsetRelation.findParentSynsetByRelationType";
     public static final String FIND_RELATED_SYNSETS_IDS = "SynsetRelation.findRelatedSynsetsIds";
     public static final String FIND_SYNSET_RELATIONS_BY_TYPE = "SynsetRelation.findSynsetRelationsByType";
+    public static final String FIND_ALL_RELATIONS = "SynsetRelation.findAllRelations";
+    public static final String FIND_SYNSET_OUTGOING_RELATIONS = "SynsetRelation.findSynsetOutgoingRelations";
+    public static final String FIND_SYNSET_INCOMING_RELATIONS = "SynsetRelation.findSynsetIncomingRelations";
 
     @Id
     @ManyToOne(fetch = FetchType.EAGER)

@@ -36,17 +36,13 @@ public class TrackerSynsetResource {
     @GET
     @Path("/incoming-relations/{id}")
     public JsonObject synsetIncomingRelations(@PathParam("id") final UUID id) {
-        return synsetQueryService.findById(id)
-                .map(s -> trackerEntityBuilder.buildSynsetIncomingRelations(s.getIncomingRelations()))
-                .orElse(Json.createObjectBuilder().build());
+        return trackerEntityBuilder.buildSynsetIncomingRelations(synsetQueryService.findSynsetIncomingRelationsById(id));
     }
 
     @GET
     @Path("/outgoing-relations/{id}")
     public JsonObject synsetOutgoingRelations(@PathParam("id") final UUID id) {
-        return synsetQueryService.findById(id)
-                .map(s -> trackerEntityBuilder.buildSynsetOutgoingRelations(s.getOutgoingRelations()))
-                .orElse(Json.createObjectBuilder().build());
+        return trackerEntityBuilder.buildSynsetOutgoingRelations(synsetQueryService.findSynsetOutgoingRelationsById(id));
     }
 
     @GET
@@ -55,5 +51,13 @@ public class TrackerSynsetResource {
         return synsetQueryService.findById(id)
                 .map(s -> trackerEntityBuilder.buildSynsetSenses(s))
                 .orElse(Json.createObjectBuilder().build());
+    }
+
+    @GET
+    @Path("/relations")
+    public JsonObject allSenseRelations() {
+        return trackerEntityBuilder.buildListOfRelations(
+                synsetQueryService.findAllRelations()
+        );
     }
 }

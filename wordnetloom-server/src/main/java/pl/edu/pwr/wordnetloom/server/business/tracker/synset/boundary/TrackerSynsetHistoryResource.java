@@ -62,7 +62,7 @@ public class TrackerSynsetHistoryResource {
         long count = synsetHistoryQueryService.countSynsetHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetHistorySearchList(
                 synsetHistoryQueryService.findSynsetHistoryByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0
@@ -76,7 +76,7 @@ public class TrackerSynsetHistoryResource {
         long count = synsetHistoryQueryService.countSynsetAttributesHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetAttributesHistorySearchList(
                 synsetHistoryQueryService.findSynsetAttributesHistoryByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0
@@ -91,7 +91,7 @@ public class TrackerSynsetHistoryResource {
         long count = synsetHistoryQueryService.countSynsetRelationsHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSynsetRelationsHistorySearchList(
                 synsetHistoryQueryService.findSynsetRelationsHistoryByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0

@@ -27,7 +27,6 @@ import javax.json.stream.JsonCollectors;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static javax.json.Json.createObjectBuilder;
 
@@ -60,7 +59,7 @@ public class TrackerEntityBuilder {
         }
 
         if (Objects.nonNull(sense.getStatus())) {
-            builder.add("status", stringCommandService.getById(sense.getStatus().getName()));
+            builder.add("status", sense.getStatus().getName());
         }
 
         if (Objects.nonNull(sense.getDomain())) {
@@ -105,8 +104,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSenseIncomingRelation(SenseRelation senseRelation) {
         return Json.createObjectBuilder()
                 .add("relation_name", stringCommandService.getById(senseRelation.getRelationType().getName()))
-                .add("sense_id", senseRelation.getChild().getId().toString())
-                .add("sense_name", senseRelation.getChild().getWord().getWord())
+                .add("sense_id", senseRelation.getParent().getId().toString())
+                .add("sense_name", senseRelation.getParent().getWord().getWord())
                 .build();
     }
 
@@ -123,8 +122,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSenseOutgoingRelation(SenseRelation senseRelation) {
         return Json.createObjectBuilder()
                 .add("relation_name", stringCommandService.getById(senseRelation.getRelationType().getName()))
-                .add("sense_id", senseRelation.getParent().getId().toString())
-                .add("sense_name", senseRelation.getParent().getWord().getWord())
+                .add("sense_id", senseRelation.getChild().getId().toString())
+                .add("sense_name", senseRelation.getChild().getWord().getWord())
                 .build();
     }
 
@@ -135,7 +134,7 @@ public class TrackerEntityBuilder {
         builder.add("abstract", synset.getAbstract());
 
         if (Objects.nonNull(synset.getStatus())) {
-            builder.add("status", stringCommandService.getById(synset.getStatus().getName()));
+            builder.add("status", synset.getStatus().getName());
         }
 
         if (synsetAttributes != null) {
@@ -177,7 +176,7 @@ public class TrackerEntityBuilder {
                 .build();
     }
 
-    public JsonObject buildSynsetIncomingRelations(Set<SynsetRelation> synsetRelationList) {
+    public JsonObject buildSynsetIncomingRelations(List<SynsetRelation> synsetRelationList) {
         JsonArray array = synsetRelationList.stream()
                 .map(this::buildSynsetIncomingRelation)
                 .collect(JsonCollectors.toJsonArray());
@@ -190,12 +189,12 @@ public class TrackerEntityBuilder {
     private JsonObject buildSynsetIncomingRelation(SynsetRelation synsetRelation) {
         return Json.createObjectBuilder()
                 .add("relation_name", stringCommandService.getById(synsetRelation.getRelationType().getName()))
-                .add("synset_id", synsetRelation.getChild().getId().toString())
-                .add("synset_name", synsetRelation.getChild().toString())
+                .add("synset_id", synsetRelation.getParent().getId().toString())
+                .add("synset_name", synsetRelation.getParent().toString())
                 .build();
     }
 
-    public JsonObject buildSynsetOutgoingRelations(Set<SynsetRelation> synsetRelationList) {
+    public JsonObject buildSynsetOutgoingRelations(List<SynsetRelation> synsetRelationList) {
         JsonArray array = synsetRelationList.stream()
                 .map(this::buildSynsetOutgoingRelation)
                 .collect(JsonCollectors.toJsonArray());
@@ -208,8 +207,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSynsetOutgoingRelation(SynsetRelation synsetRelation) {
         return Json.createObjectBuilder()
                 .add("relation_name", stringCommandService.getById(synsetRelation.getRelationType().getName()))
-                .add("synset_id", synsetRelation.getParent().getId().toString())
-                .add("synset_name", synsetRelation.getParent().toString())
+                .add("synset_id", synsetRelation.getChild().getId().toString())
+                .add("synset_name", synsetRelation.getChild().toString())
                 .build();
     }
 
@@ -247,7 +246,7 @@ public class TrackerEntityBuilder {
         }
 
         if (Objects.nonNull(senseHistory.getStatus())) {
-            builder.add("status", stringCommandService.getById(senseHistory.getStatus().getName()));
+            builder.add("status", senseHistory.getStatus().getName());
         }
 
         if (Objects.nonNull(senseHistory.getDomain())) {
@@ -292,8 +291,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSenseHistoryIncomingRelation(SenseRelationHistory senseRelation) {
         JsonObjectBuilder builder = createObjectBuilder();
         builder.add("relation_name", stringCommandService.getById(senseRelation.getRelationType().getName()))
-                .add("sense_id", senseRelation.getChild().getId().toString())
-                .add("sense_name", senseRelation.getChild().getWord().getWord());
+                .add("sense_id", senseRelation.getParent().getId().toString())
+                .add("sense_name", senseRelation.getParent().getWord().getWord());
         addRevisionInfoToJson(builder, senseRelation.getRevisionsInfo(), senseRelation.getRevType());
 
         return builder.build();
@@ -312,8 +311,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSenseHistoryOutgoingRelation(SenseRelationHistory senseRelation) {
         JsonObjectBuilder builder = createObjectBuilder();
         builder.add("relation_name", stringCommandService.getById(senseRelation.getRelationType().getName()))
-                .add("sense_id", senseRelation.getParent().getId().toString())
-                .add("sense_name", senseRelation.getParent().getWord().getWord());
+                .add("sense_id", senseRelation.getChild().getId().toString())
+                .add("sense_name", senseRelation.getChild().getWord().getWord());
         addRevisionInfoToJson(builder, senseRelation.getRevisionsInfo(), senseRelation.getRevType());
 
         return builder.build();
@@ -371,8 +370,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSynsetHistoryIncomingRelation(SynsetRelationHistory synsetRelation) {
         JsonObjectBuilder builder = createObjectBuilder();
         builder.add("relation_name", stringCommandService.getById(synsetRelation.getRelationType().getName()))
-                .add("synset_id", synsetRelation.getChild().getId().toString())
-                .add("synset_units", synsetRelation.getChild().toString());
+                .add("synset_id", synsetRelation.getParent().getId().toString())
+                .add("synset_units", synsetRelation.getParent().toString());
         addRevisionInfoToJson(builder, synsetRelation.getRevisionsInfo(), synsetRelation.getRevType());
 
         return builder.build();
@@ -391,8 +390,8 @@ public class TrackerEntityBuilder {
     private JsonObject buildSynsetHistoryOutgoingRelation(SynsetRelationHistory synsetRelation) {
         JsonObjectBuilder builder = createObjectBuilder();
         builder.add("relation_name", stringCommandService.getById(synsetRelation.getRelationType().getName()))
-                .add("synset_id", synsetRelation.getParent().getId().toString())
-                .add("synset_units", synsetRelation.getParent().toString());
+                .add("synset_id", synsetRelation.getChild().getId().toString())
+                .add("synset_units", synsetRelation.getChild().toString());
         addRevisionInfoToJson(builder, synsetRelation.getRevisionsInfo(), synsetRelation.getRevType());
 
         return builder.build();
@@ -527,7 +526,7 @@ public class TrackerEntityBuilder {
     }
 
     public JsonObject buildSenseHistorySearchList(List<SenseHistory> senseHistoryList,
-                                                  Long count,
+                                                  int pages,
                                                   int page,
                                                   boolean hasNext,
                                                   boolean hasPrev) {
@@ -536,7 +535,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
@@ -545,7 +544,7 @@ public class TrackerEntityBuilder {
     }
 
     public JsonObject buildSenseAttributesHistorySearchList(List<SenseAttributesHistory> senseAttributesHistoryList,
-                                                            Long count,
+                                                            int pages,
                                                             int page,
                                                             boolean hasNext,
                                                             boolean hasPrev) {
@@ -554,7 +553,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
@@ -590,7 +589,7 @@ public class TrackerEntityBuilder {
     }
 
     public JsonObject buildSenseRelationsHistorySearchList(List<SenseRelationHistory> senseRelationHistoryList,
-                                                           Long count,
+                                                           int pages,
                                                            int page,
                                                            boolean hasNext,
                                                            boolean hasPrev) {
@@ -599,7 +598,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
@@ -629,7 +628,7 @@ public class TrackerEntityBuilder {
         return builder.build();
     }
 
-    public JsonObject buildListOfSenseRelations(List<RelationType> senseRelationsList) {
+    public JsonObject buildListOfRelations(List<RelationType> senseRelationsList) {
         JsonArray array = senseRelationsList
                 .stream().map(this::buildListOfSenseRelationsElem)
                 .collect(JsonCollectors.toJsonArray());
@@ -646,8 +645,10 @@ public class TrackerEntityBuilder {
                 .build();
     }
 
+
+
     public JsonObject buildSynsetHistorySearchList(List<SynsetHistory> synsetHistoryList,
-                                                   Long count,
+                                                   int pages,
                                                    int page,
                                                    boolean hasNext,
                                                    boolean hasPrev) {
@@ -656,7 +657,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
@@ -665,7 +666,7 @@ public class TrackerEntityBuilder {
     }
 
     public JsonObject buildSynsetAttributesHistorySearchList(List<SynsetAttributesHistory> synsetAttributesHistoryList,
-                                                             Long count,
+                                                             int pages,
                                                              int page,
                                                              boolean hasNext,
                                                              boolean hasPrev) {
@@ -674,7 +675,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
@@ -706,7 +707,7 @@ public class TrackerEntityBuilder {
     }
 
     public JsonObject buildSynsetRelationsHistorySearchList(List<SynsetRelationHistory> synsetRelationHistoryList,
-                                                            Long count,
+                                                            int pages,
                                                             int page,
                                                             boolean hasNext,
                                                             boolean hasPrev) {
@@ -715,7 +716,7 @@ public class TrackerEntityBuilder {
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
-                .add("count", count)
+                .add("pages", pages)
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)

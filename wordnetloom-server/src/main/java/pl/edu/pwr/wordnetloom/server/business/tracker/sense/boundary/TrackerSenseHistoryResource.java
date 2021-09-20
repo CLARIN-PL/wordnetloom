@@ -58,7 +58,7 @@ public class TrackerSenseHistoryResource {
         long count = senseHistoryQueryService.countSenseHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseHistorySearchList(
                 senseHistoryQueryService.findSenseHistoryByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0
@@ -72,7 +72,7 @@ public class TrackerSenseHistoryResource {
         long count = senseHistoryQueryService.countSenseAttributesHistoryByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseAttributesHistorySearchList(
                 senseHistoryQueryService.findSenseAttributesHistoryByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0
@@ -86,7 +86,7 @@ public class TrackerSenseHistoryResource {
         long count = senseHistoryQueryService.countSenseRelationsByFilter(trackerSearchFilter);
         return trackerEntityBuilder.buildSenseRelationsHistorySearchList(
                 senseHistoryQueryService.findSenseRelationsByFilter(trackerSearchFilter),
-                count,
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
                 trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
                 trackerSearchFilter.getEnd() <= count,
                 trackerSearchFilter.getStart() != 0

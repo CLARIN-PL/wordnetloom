@@ -565,6 +565,8 @@ public class TrackerEntityBuilder {
         JsonObjectBuilder builder = createObjectBuilder();
         addRevisionInfoToJson(builder, attributesHistory.getRevisionsInfo(), attributesHistory.getRevType());
 
+        builder.add("sense_id", attributesHistory.getId().toString());
+
         if (Objects.nonNull(attributesHistory.getRegister())) {
             builder.add("register", attributesHistory.getRegister().getId());
         }

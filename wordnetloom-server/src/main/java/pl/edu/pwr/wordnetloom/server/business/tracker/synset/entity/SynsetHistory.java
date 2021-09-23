@@ -11,6 +11,7 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -30,10 +31,16 @@ import java.util.*;
         query = "SELECT s FROM SynsetHistory s " +
                 "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
 
+@NamedQuery(name = SynsetHistory.FIND_BEFORE_REV,
+        query = "SELECT s FROM SynsetHistory s " +
+                "WHERE s.rev < :rev AND s.id = :id " +
+                "ORDER BY s.rev DESC ")
+
 public class SynsetHistory implements Serializable {
 
     public static final String FIND_BY_ID = "SynsetHistory.findById";
     public static final String FIND_BY_TIMESTAMP = "SynsetHistory.findByTimestamp";
+    public static final String FIND_BEFORE_REV = "SynsetHistory.findBeforeRev";
 
     public SynsetHistory() {
     }
@@ -92,6 +99,9 @@ public class SynsetHistory implements Serializable {
     @NotAudited
     private String concatKeys;
 
+    @Transient
+    private BeforeHistory beforeHistory;
+
     public UUID getId() {
         return id;
     }
@@ -134,6 +144,14 @@ public class SynsetHistory implements Serializable {
 
     public void setAttributes(SynsetAttributesHistory attributes) {
         this.attributes = attributes;
+    }
+
+    public BeforeHistory getBeforeHistory() {
+        return beforeHistory;
+    }
+
+    public void setBeforeHistory(BeforeHistory beforeHistory) {
+        this.beforeHistory = beforeHistory;
     }
 
     @Override

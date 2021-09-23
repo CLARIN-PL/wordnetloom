@@ -14,6 +14,8 @@ import pl.edu.pwr.wordnetloom.server.business.sense.enity.Word;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.NamedQuery;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -43,10 +45,16 @@ import java.util.UUID;
         query = "SELECT s FROM SenseHistory s " +
                 "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
 
+@NamedQuery(name = SenseHistory.FIND_BEFORE_REV,
+        query = "SELECT DISTINCT s FROM SenseHistory s " +
+                "WHERE s.rev < :rev AND s.id = :id " +
+                "ORDER BY s.rev DESC ")
+
 public class SenseHistory implements Serializable {
     public static final String FIND_BY_ID = "SenseHistory.findById";
     public static final String FIND_BY_SYSNET_ID = "SenseHistory.findBySynsetId";
     public static final String FIND_BY_TIMESTAMP = "SenseHistory.findByTimestamp";
+    public static final String FIND_BEFORE_REV = "SenseHistory.findBeforeRev";
 
     @Id
     @Column(columnDefinition = "BINARY(16)")
@@ -100,6 +108,9 @@ public class SenseHistory implements Serializable {
     @Formula("concat(BIN_TO_UUID(id), '.', REV)")
     @NotAudited
     private String concatKeys;
+
+    @Transient
+    private BeforeHistory beforeHistory;
 
     public SenseHistory() {
     }
@@ -161,6 +172,14 @@ public class SenseHistory implements Serializable {
 
     public void setSenseAttributesHistory(SenseAttributesHistory senseAttributesHistory) {
         this.senseAttributesHistory = senseAttributesHistory;
+    }
+
+    public BeforeHistory getBeforeHistory() {
+        return beforeHistory;
+    }
+
+    public void setBeforeHistory(BeforeHistory beforeHistory) {
+        this.beforeHistory = beforeHistory;
     }
 
     @Override

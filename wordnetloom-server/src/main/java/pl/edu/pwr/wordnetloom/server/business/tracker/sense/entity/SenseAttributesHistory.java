@@ -9,7 +9,7 @@ import pl.edu.pwr.wordnetloom.server.business.revisions.entity.RevisionsInfo;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseAttributes;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,10 +28,16 @@ import java.util.UUID;
         query = "SELECT DISTINCT s FROM SenseAttributesHistory s " +
                 "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
 
+@NamedQuery(name = SenseAttributesHistory.FIND_BEFORE_REV,
+        query = "SELECT DISTINCT s FROM SenseAttributesHistory s " +
+                "WHERE s.id = :id AND s.rev < :rev " +
+                "ORDER BY s.rev DESC ")
+
 public class SenseAttributesHistory implements Serializable {
 
     public static final String FIND_BY_ID = "SenseAttributesHistory.findById";
     public static final String FIND_BY_TIMESTAMP = "SenseAttributesHistory.findByTimestamp";
+    public static final String FIND_BEFORE_REV = "SenseAttributesHistory.FindBeforeRev";
 
     public SenseAttributesHistory() {
     }
@@ -74,6 +80,12 @@ public class SenseAttributesHistory implements Serializable {
     @NotAudited
     private String concatKeys;
 
+    @Transient
+    private String lemma;
+
+    @Transient
+    private BeforeHistory beforeHistory;
+
     public UUID getId() {
         return id;
     }
@@ -108,6 +120,22 @@ public class SenseAttributesHistory implements Serializable {
 
     public int getRevType() {
         return revType;
+    }
+
+    public String getLemma() {
+        return lemma;
+    }
+
+    public void setLemma(String lemma) {
+        this.lemma = lemma;
+    }
+
+    public BeforeHistory getBeforeHistory() {
+        return beforeHistory;
+    }
+
+    public void setBeforeHistory(BeforeHistory beforeHistory) {
+        this.beforeHistory = beforeHistory;
     }
 
     @Override

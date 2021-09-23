@@ -1,17 +1,23 @@
 package pl.edu.pwr.wordnetloom.server.business.tracker.sense.control;
 
+import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.Word;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.TrackerSearchFilter;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseAttributesHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseRelationHistory;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,6 +27,9 @@ public class SenseHistoryQueryService {
 
     @PersistenceContext
     EntityManager em;
+
+    @Inject
+    SenseQueryService senseQueryService;
 
     public List<SenseHistory> findSenseHistoryByFilter(TrackerSearchFilter filter) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -36,9 +45,17 @@ public class SenseHistoryQueryService {
 
         TypedQuery<SenseHistory> query = em.createQuery(qc);
 
-        return query.setFirstResult(filter.getStart())
+        List<SenseHistory> senseHistoryList = query.setFirstResult(filter.getStart())
                 .setMaxResults(filter.getEnd())
                 .getResultList();
+        senseHistoryList.forEach(s -> {
+            if (s.getRevType() == 1)
+                s.setBeforeHistory(
+                        findSenseHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).map(BeforeHistory::new).orElse(null)
+                );
+        });
+
+        return senseHistoryList;
     }
 
     public Long countSenseHistoryByFilter(TrackerSearchFilter filter) {
@@ -81,9 +98,19 @@ public class SenseHistoryQueryService {
 
         TypedQuery<SenseAttributesHistory> query = em.createQuery(qc);
 
-        return query.setFirstResult(filter.getStart())
+        List<SenseAttributesHistory> senseAttributesHistoryList = query.setFirstResult(filter.getStart())
                 .setMaxResults(filter.getEnd())
                 .getResultList();
+
+        senseAttributesHistoryList.forEach(s -> {
+            s.setLemma(senseQueryService.findSenseWordById(s.getId()).map(Word::getWord).orElse(" "));
+            if (s.getRevType() == 1)
+                s.setBeforeHistory(
+                    findSenseAttributesHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).map(BeforeHistory::new).orElse(null)
+                );
+        });
+
+        return senseAttributesHistoryList;
     }
 
     public Long countSenseAttributesHistoryByFilter(TrackerSearchFilter filter) {
@@ -233,5 +260,31 @@ public class SenseHistoryQueryService {
                 .setParameter("timestamp_start", begin)
                 .setParameter("timestamp_end", end)
                 .getResultList();
+    }
+
+    public Optional<SenseAttributesHistory> findSenseAttributesHistoryBeforeRev(UUID senseId, int rev) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(SenseAttributesHistory.FIND_BEFORE_REV, SenseAttributesHistory.class)
+                        .setParameter("id", senseId)
+                        .setParameter("rev", rev)
+                        .getSingleResult());
+        } catch (
+        NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<SenseHistory> findSenseHistoryBeforeRev(UUID senseId, int rev) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(SenseHistory.FIND_BEFORE_REV, SenseHistory.class)
+                            .setParameter("id", senseId)
+                            .setParameter("rev", rev)
+                            .getSingleResult());
+        } catch (
+                NoResultException e) {
+            return Optional.empty();
+        }
     }
 }

@@ -85,10 +85,17 @@ import java.util.UUID;
                 "AND s.partOfSpeech.id = :posId AND s.lexicon.id = :lex")
 
 @NamedQuery(name = Sense.COUNT_SENSE_BY_WORD_ID, query = "SELECT COUNT(s.id) FROM Sense s WHERE s.word.id = :id")
+
 @NamedQuery(name = Sense.COUNT_SENSES_BY_SYNSET_ID , query = "SELECT COUNT(s.id) FROM Sense s WHERE s.synset.id = :id")
+
 @NamedQuery(name = Sense.FIND_SENSE_BY_SYNSET_ID_AND_POSITION,
         query = "SELECT s FROM Sense s WHERE s.synset.id = :id and s.synsetPosition = :position ")
+
 @NamedQuery(name = Sense.FIND_BY_SYNSET_ID, query = "SELECT s FROM Sense s WHERE s.synset.id = :id ")
+
+@NamedQuery(name = Sense.FIND_SENSE_WORD_BY_ID,
+        query = "SELECT s.word FROM Sense s WHERE s.id = :id ")
+
 public class Sense implements Serializable {
 
     public static final String FIND_BY_ID_WITH_ATTRIBUTES = "Sense.findByIdWithAttributes";
@@ -104,6 +111,7 @@ public class Sense implements Serializable {
     public static final String FIND_SENSE_BY_SYNSET_ID_AND_POSITION = "Sense.findSenseBySynsetIdAndPosition";
     public static final String COUNT_SENSES_BY_SYNSET_ID = "Sense.countSensesBySynsetId";
     public static final String FIND_BY_SYNSET_ID = "Sense.findBySynsetId";
+    public static final String FIND_SENSE_WORD_BY_ID = "Sense.findSenseWordById";
 
     @Id
     @GeneratedValue(generator = "uuid2")

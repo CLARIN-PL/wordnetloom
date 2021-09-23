@@ -8,7 +8,12 @@ import pl.edu.pwr.wordnetloom.server.business.revisions.entity.RevisionsInfo;
 
 import javax.persistence.*;
 import org.hibernate.annotations.NamedQuery;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
+
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,10 +31,16 @@ import java.util.UUID;
                 "FROM SynsetAttributesHistory s " +
                 "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
 
+@NamedQuery(name = SynsetAttributesHistory.FIND_BEFORE_REV,
+        query = "SELECT DISTINCT s FROM SynsetAttributesHistory s " +
+                "WHERE s.rev < :rev AND s.id = :id " +
+                "ORDER BY s.rev DESC ")
+
 public class SynsetAttributesHistory implements Serializable {
 
     public static final String FIND_BY_ID = "SynsetAttributesHistory.findById";
     public static final String FIND_BY_TIMESTAMP = "SynsetAttributesHistory.findByTimestamp";
+    public static final String FIND_BEFORE_REV = "SynsetAttributesHistory.findBeforeRev";
 
     @Id
     @Column(name = "synset_id")
@@ -65,9 +76,15 @@ public class SynsetAttributesHistory implements Serializable {
     @Column(name = "REVTYPE", insertable = false, updatable = false)
     private int revType;
 
+    @Transient
+    private List<Sense> senses = new LinkedList<>();
+
     @Formula("concat(BIN_TO_UUID(synset_id), '.', REV)")
     @NotAudited
     private String concatKeys;
+
+    @Transient
+    private BeforeHistory beforeHistory;
 
 
     public SynsetAttributesHistory() {
@@ -109,6 +126,18 @@ public class SynsetAttributesHistory implements Serializable {
         return revisionsInfo;
     }
 
+    public void setSenses(List<Sense> senses) {
+        this.senses = senses;
+    }
+
+    public BeforeHistory getBeforeHistory() {
+        return beforeHistory;
+    }
+
+    public void setBeforeHistory(BeforeHistory beforeHistory) {
+        this.beforeHistory = beforeHistory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,5 +158,10 @@ public class SynsetAttributesHistory implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, rev, revisionsInfo, definition, comment, errorComment, userName, princetonId, iliId, revType);
+    }
+
+    @Override
+    public String toString() {
+        return senses.toString();
     }
 }

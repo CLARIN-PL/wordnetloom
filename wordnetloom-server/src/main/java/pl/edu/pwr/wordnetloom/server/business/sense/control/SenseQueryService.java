@@ -235,4 +235,15 @@ public class SenseQueryService {
         return em.createNamedQuery(SenseRelation.FIND_ALL_RELATIONS, RelationType.class)
                 .getResultList();
     }
+
+    public Optional<Word> findSenseWordById(UUID senseId) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(Sense.FIND_SENSE_WORD_BY_ID, Word.class)
+                            .setParameter("id", senseId)
+                            .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

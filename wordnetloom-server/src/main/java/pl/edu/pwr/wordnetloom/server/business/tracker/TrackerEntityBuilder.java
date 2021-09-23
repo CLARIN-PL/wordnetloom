@@ -25,6 +25,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonCollectors;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -226,6 +227,8 @@ public class TrackerEntityBuilder {
         builder.add("timestamp", revisionsInfo.getTimestamp());
         builder.add("operation", revType);
         builder.add("editor", revisionsInfo.getUserEmail());
+        builder.add("datetime", new Date(revisionsInfo.getTimestamp()).toString());
+        builder.add("rev_id", revisionsInfo.getId());
     }
 
     private JsonObject buildSenseHistory(SenseHistory senseHistory) {
@@ -531,7 +534,7 @@ public class TrackerEntityBuilder {
                                                   boolean hasNext,
                                                   boolean hasPrev) {
         JsonArray array = senseHistoryList
-                .stream().map(this::buildSenseHistory)
+                .stream().map(this::buildSenseHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
@@ -541,6 +544,36 @@ public class TrackerEntityBuilder {
                 .add("has_prev", hasPrev)
                 .add("senses", array)
                 .build();
+    }
+
+    public JsonObject buildSenseHistorySearchListElem(SenseHistory senseHistory) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        addRevisionInfoToJson(builder, senseHistory.getRevisionsInfo(), senseHistory.getRevType());
+
+        if (senseHistory.getBeforeHistory() != null)
+            addBefore(builder, senseHistory.getBeforeHistory());
+
+        builder.add("id", senseHistory.getId().toString());
+
+        if (senseHistory.getWord() != null) {
+            builder.add("lemma", senseHistory.getWord().getWord());
+        }
+
+        builder.add("variant", senseHistory.getVariant());
+
+        if (senseHistory.getPartOfSpeech() != null) {
+            builder.add("part_of_speech", senseHistory.getPartOfSpeech().getId());
+        }
+
+        if (Objects.nonNull(senseHistory.getStatus())) {
+            builder.add("status", senseHistory.getStatus().getName());
+        }
+
+        if (Objects.nonNull(senseHistory.getDomain())) {
+            builder.add("domain", senseHistory.getDomain().getId());
+        }
+
+        return builder.build();
     }
 
     public JsonObject buildSenseAttributesHistorySearchList(List<SenseAttributesHistory> senseAttributesHistoryList,
@@ -565,7 +598,12 @@ public class TrackerEntityBuilder {
         JsonObjectBuilder builder = createObjectBuilder();
         addRevisionInfoToJson(builder, attributesHistory.getRevisionsInfo(), attributesHistory.getRevType());
 
+        if (attributesHistory.getBeforeHistory() != null)
+            addBefore(builder, attributesHistory.getBeforeHistory());
+
         builder.add("sense_id", attributesHistory.getId().toString());
+
+        builder.add("lemma", attributesHistory.getLemma());
 
         if (Objects.nonNull(attributesHistory.getRegister())) {
             builder.add("register", attributesHistory.getRegister().getId());
@@ -655,7 +693,7 @@ public class TrackerEntityBuilder {
                                                    boolean hasNext,
                                                    boolean hasPrev) {
         JsonArray array = synsetHistoryList
-                .stream().map(this::buildSynsetHistory)
+                .stream().map(this::buildSynsetHistorySearchListElem)
                 .collect(JsonCollectors.toJsonArray());
 
         return Json.createObjectBuilder()
@@ -666,6 +704,31 @@ public class TrackerEntityBuilder {
                 .add("synsets", array)
                 .build();
     }
+
+    public JsonObject buildSynsetHistorySearchListElem(SynsetHistory synsetHistory) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        addRevisionInfoToJson(builder, synsetHistory.getRevisionsInfo(), synsetHistory.getRevType());
+
+        if (synsetHistory.getBeforeHistory() != null)
+            addBefore(builder, synsetHistory.getBeforeHistory());
+
+        builder.add("id", synsetHistory.getId().toString());
+
+        builder.add("unit_strings", synsetHistory.toString());
+
+        if (synsetHistory.getAbstract() != null)
+            builder.add("abstract", synsetHistory.getAbstract());
+
+        if (synsetHistory.getLexicon() != null)
+            builder.add("lexicon", synsetHistory.getLexicon().getId());
+
+        if (synsetHistory.getStatus() != null)
+            builder.add("status", synsetHistory.getStatus().getId());
+
+        return builder.build();
+    }
+
+
 
     public JsonObject buildSynsetAttributesHistorySearchList(List<SynsetAttributesHistory> synsetAttributesHistoryList,
                                                              int pages,
@@ -689,6 +752,9 @@ public class TrackerEntityBuilder {
         JsonObjectBuilder builder = createObjectBuilder();
         addRevisionInfoToJson(builder, attributesHistory.getRevisionsInfo(), attributesHistory.getRevType());
 
+        if (attributesHistory.getBeforeHistory() != null)
+            addBefore(builder, attributesHistory.getBeforeHistory());
+
         if (attributesHistory.getId() != null) {
             builder.add("synset_id", attributesHistory.getId().toString());
         }
@@ -704,6 +770,16 @@ public class TrackerEntityBuilder {
         if (attributesHistory.getErrorComment() != null) {
             builder.add("error_comment", attributesHistory.getErrorComment());
         }
+
+        if (attributesHistory.getIliId() != null) {
+            builder.add("ili_id", attributesHistory.getIliId());
+        }
+
+        if (attributesHistory.getPrincetonId() != null) {
+            builder.add("princeton_id", attributesHistory.getPrincetonId());
+        }
+
+        builder.add("unit_strings", attributesHistory.toString());
 
         return builder.build();
     }
@@ -746,5 +822,46 @@ public class TrackerEntityBuilder {
         }
 
         return builder.build();
+    }
+
+    private void addBefore(JsonObjectBuilder builder, BeforeHistory beforeHistory) {
+        if (beforeHistory.getComment() != null)
+            builder.add("before_comment", beforeHistory.getComment());
+
+        if (beforeHistory.getDefinition() != null)
+            builder.add("before_definition", beforeHistory.getDefinition());
+
+        if (beforeHistory.getErrorComment() != null)
+            builder.add("before_error_comment", beforeHistory.getErrorComment());
+
+        if (beforeHistory.getRegister() != null)
+            builder.add("before_register", beforeHistory.getRegister().getId());
+
+        if (beforeHistory.getLexicon() != null)
+            builder.add("before_lexicon", beforeHistory.getLexicon().getId());
+
+        if (beforeHistory.getWord() != null)
+            builder.add("before_lemma", beforeHistory.getWord().getWord());
+
+        if (beforeHistory.getVariant() != null)
+            builder.add("before_variant", beforeHistory.getVariant());
+
+        if (beforeHistory.getPartOfSpeech() != null)
+            builder.add("before_part_of_speech", beforeHistory.getPartOfSpeech().getId());
+
+        if (beforeHistory.getDomain() != null)
+            builder.add("before_domain", beforeHistory.getDomain().getId());
+
+        if (beforeHistory.getStatus() != null)
+            builder.add("before_status", beforeHistory.getStatus().getId());
+
+        if (beforeHistory.getAbstract() != null)
+            builder.add("before_is_abstract", beforeHistory.getAbstract());
+
+        if (beforeHistory.getPrincetonId() != null)
+            builder.add("before_princeton_id", beforeHistory.getPrincetonId());
+
+        if (beforeHistory.getIliId() != null)
+            builder.add("before_ili_id", beforeHistory.getIliId());
     }
 }

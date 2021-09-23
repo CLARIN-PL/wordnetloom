@@ -1,7 +1,10 @@
 package pl.edu.pwr.wordnetloom.server.business.tracker.synset.control;
 
 import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
+import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.TrackerSearchFilter;
+import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseAttributesHistory;
+import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetAttributesHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetRelationHistory;
@@ -9,11 +12,13 @@ import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetRelati
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional
@@ -42,9 +47,13 @@ public class SynsetHistoryQueryService {
         List<SynsetHistory> synsetHistoryList = query.setFirstResult(filter.getStart())
                 .setMaxResults(filter.getEnd())
                 .getResultList();
-        synsetHistoryList.forEach(
-                s -> s.setSenses(senseQueryService.findSensesBySynsetId(s.getId()))
-        );
+        synsetHistoryList.forEach(s -> {
+                    s.setSenses(senseQueryService.findSensesBySynsetId(s.getId()));
+                    if (s.getRevType() == 1)
+                        s.setBeforeHistory(
+                                findSynsetHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).map(BeforeHistory::new).orElse(null)
+                        );
+                });
 
         return synsetHistoryList;
     }
@@ -89,9 +98,18 @@ public class SynsetHistoryQueryService {
 
         TypedQuery<SynsetAttributesHistory> query = em.createQuery(qc);
 
-        return query.setFirstResult(filter.getStart())
+        List<SynsetAttributesHistory> synsetAttributesHistoryList = query.setFirstResult(filter.getStart())
                 .setMaxResults(filter.getEnd())
                 .getResultList();
+        synsetAttributesHistoryList.forEach(s -> {
+            s.setSenses(senseQueryService.findSensesBySynsetId(s.getId()));
+            if (s.getRevType() == 1)
+                s.setBeforeHistory(
+                        findSynsetAttributesHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).map(BeforeHistory::new).orElse(null)
+                );
+        });
+
+        return synsetAttributesHistoryList;
     }
 
     public Long countSynsetAttributesHistoryByFilter(TrackerSearchFilter filter) {
@@ -228,5 +246,31 @@ public class SynsetHistoryQueryService {
                 .setParameter("timestamp_start", begin)
                 .setParameter("timestamp_end", end)
                 .getResultList();
+    }
+
+    public Optional<SynsetAttributesHistory> findSynsetAttributesHistoryBeforeRev(UUID synsetId, int rev) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(SynsetAttributesHistory.FIND_BEFORE_REV, SynsetAttributesHistory.class)
+                            .setParameter("id", synsetId)
+                            .setParameter("rev", rev)
+                            .getSingleResult());
+        } catch (
+                NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<SynsetHistory> findSynsetHistoryBeforeRev(UUID synsetId, int rev) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(SynsetHistory.FIND_BEFORE_REV, SynsetHistory.class)
+                            .setParameter("id", synsetId)
+                            .setParameter("rev", rev)
+                            .getSingleResult());
+        } catch (
+                NoResultException e) {
+            return Optional.empty();
+        }
     }
 }

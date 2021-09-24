@@ -56,7 +56,7 @@ public class TrackerEntityBuilder {
         builder.add("variant", sense.getVariant());
 
         if (sense.getPartOfSpeech() != null) {
-            builder.add("part_of_speech", sense.getPartOfSpeech().getId());
+            builder.add("part_of_speech", sense.getPartOfSpeech().getName());
         }
 
         if (Objects.nonNull(sense.getStatus())) {
@@ -64,7 +64,7 @@ public class TrackerEntityBuilder {
         }
 
         if (Objects.nonNull(sense.getDomain())) {
-            builder.add("domain", sense.getDomain().getId());
+            builder.add("domain", sense.getDomain().getName());
         }
 
         if (attributes != null) {
@@ -173,7 +173,7 @@ public class TrackerEntityBuilder {
         return Json.createObjectBuilder()
                 .add("sense_id", sense.getId().toString())
                 .add("lemma", sense.getWord().getWord())
-                .add("part_of_speech", sense.getPartOfSpeech().getId())
+                .add("part_of_speech", sense.getPartOfSpeech().getName())
                 .build();
     }
 
@@ -245,7 +245,7 @@ public class TrackerEntityBuilder {
         builder.add("variant", senseHistory.getVariant());
 
         if (senseHistory.getPartOfSpeech() != null) {
-            builder.add("part_of_speech", senseHistory.getPartOfSpeech().getId());
+            builder.add("part_of_speech", senseHistory.getPartOfSpeech().getName());
         }
 
         if (Objects.nonNull(senseHistory.getStatus())) {
@@ -253,7 +253,7 @@ public class TrackerEntityBuilder {
         }
 
         if (Objects.nonNull(senseHistory.getDomain())) {
-            builder.add("domain", senseHistory.getDomain().getId());
+            builder.add("domain", senseHistory.getDomain().getName());
         }
 
         if (attributes != null) {
@@ -562,7 +562,7 @@ public class TrackerEntityBuilder {
         builder.add("variant", senseHistory.getVariant());
 
         if (senseHistory.getPartOfSpeech() != null) {
-            builder.add("part_of_speech", senseHistory.getPartOfSpeech().getId());
+            builder.add("part_of_speech", senseHistory.getPartOfSpeech().getName());
         }
 
         if (Objects.nonNull(senseHistory.getStatus())) {
@@ -570,7 +570,7 @@ public class TrackerEntityBuilder {
         }
 
         if (Objects.nonNull(senseHistory.getDomain())) {
-            builder.add("domain", senseHistory.getDomain().getId());
+            builder.add("domain", senseHistory.getDomain().getName());
         }
 
         return builder.build();
@@ -723,7 +723,7 @@ public class TrackerEntityBuilder {
             builder.add("lexicon", synsetHistory.getLexicon().getId());
 
         if (synsetHistory.getStatus() != null)
-            builder.add("status", synsetHistory.getStatus().getId());
+            builder.add("status", synsetHistory.getStatus().getName());
 
         return builder.build();
     }
@@ -847,13 +847,13 @@ public class TrackerEntityBuilder {
             builder.add("before_variant", beforeHistory.getVariant());
 
         if (beforeHistory.getPartOfSpeech() != null)
-            builder.add("before_part_of_speech", beforeHistory.getPartOfSpeech().getId());
+            builder.add("before_part_of_speech", beforeHistory.getPartOfSpeech().getName());
 
         if (beforeHistory.getDomain() != null)
-            builder.add("before_domain", beforeHistory.getDomain().getId());
+            builder.add("before_domain", beforeHistory.getDomain().getName());
 
         if (beforeHistory.getStatus() != null)
-            builder.add("before_status", beforeHistory.getStatus().getId());
+            builder.add("before_status", beforeHistory.getStatus().getName());
 
         if (beforeHistory.getAbstract() != null)
             builder.add("before_is_abstract", beforeHistory.getAbstract());

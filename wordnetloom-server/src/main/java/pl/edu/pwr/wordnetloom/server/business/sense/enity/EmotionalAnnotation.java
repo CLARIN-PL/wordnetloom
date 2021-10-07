@@ -2,6 +2,8 @@ package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Markedness;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ import java.util.UUID;
                 "WHERE e.sense.id = :id ")
 
 @Entity
+@Audited
 @Table(name = "tbl_emotional_annotations")
 public class EmotionalAnnotation implements Serializable{
 
@@ -45,6 +48,7 @@ public class EmotionalAnnotation implements Serializable{
 
     @ManyToOne()
     @JoinColumn(name = "markedness_id")
+    @NotAudited
     private Markedness markedness;
 
     @Column(name = "example1")

@@ -2,9 +2,7 @@ package pl.edu.pwr.wordnetloom.server.business;
 
 import pl.edu.pwr.wordnetloom.server.business.corpusexample.boundary.CorpusExampleResource;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.boundary.DictionaryResource;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.boundary.LexiconResource;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.boundary.RelationTypeResource;
@@ -83,6 +81,29 @@ public class LinkBuilder {
         return createResourceUri(SenseResource.class, "search", uriInfo, page, perPage);
     }
 
+    public URI forEmotions(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getEmotions", uriInfo);
+    }
+
+    public URI forEmotion(Emotion emotion, UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getEmotion", emotion.getId(), uriInfo);
+    }
+
+    public URI forValuations(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getValuations", uriInfo);
+    }
+
+    public URI forValuation(Valuation valuation, UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getValuation", valuation.getId(), uriInfo);
+    }
+
+    public URI forMarkednesses(UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getMarkednesses", uriInfo);
+    }
+
+    public URI forMarkedness(Markedness markedness, UriInfo uriInfo) {
+        return createResourceUri(DictionaryResource.class, "getMarkedness",markedness.getId() ,uriInfo);
+    }
 
     public URI forSense(Sense s, UriInfo uriInfo) {
         return createResourceUri(SenseResource.class, "sense", s.getId(), uriInfo);
@@ -219,5 +240,9 @@ public class LinkBuilder {
 
     public URI forSearchSynsetRelations(UriInfo uriInfo) {
         return createResourceUri(SynsetResource.class, "searchRelations", uriInfo);
+    }
+
+    public URI forEmotionalAnnotation(UUID senseId, UriInfo uriInfo) {
+        return createResourceUri(SenseResource.class, "findEmotionalAnnotations", senseId, uriInfo);
     }
 }

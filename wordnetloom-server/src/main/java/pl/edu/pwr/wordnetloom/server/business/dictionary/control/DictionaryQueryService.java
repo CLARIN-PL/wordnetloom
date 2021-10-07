@@ -1,15 +1,13 @@
 package pl.edu.pwr.wordnetloom.server.business.dictionary.control;
 
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +47,48 @@ public class DictionaryQueryService {
                             .setParameter("id", id)
                             .getSingleResult());
         } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<Emotion> findAllEmotions(){
+        List<Dictionary> dictionaries = em.createNamedQuery(Dictionary.FIND_ALL_BY_TYPE, Dictionary.class)
+                .setParameter("type", Emotion.class)
+                .getResultList();
+
+        List<Emotion> emotions = new ArrayList<>();
+        for(Dictionary dictionary : dictionaries){
+            emotions.add((Emotion)dictionary);
+        }
+        return emotions;
+    }
+
+    public Optional<Emotion> findEmotion(long id){
+        try{
+            return Optional.of((Emotion)em.createNamedQuery(Emotion.FIND_BY_ID, Dictionary.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e){
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Valuation> findValuation(long id){
+        try{
+            return Optional.of((Valuation)em.createNamedQuery(Valuation.FIND_BY_ID, Dictionary.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e){
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Markedness> findMarkedness(long id){
+        try{
+            return Optional.of((Markedness)em.createNamedQuery(Markedness.FIND_BY_ID, Dictionary.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e){
             return Optional.empty();
         }
     }

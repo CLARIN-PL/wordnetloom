@@ -59,7 +59,7 @@ public class RemoteService {
     private static final String PATH_GRAPH_SENSE = "/senses/{id}/graph";
     private static final String PATH_CORPUS_EXAMPLES = "/corpus-examples/search";
     private static final String PATH_PATH_TO_HYPERONYM = "synsets/{id}/path-to-hyperonymy";
-    private static final String PATH_USERS = "/users";
+    private static final String PATH_EMOTIONS = "/senses/{id}/emotional-annotations";
 
     private static User user;
 
@@ -111,7 +111,6 @@ public class RemoteService {
     private boolean isForbiddenStatus(Response response) {
         if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
             throw new ForbiddenException();
-
         }
         return false;
     }
@@ -199,6 +198,9 @@ public class RemoteService {
             dic.put(DOMAIN_DICTIONARY, _links.getString("domains"));
             dic.put(STATUS_DICTIONARY, _links.getString("statuses"));
             dic.put(REGISTER_DICTIONARY, _links.getString("registers"));
+            dic.put(EMOTION_DICTIONARY, _links.getString("emotions"));
+            dic.put(VALUATION_DICTIONARY, _links.getString("valuations"));
+            dic.put(MARKEDNESS_DICTIONARY, _links.getString("markednesses"));
             dic.put(LEXICON_DICTIONARY, SERVER_TARGET_URL + PATH_LEXICONS);
         }
         response.close();
@@ -1103,66 +1105,61 @@ public class RemoteService {
         }
     }
 
-    public List<UserSimple> getUsers() throws IOException {
+    public EmotionalAnnotation saveEmotionalAnnotation(EmotionalAnnotation emotionalAnnotation, UUID senseId) {
         WebTarget target = client.target(SERVER_TARGET_URL)
-                .path(PATH_USERS);
+                .path(PATH_EMOTIONS)
+                .resolveTemplate("id", senseId);
 
-        LOG.debug("Loading users list: " + target.getUri());
+        LOG.debug("Saving emotional annotation: " + emotionalAnnotation);
 
         Response response = target
                 .request()
                 .header(HEADER_AUTHORIZATION, user.getToken())
-                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
-                .get();
-
-        if (isOkStatus(response)) {
-            Users users = response.readEntity(Users.class);
-            if (users.getRows().isEmpty()) {
-                return new ArrayList<>();
-            }
-            return users.getRows();
-        }
-        return new ArrayList<>();
-    }
-
-    public UserSimple saveUser(UserSimple u) throws IOException, ValidationException, ForbiddenException {
-
-        WebTarget target = client.target(SERVER_TARGET_URL)
-                .path(PATH_USERS);
-
-        LOG.debug("Saving sense: " + u);
-
-        Response response = target
-                .request()
-                .header(HEADER_AUTHORIZATION, user.getToken())
-                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
-                .post(Entity.entity(u, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(emotionalAnnotation, MediaType.APPLICATION_JSON));
 
         isForbiddenStatus(response);
-        validationErrorRequestHandler(response, "User", u);
         if (isCreatedStatus(response)) {
-            LOG.debug("User created: " + user);
-            return findUser(response.getLocation());
+            return response.readEntity(EmotionalAnnotation.class);
         }
         return null;
     }
 
-    public UserSimple findUser(URI link) {
+    public EmotionalAnnotation updateEmotionalAnnotation(EmotionalAnnotation emotionalAnnotation) {
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_EMOTIONS)
+                .resolveTemplate("id", emotionalAnnotation.getSenseId());
 
-        WebTarget target = client.target(link);
+        LOG.debug("Updating emotional annotation: " + emotionalAnnotation);
 
         Response response = target
                 .request()
                 .header(HEADER_AUTHORIZATION, user.getToken())
-                .header(HEADER_LANGUAGE, user.getLanguage().getAbbreviation())
+                .put(Entity.entity(emotionalAnnotation, MediaType.APPLICATION_JSON));
+
+        LOG.debug(response.getStatus() + "");
+        isForbiddenStatus(response);
+        if (isOkStatus(response)) {
+            return response.readEntity(EmotionalAnnotation.class);
+        }
+        return null;
+    }
+
+    public EmotionalAnnotation findEmotionalAnnotationBySenseId(UUID senseId) {
+        WebTarget target = client.target(SERVER_TARGET_URL)
+                .path(PATH_EMOTIONS)
+                .resolveTemplate("id", senseId);
+
+        LOG.debug("Finding emotional annotation: " + target.getUri());
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
                 .get();
 
         if (isOkStatus(response)) {
-            UserSimple u = response.readEntity(UserSimple.class);
-            LOG.debug("User found: " + link.toString());
-            return u;
+            return response.readEntity(EmotionalAnnotation.class);
         }
-        return new UserSimple();
+        return new EmotionalAnnotation();
     }
 
 }

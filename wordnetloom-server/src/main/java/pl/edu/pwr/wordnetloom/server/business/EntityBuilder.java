@@ -1,23 +1,17 @@
 package pl.edu.pwr.wordnetloom.server.business;
 
+import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Dictionary;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Domain;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.PartOfSpeech;
-import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Status;
 import pl.edu.pwr.wordnetloom.server.business.lexicon.entity.Lexicon;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStringsQueryService;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.GlobalWordnetRelationType;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseAttributes;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseExample;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetExample;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
-import pl.edu.pwr.wordnetloom.server.business.user.entity.User;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -580,6 +574,22 @@ public class EntityBuilder {
     public JsonObject buildDictionaryDomain(Domain d, UriInfo uriInfo, Locale locale) {
         JsonObjectBuilder builder = dictionaryObjectBuilder(d.getId(), d.getName(), locale);
         builder.add("_links", selfLinkBuilder(this.linkBuilder.forDomain(d, uriInfo).toString()));
+        return builder.build();
+    }
+
+    public JsonObject buildDictionaryEmotions(List<Emotion> emotions, UriInfo uriInfo, Locale locale){
+        JsonArray array = emotions.stream()
+                .map(emotion->buildDictionaryEmotion(emotion, uriInfo, locale))
+                .collect(JsonCollectors.toJsonArray());
+        return Json.createObjectBuilder()
+                .add("rows", array)
+                .add("_emotions", createObjectBuilder()
+                        .add("self", uriInfo.getRequestUri().toString())).build();
+    }
+
+    public JsonObject buildDictionaryEmotion(Emotion emotion, UriInfo uriInfo, Locale locale) {
+        JsonObjectBuilder builder = dictionaryObjectBuilder(emotion.getId(), emotion.getName(), locale);
+        builder.add("_emotions", selfLinkBuilder(this.linkBuilder.forEmotion(emotion, uriInfo).toString()));
         return builder.build();
     }
 
@@ -1703,5 +1713,139 @@ public class EntityBuilder {
                                                 .add("required", "true")
                                         ))))
                 .build();
+    }
+
+    public JsonObject buildEmotionalAnnotation(EmotionalAnnotation emotionalAnnotation, UriInfo uriInfo) {
+        JsonObjectBuilder builder = createObjectBuilder();
+
+        builder.add("id", emotionalAnnotation.getId().toString());
+        builder.add("super_annotation", emotionalAnnotation.isSuperAnnotation());
+        builder.add("emotional_characteristic", emotionalAnnotation.isEmotionalCharacteristic());
+        builder.add("emotions", buildSensEmotionJsonArray(emotionalAnnotation.getEmotions()));
+        builder.add("valuations", buildSenseValuationJsonArray(emotionalAnnotation.getValuations()));
+        builder.add("_links", selfLinkBuilder(uriInfo.getRequestUri().toString()));
+        builder.add("_actions", createArrayBuilder()
+                .add(createObjectBuilder()
+                        .add("name", "add-emotional-annotation")
+                        .add("title", "Creates new emotional annotation")
+                        .add("method", HttpMethod.POST)
+                        .add("href", linkBuilder.forEmotionalAnnotation(emotionalAnnotation.getSense().getId(), uriInfo).toString())
+                        .add("type", MediaType.APPLICATION_JSON)
+                        .add("headers", Json.createArrayBuilder()
+                                .add(createObjectBuilder()
+                                        .add("name", "Authorization")
+                                        .add("type", "TEXT")
+                                        .add("required", "true")
+                                ))
+                        .add("fields", Json.createArrayBuilder()
+                                .add(createObjectBuilder()
+                                        .add("name", "sense_id")
+                                        .add("type", "TEXT")
+                                        .add("required", "true"))
+                                .add(createObjectBuilder()
+                                        .add("name", "super_annotation")
+                                        .add("type", "BOOLEAN")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "emotional_characteristic")
+                                        .add("type", "BOOLEAN")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "emotions")
+                                        .add("type", "LIST<NUMBER>")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "valuations")
+                                        .add("type", "LIST<NUMBER>")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "markedness")
+                                        .add("type", "NUMBER")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "example1")
+                                        .add("type", "TEXT")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "example2")
+                                        .add("type", "TEXT")
+                                        .add("required", "false"))
+                        ))
+                .add(createObjectBuilder()
+                        .add("name", "edit-emotional-annotation")
+                        .add("title", "Edit existing emotional annotation")
+                        .add("method", HttpMethod.PUT)
+                        .add("href", linkBuilder.forEmotionalAnnotation(emotionalAnnotation.getSense().getId(), uriInfo).toString())
+                        .add("type", MediaType.APPLICATION_JSON)
+                        .add("headers", Json.createArrayBuilder()
+                                .add(createObjectBuilder()
+                                        .add("name", "Authorization")
+                                        .add("type", "TEXT")
+                                        .add("required", "true")
+                                ))
+                        .add("fields", Json.createArrayBuilder()
+                                .add(createObjectBuilder()
+                                        .add("name", "id")
+                                        .add("type", "TEXT")
+                                        .add("required", "true"))
+                                .add(createObjectBuilder()
+                                        .add("name", "sense_id")
+                                        .add("type", "TEXT")
+                                        .add("required", "true"))
+                                .add(createObjectBuilder()
+                                        .add("name", "super_annotation")
+                                        .add("type", "BOOLEAN")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "emotional_characteristic")
+                                        .add("type", "BOOLEAN")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "emotions")
+                                        .add("type", "LIST<NUMBER>")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "valuations")
+                                        .add("type", "LIST<NUMBER>")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "markedness")
+                                        .add("type", "NUMBER")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "example1")
+                                        .add("type", "TEXT")
+                                        .add("required", "false"))
+                                .add(createObjectBuilder()
+                                        .add("name", "example2")
+                                        .add("type", "TEXT")
+                                        .add("required", "false"))
+                        )));
+
+        if (emotionalAnnotation.getSense() != null)
+            builder.add("sense_id", emotionalAnnotation.getSense().getId().toString());
+
+        if (emotionalAnnotation.getMarkedness() != null)
+            builder.add("markedness", emotionalAnnotation.getMarkedness().getId());
+
+        if (emotionalAnnotation.getExample1() != null)
+            builder.add("example1", emotionalAnnotation.getExample1());
+
+        if (emotionalAnnotation.getExample2() != null)
+            builder.add("example2", emotionalAnnotation.getExample2());
+
+        return builder.build();
+    }
+
+    private JsonArray buildSensEmotionJsonArray(Set<SenseEmotion> emotionSet) {
+        JsonArrayBuilder jsonArrayBuilder = createArrayBuilder();
+        emotionSet.forEach(d -> jsonArrayBuilder.add(d.getEmotion().getId()));
+        return jsonArrayBuilder.build();
+    }
+
+    private JsonArray buildSenseValuationJsonArray(Set<SenseValuation> valuationSet) {
+        JsonArrayBuilder jsonArrayBuilder = createArrayBuilder();
+        valuationSet.forEach(d -> jsonArrayBuilder.add(d.getValuation().getId()));
+        return jsonArrayBuilder.build();
     }
 }

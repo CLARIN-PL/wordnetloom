@@ -243,8 +243,34 @@ CREATE TABLE tbl_emotional_annotations_AUD (
                                        PRIMARY KEY (id, REV)
 ) engine=InnoDB;
 
+CREATE TABLE tbl_sense_emotions_AUD (
+                                   annotation_id BINARY(16) not null,
+                                   emotion bigint not null,
+                                   REV integer not null,
+                                   REVTYPE tinyint,
+                                   PRIMARY KEY (annotation_id, emotion, REV)
+) engine=InnoDB;
+
+CREATE TABLE tbl_sense_valuations_AUD (
+                                        annotation_id BINARY(16) not null,
+                                        valuation bigint not null,
+                                        REV integer not null,
+                                        REVTYPE tinyint,
+                                        PRIMARY KEY (annotation_id, valuation, REV)
+) engine=InnoDB;
+
 alter table tbl_emotional_annotations_AUD
     add constraint FKq3m6a3milrp2vio4ehdjc86ob
+        foreign key (REV)
+            references REVINFO (REV);
+
+alter table tbl_sense_emotions_AUD
+    add constraint FKq3m6a3kilrp2vio7ehdjc86ob
+        foreign key (REV)
+            references REVINFO (REV);
+
+alter table tbl_sense_valuations_AUD
+    add constraint FKq3m6t3kilrp2vio7ehdjc46ob
         foreign key (REV)
             references REVINFO (REV);
 

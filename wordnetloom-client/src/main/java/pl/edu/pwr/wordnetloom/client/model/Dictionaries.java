@@ -12,7 +12,6 @@ public class Dictionaries {
     @JsonProperty("_links")
     private Links links;
 
-
     @JsonProperty("_actions")
     private List<Action> actions;
 

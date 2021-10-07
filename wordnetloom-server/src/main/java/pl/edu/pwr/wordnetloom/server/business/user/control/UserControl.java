@@ -165,4 +165,8 @@ public class UserControl {
 
         return jsonUserObject;
     }
+
+    public String getUserName() {
+        return getCurrentUser().map(User::getFullname).orElse(" ");
+    }
 }

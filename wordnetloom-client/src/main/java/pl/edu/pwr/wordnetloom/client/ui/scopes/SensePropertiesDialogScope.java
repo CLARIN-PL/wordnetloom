@@ -2,6 +2,7 @@ package pl.edu.pwr.wordnetloom.client.ui.scopes;
 
 import de.saxsys.mvvmfx.Scope;
 import javafx.beans.property.*;
+import pl.edu.pwr.wordnetloom.client.model.EmotionalAnnotation;
 import pl.edu.pwr.wordnetloom.client.model.Sense;
 
 public class SensePropertiesDialogScope implements Scope {
@@ -12,6 +13,7 @@ public class SensePropertiesDialogScope implements Scope {
     public static String RESET_FORMS = "sense_reset";
 
     private final ObjectProperty<Sense> senseToEdit = new SimpleObjectProperty<>(this, "sense");
+    private final ObjectProperty<EmotionalAnnotation> emotionalAnnotationToEdit = new SimpleObjectProperty<>(this, "emotionalAnnotation");
     private final BooleanProperty senseFormValid = new SimpleBooleanProperty();
 
     private final StringProperty sensePropertiesTitle = new SimpleStringProperty();
@@ -22,6 +24,14 @@ public class SensePropertiesDialogScope implements Scope {
 
     public ObjectProperty<Sense> senseToEditProperty() {
         return senseToEdit;
+    }
+
+    public EmotionalAnnotation getEmotionalAnnotationToEdit() {
+        return emotionalAnnotationToEdit.get();
+    }
+
+    public void setEmotionalAnnotationToEdit(EmotionalAnnotation emotionalAnnotationToEdit) {
+        this.emotionalAnnotationToEdit.set(emotionalAnnotationToEdit);
     }
 
     public void setSenseToEdit(Sense senseToEdit) {

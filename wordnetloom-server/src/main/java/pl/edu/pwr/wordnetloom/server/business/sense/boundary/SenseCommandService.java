@@ -149,12 +149,11 @@ public class SenseCommandService {
         Status newStatus = dictionaryQueryService.findStatusDefaultValue();
         ns.setStatus(newStatus);
 
-        String userName = userControl.getCurrentUser().get().getFullname();
-        senseAttributes.setUserName(userName);
+        senseAttributes.setUserName(userControl.getUserName());
 
         if (sense.getBoolean("create_synset")) {
             synset.setStatus(newStatus);
-            synsetAttributes.setUserName(userName);
+            synsetAttributes.setUserName(userControl.getUserName());
             em.persist(synset);
             synsetAttributes.setSynset(synset);
             em.persist(synsetAttributes);
@@ -561,5 +560,155 @@ public class SenseCommandService {
     public void deleteRelation(UUID source, UUID target, UUID relationType) {
         senseQueryService.findSenseRelation(source, target, relationType)
                 .ifPresent(e -> em.remove(e));
+    }
+
+    private List<SenseValuation> getSenseValuations(UUID annotationId) {
+        return em.createNamedQuery(SenseValuation.FIND_BY_EMOTIONAL_ID, SenseValuation.class)
+                .setParameter("id", annotationId)
+                .getResultList();
+    }
+
+    private List<SenseEmotion> getSenseEmotions(UUID annotationId) {
+        return em.createNamedQuery(SenseEmotion.FIND_BY_EMOTIONAL_ID, SenseEmotion.class)
+                .setParameter("id", annotationId)
+                .getResultList();
+    }
+
+    private void checkAndAddEmotionalAttributes(JsonObject annotation, EmotionalAnnotation emotionalAnnotation) {
+        if (!annotation.isNull("super_annotation"))
+            emotionalAnnotation.setSuperAnnotation(annotation.getBoolean("super_annotation"));
+
+        if (!annotation.isNull("emotional_characteristic"))
+            emotionalAnnotation.setEmotionalCharacteristic(annotation.getBoolean("emotional_characteristic"));
+
+        if (!annotation.isNull("example1"))
+            emotionalAnnotation.setExample1(annotation.getString("example1"));
+
+        if (!annotation.isNull("example2"))
+            emotionalAnnotation.setExample2(annotation.getString("example2"));
+
+        if (!annotation.isNull("markedness")) {
+            long markednessId = annotation.getInt("markedness");
+            dictionaryQueryService.findMarkedness(markednessId).ifPresent(emotionalAnnotation::setMarkedness);
+        }
+    }
+
+    public OperationResult<EmotionalAnnotation> saveEmotionalAnnotation(JsonObject annotation) {
+        OperationResult<EmotionalAnnotation> result = new OperationResult<>();
+
+        if (!annotation.isNull("sense_id")) {
+            UUID senseId = UUID.fromString(annotation.getString("sense_id"));
+            Optional<Sense> opt = senseQueryService.findHeadSense(senseId);
+
+            if (opt.isPresent()) {
+                EmotionalAnnotation emotionalAnnotation = new EmotionalAnnotation();
+                emotionalAnnotation.setSense(opt.get());
+                emotionalAnnotation.setOwner(userControl.getUserName());
+                checkAndAddEmotionalAttributes(annotation, emotionalAnnotation);
+
+                if (!result.hasErrors()) {
+                    em.persist(emotionalAnnotation);
+                    EmotionalAnnotation dbEmotionalAnnotation = senseQueryService.findEmotionalAnnotationBySenseId(senseId).get();
+
+                    if (!annotation.isNull("emotions"))
+                        addNewEmotions(annotation, dbEmotionalAnnotation);
+
+                    if (!annotation.isNull("valuations"))
+                        addNewValuations(annotation, dbEmotionalAnnotation);
+                }
+
+                result.setEntity(emotionalAnnotation);
+            } else {
+                result.addError("sense", "Cannot find sense");
+            }
+        } else {
+            result.addError("sense_id", "Sense id cannot be null");
+        }
+
+        return result;
+    }
+
+    private void addNewValuations(JsonObject annotation, EmotionalAnnotation dbEmotionalAnnotation) {
+        for (int i = 0; i < annotation.getJsonArray("valuations").size(); i++) {
+            long valuationId = annotation.getJsonArray("valuations").getInt(i);
+            dictionaryQueryService.findValuation(valuationId).ifPresent(
+                    v -> em.persist(new SenseValuation(dbEmotionalAnnotation, v)));
+        }
+    }
+
+    private void addNewEmotions(JsonObject annotation, EmotionalAnnotation dbEmotionalAnnotation) {
+        for (int i = 0; i < annotation.getJsonArray("emotions").size(); i++) {
+            long emotionId = annotation.getJsonArray("emotions").getInt(i);
+            dictionaryQueryService.findEmotion(emotionId).ifPresent(
+                    v -> em.persist(new SenseEmotion(dbEmotionalAnnotation, v)));
+        }
+    }
+
+    public OperationResult<EmotionalAnnotation> updateEmotionalAnnotation(JsonObject annotation) {
+        OperationResult<EmotionalAnnotation> result = new OperationResult<>();
+
+        if (!annotation.isNull("sense_id")) {
+            UUID senseId = UUID.fromString(annotation.getString("sense_id"));
+            Optional<Sense> opt = senseQueryService.findHeadSense(senseId);
+
+            if (opt.isPresent()) {
+                EmotionalAnnotation emotionalAnnotation = senseQueryService.findEmotionalAnnotationBySenseId(senseId).get();
+                emotionalAnnotation.setSense(opt.get());
+                checkAndAddEmotionalAttributes(annotation, emotionalAnnotation);
+
+                if (!annotation.isNull("emotions"))
+                    checkAndAddOrDeleteEmotions(annotation, emotionalAnnotation);
+
+                if (!annotation.isNull("valuations"))
+                    checkAndAddOrDeleteValuations(annotation, emotionalAnnotation);
+
+                if (!result.hasErrors())
+                    em.merge(emotionalAnnotation);
+
+                result.setEntity(emotionalAnnotation);
+            } else {
+                result.addError("sense", "Cannot find sense");
+            }
+        } else {
+            result.addError("sense_id", "Sense id cannot be null");
+        }
+
+        return result;
+    }
+
+    private void checkAndAddOrDeleteValuations(JsonObject annotation, EmotionalAnnotation emotionalAnnotation) {
+        List<Long> valuationIdList = new LinkedList<>();
+        for (int i = 0; i < annotation.getJsonArray("valuations").size(); i++)
+            valuationIdList.add((long) annotation.getJsonArray("valuations").getInt(i));
+
+        List<SenseValuation> dbValuations = getSenseValuations(emotionalAnnotation.getId());
+        for (SenseValuation senseValuation : dbValuations) {
+            if (!valuationIdList.contains(senseValuation.getValuation().getId()))
+                em.remove(senseValuation);
+            else
+                valuationIdList.remove(senseValuation.getValuation().getId());
+        }
+
+        for (long valuationId : valuationIdList)
+            dictionaryQueryService.findValuation(valuationId).ifPresent(
+                    v -> em.persist(new SenseValuation(emotionalAnnotation, v)));
+    }
+
+    private void checkAndAddOrDeleteEmotions(JsonObject annotation, EmotionalAnnotation emotionalAnnotation) {
+        List<Long> emotionIdList = new LinkedList<>();
+        for (int i = 0; i < annotation.getJsonArray("emotions").size(); i++)
+            emotionIdList.add((long) annotation.getJsonArray("emotions").getInt(i));
+
+        List<SenseEmotion> dbEmotions = getSenseEmotions(emotionalAnnotation.getId());
+        for (SenseEmotion senseEmotion : dbEmotions) {
+            if (!emotionIdList.contains(senseEmotion.getEmotion().getId()))
+                em.remove(senseEmotion);
+            else
+                emotionIdList.remove(senseEmotion.getEmotion().getId());
+        }
+
+        for (long emotionId : emotionIdList)
+            dictionaryQueryService.findEmotion(emotionId).ifPresent(
+                    v -> em.persist(new SenseEmotion(emotionalAnnotation, v)));
     }
 }

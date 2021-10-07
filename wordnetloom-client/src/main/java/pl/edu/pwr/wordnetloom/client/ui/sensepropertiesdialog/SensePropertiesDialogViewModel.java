@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.pwr.wordnetloom.client.events.LoadGraphEvent;
+import pl.edu.pwr.wordnetloom.client.model.EmotionalAnnotation;
 import pl.edu.pwr.wordnetloom.client.model.Sense;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.service.ValidationException;
@@ -92,16 +93,25 @@ public class SensePropertiesDialogViewModel implements ViewModel {
     private void save() {
         dialogScope.publish(SensePropertiesDialogScope.COMMIT);
         Sense s = dialogScope.getSenseToEdit();
+        EmotionalAnnotation emotionalAnnotation = dialogScope.getEmotionalAnnotationToEdit();
         try {
             if (s.getId() != null) {
                 Sense us = service.updateSense(s);
                 dialogScope.setSenseToEdit(us);
-                dialogHandler.onShowSuccessNotification("Sense updated");
             } else {
                 Sense ns = service.saveSense(s);
                 dialogScope.setSenseToEdit(ns);
-                dialogHandler.onShowSuccessNotification("Sense saved");
             }
+
+            if (emotionalAnnotation.getId() != null) {
+                EmotionalAnnotation ea = service.updateEmotionalAnnotation(emotionalAnnotation);
+                dialogScope.setEmotionalAnnotationToEdit(ea);
+            } else {
+                EmotionalAnnotation ea = service.saveEmotionalAnnotation(emotionalAnnotation, dialogScope.getSenseToEdit().getId());
+                dialogScope.setEmotionalAnnotationToEdit(ea);
+            }
+
+            dialogHandler.onShowSuccessNotification("Sense updated");
         } catch (Exception e) {
             dialogHandler.handleErrors(e);
         }

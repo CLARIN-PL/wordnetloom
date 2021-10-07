@@ -13,10 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import pl.edu.pwr.wordnetloom.client.events.ShowSenseRelationsEvent;
 import pl.edu.pwr.wordnetloom.client.events.ShowSynsetPropertiesEvent;
-import pl.edu.pwr.wordnetloom.client.model.Dictionary;
-import pl.edu.pwr.wordnetloom.client.model.Example;
-import pl.edu.pwr.wordnetloom.client.model.Sense;
-import pl.edu.pwr.wordnetloom.client.model.Synset;
+import pl.edu.pwr.wordnetloom.client.model.*;
 import pl.edu.pwr.wordnetloom.client.service.Dictionaries;
 import pl.edu.pwr.wordnetloom.client.service.RemoteService;
 import pl.edu.pwr.wordnetloom.client.ui.alerts.AlertDialogHandler;
@@ -268,6 +265,11 @@ public class SynsetPropertiesViewModel implements ViewModel {
                 sense.setExamples(fetchExamples(sense.getLinks().getExamples()));
             }
             sensePropertiesEditDialogScope.setSenseToEdit(sense);
+
+            EmotionalAnnotation emotionalAnnotation = service.findEmotionalAnnotationBySenseId(sense.getId());
+            if (emotionalAnnotation != null)
+                sensePropertiesEditDialogScope.setEmotionalAnnotationToEdit(emotionalAnnotation);
+
             publish(OPEN_EDIT_SENSE_DIALOG);
         }
     }

@@ -33,6 +33,9 @@ public class Dictionaries {
     public static final String STATUS_DICTIONARY = "statuses";
     public static final String REGISTER_DICTIONARY = "registers";
     public static final String LEXICON_DICTIONARY = "lexicons";
+    public static final String EMOTION_DICTIONARY = "emotion";
+    public static final String VALUATION_DICTIONARY = "valuation";
+    public static final String MARKEDNESS_DICTIONARY = "markedness";
 
     private static final Map<String, ObservableList<Dictionary>> dictionaries = new ConcurrentHashMap<>();
     private static final ObservableList<Dictionary> userChosenLexicon = FXCollections.observableArrayList();
@@ -75,6 +78,14 @@ public class Dictionaries {
         return  getDictionary(dic)
                 .stream()
                 .filter(d -> d.getId().equals(id))
+                .findFirst().orElse(null);
+    }
+
+    public static Long getDictionaryItemIdByName(String dic, String name){
+        return getDictionary(dic)
+                .stream()
+                .filter(d -> d.getName().equals(name))
+                .map(Dictionary::getId)
                 .findFirst().orElse(null);
     }
 

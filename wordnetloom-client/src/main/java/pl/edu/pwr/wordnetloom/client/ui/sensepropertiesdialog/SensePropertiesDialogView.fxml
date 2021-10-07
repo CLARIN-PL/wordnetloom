@@ -16,6 +16,11 @@
                     <fx:include fx:id="senseProperties" source="../senseform/SenseFormView.fxml"/>
                 </content>
             </Tab>
+            <Tab fx:id="emotionalAnnotationsTab" text="Emotional Annotations">
+                <content>
+                    <fx:include fx:id="emotionProperties" source="../emotionsform/EmotionFormView.fxml"/>
+                </content>
+            </Tab>
         </TabPane>
 
         <ButtonBar minHeight="40.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0"

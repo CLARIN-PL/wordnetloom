@@ -87,3 +87,11 @@ INSERT INTO tbl_word_form_AUD (id, form, tag, word, REV, REVTYPE)
 INSERT INTO tbl_emotional_annotations_AUD (id, sense_id, has_emotional_characteristic, super_anotation, markedness_id, legacy_id, example1, example2, user_name, REV, REVTYPE)
     SELECT id, sense_id, has_emotional_characteristic, super_anotation, markedness_id, legacy_id, example1, example2, user_name, 1, 0
     FROM tbl_emotional_annotations;
+
+INSERT INTO tbl_sense_emotions_AUD(annotation_id, emotion, REV, REVTYPE)
+    SELECT annotation_id, emotion, 1, 0
+    FROM tbl_sense_emotions;
+
+INSERT INTO tbl_sense_valuations_AUD(annotation_id, valuation, REV, REVTYPE)
+    SELECT annotation_id, valuation, 1, 0
+    FROM tbl_sense_valuations;

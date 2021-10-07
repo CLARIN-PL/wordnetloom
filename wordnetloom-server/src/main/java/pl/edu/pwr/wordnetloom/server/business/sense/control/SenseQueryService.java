@@ -246,4 +246,16 @@ public class SenseQueryService {
             return Optional.empty();
         }
     }
+
+    public Optional<EmotionalAnnotation> findEmotionalAnnotationBySenseId(UUID senseId) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(EmotionalAnnotation.FIND_BY_SENSE_ID, EmotionalAnnotation.class)
+                        .setParameter("id", senseId)
+                        .setMaxResults(1)
+                        .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

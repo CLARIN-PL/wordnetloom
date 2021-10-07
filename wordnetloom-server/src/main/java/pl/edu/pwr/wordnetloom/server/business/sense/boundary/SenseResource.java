@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.bind.JsonbBuilder;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @Path("senses")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Transactional
 @Tag(name = "Sense Resource", description = "Methods for senses management")
 @SecurityRequirement(name = "bearerAuth")
 public class SenseResource {
@@ -299,21 +301,40 @@ public class SenseResource {
         return Response.noContent().build();
     }
 
-    @PUT
-    @RolesAllowed({"admin"})
-    @Path("{id}/emotional-annotations/{annotationId}")
-    @Operation(summary = "Not implemented yet")
-    public Response updateEmotionalAnnotations(@PathParam("id") final UUID id, JsonObject ann) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .build();
+    @GET
+    @Path("{id}/emotional-annotations")
+    @Operation(summary = "Get sense emotions", description = "Get sense emotional annotations")
+    public Response findEmotionalAnnotations(@PathParam("id") final UUID senseId) {
+        return queryService.findEmotionalAnnotationBySenseId(senseId)
+                .map(e -> Response.ok().entity(entityBuilder.buildEmotionalAnnotation(e, uriInfo)).build())
+                .orElse(Response.status(Response.Status.BAD_REQUEST).build());
     }
 
-    @DELETE
+    @POST
     @RolesAllowed({"admin"})
-    @Path("{id}/emotional-annotations/{annotationId}")
-    @Operation(summary = "Not implemented yet")
-    public Response deleteEmotionalAnnotations(@PathParam("id") final UUID id) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .build();
+    @Path("{id}/emotional-annotations")
+    @Operation(summary = "Add new emotional annotation")
+    public Response saveEmotionalAnnotations(@PathParam("id") final UUID senseId, JsonObject ann) {
+        OperationResult<EmotionalAnnotation> ea = senseCommandService.saveEmotionalAnnotation(ann);
+        if (ea.hasErrors()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(ea.getErrors()).build();
+        }
+        return Response.ok().entity(entityBuilder.buildEmotionalAnnotation(ea.getEntity(), uriInfo)).build();
     }
+
+    @PUT
+    @RolesAllowed({"admin"})
+    @Path("{id}/emotional-annotations")
+    @Operation(summary = "Edit existing emotional annotation")
+    public Response updateEmotionalAnnotations(@PathParam("id") final UUID senseId,
+                                               JsonObject ann) {
+        OperationResult<EmotionalAnnotation> ea = senseCommandService.updateEmotionalAnnotation(ann);
+        if (ea.hasErrors()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(ea.getErrors()).build();
+        }
+        return Response.ok().entity(entityBuilder.buildEmotionalAnnotation(ea.getEntity(), uriInfo)).build();
+    }
+
 }

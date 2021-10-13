@@ -3,7 +3,7 @@ package pl.edu.pwr.wordnetloom.server.business.sense.enity;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import pl.edu.pwr.wordnetloom.server.business.dictionary.entity.Markedness;
 
 import javax.persistence.*;
@@ -48,7 +48,7 @@ public class EmotionalAnnotation implements Serializable{
 
     @ManyToOne()
     @JoinColumn(name = "markedness_id")
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Markedness markedness;
 
     @Column(name = "example1")

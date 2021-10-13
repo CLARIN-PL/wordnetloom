@@ -30,7 +30,8 @@ import java.util.UUID;
                 "LEFT JOIN FETCH s.partOfSpeech " +
                 "LEFT JOIN FETCH s.lexicon " +
                 "LEFT JOIN FETCH s.status " +
-                "WHERE s.id = :id")
+                "WHERE s.id = :id " +
+                "ORDER BY s.rev DESC ")
 
 @NamedQuery(name = SenseHistory.FIND_BY_SYSNET_ID,
         query = "SELECT DISTINCT s FROM SenseHistory s " +
@@ -39,11 +40,13 @@ import java.util.UUID;
                 "LEFT JOIN FETCH s.partOfSpeech " +
                 "LEFT JOIN FETCH s.lexicon " +
                 "LEFT JOIN FETCH s.status " +
-                "WHERE s.synsetId = :id")
+                "WHERE s.synsetId = :id " +
+                "ORDER BY s.rev DESC ")
 
 @NamedQuery(name = SenseHistory.FIND_BY_TIMESTAMP,
         query = "SELECT s FROM SenseHistory s " +
-                "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
+                "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end " +
+                "ORDER BY s.rev DESC ")
 
 @NamedQuery(name = SenseHistory.FIND_BEFORE_REV,
         query = "SELECT DISTINCT s FROM SenseHistory s " +

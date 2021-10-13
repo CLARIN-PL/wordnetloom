@@ -20,15 +20,18 @@ import java.util.Objects;
 
 @NamedQuery(name = SenseRelationHistory.FIND_SENSE_HISTORY_OUTGOING_RELATIONS,
         query = "SELECT DISTINCT r FROM SenseRelationHistory r " +
-                "WHERE r.parent.id = :senseId")
+                "WHERE r.parent.id = :senseId " +
+                "ORDER BY r.rev DESC ")
 
 @NamedQuery(name = SenseRelationHistory.FIND_SENSE_HISTORY_INCOMING_RELATIONS,
         query = "SELECT DISTINCT r FROM SenseRelationHistory r " +
-                "WHERE r.child.id = :senseId")
+                "WHERE r.child.id = :senseId " +
+                "ORDER BY r.rev DESC ")
 
 @NamedQuery(name = SenseRelationHistory.FIND_BY_TIMESTAMP,
         query = "SELECT r FROM SenseRelationHistory r " +
-                "WHERE r.revisionsInfo.timestamp >= :timestamp_start AND r.revisionsInfo.timestamp <= :timestamp_end")
+                "WHERE r.revisionsInfo.timestamp >= :timestamp_start AND r.revisionsInfo.timestamp <= :timestamp_end " +
+                "ORDER BY r.rev DESC ")
 
 public class SenseRelationHistory implements Serializable {
 

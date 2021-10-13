@@ -22,11 +22,13 @@ import java.util.UUID;
 @NamedQuery(name = SenseAttributesHistory.FIND_BY_ID,
         query = "SELECT DISTINCT s FROM SenseAttributesHistory s " +
                 "LEFT JOIN FETCH s.register " +
-                "WHERE s.id = :id")
+                "WHERE s.id = :id " +
+                "ORDER BY s.rev DESC ")
 
 @NamedQuery(name = SenseAttributesHistory.FIND_BY_TIMESTAMP,
         query = "SELECT DISTINCT s FROM SenseAttributesHistory s " +
-                "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end")
+                "WHERE s.revisionsInfo.timestamp >= :timestamp_start AND s.revisionsInfo.timestamp <= :timestamp_end " +
+                "ORDER BY s.rev DESC ")
 
 @NamedQuery(name = SenseAttributesHistory.FIND_BEFORE_REV,
         query = "SELECT DISTINCT s FROM SenseAttributesHistory s " +

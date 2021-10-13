@@ -101,8 +101,11 @@ public class SenseHistoryQueryService {
         emotionalAnnotationHistoryList.forEach(s -> {
             addEmotionsAndValuations(s);
             if (s.getRevType() == 1)
-                s.setBeforeHistory(
-                        findEmotionalAnnotationHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).orElse(null)
+                findEmotionalAnnotationHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).ifPresent(
+                        e -> {
+                            addEmotionsAndValuations(e);
+                            s.setBeforeHistory(e);
+                        }
                 );
         });
 
@@ -314,6 +317,7 @@ public class SenseHistoryQueryService {
                     em.createNamedQuery(SenseAttributesHistory.FIND_BEFORE_REV, SenseAttributesHistory.class)
                         .setParameter("id", senseId)
                         .setParameter("rev", rev)
+                        .setMaxResults(1)
                         .getSingleResult());
         } catch (
         NoResultException e) {
@@ -327,6 +331,7 @@ public class SenseHistoryQueryService {
                     em.createNamedQuery(SenseHistory.FIND_BEFORE_REV, SenseHistory.class)
                             .setParameter("id", senseId)
                             .setParameter("rev", rev)
+                            .setMaxResults(1)
                             .getSingleResult());
         } catch (
                 NoResultException e) {
@@ -340,6 +345,7 @@ public class SenseHistoryQueryService {
                     em.createNamedQuery(EmotionalAnnotationHistory.FIND_BEFORE_REV, EmotionalAnnotationHistory.class)
                             .setParameter("id", emotionalAnnotationId)
                             .setParameter("rev", rev)
+                            .setMaxResults(1)
                             .getSingleResult());
         } catch (
                 NoResultException e) {

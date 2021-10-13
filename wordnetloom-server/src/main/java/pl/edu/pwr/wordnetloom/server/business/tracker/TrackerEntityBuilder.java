@@ -889,13 +889,13 @@ public class TrackerEntityBuilder {
     private String buildSenseEmotionString(Set<SenseEmotion> emotionSet) {
         StringBuilder stringBuilder = new StringBuilder();
         emotionSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getEmotion().getName())).append(", "));
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
+        return stringBuilder.substring(0, max(stringBuilder.length() - 2, 0));
     }
 
     private String buildSenseValuationString(Set<SenseValuation> valuationSet) {
         StringBuilder stringBuilder = new StringBuilder();
         valuationSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getValuation().getName())).append(", "));
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
+        return stringBuilder.substring(0, max(stringBuilder.length() - 2, 0));
     }
 
     public JsonObject buildEmotionalAnnotationHistoryList(List<EmotionalAnnotationHistory> emotionalAnnotationHistories) {
@@ -962,7 +962,7 @@ public class TrackerEntityBuilder {
                 .add("page", page)
                 .add("has_next", hasNext)
                 .add("has_prev", hasPrev)
-                .add("emotional+annotation", array)
+                .add("emotional_annotation", array)
                 .build();
     }
 

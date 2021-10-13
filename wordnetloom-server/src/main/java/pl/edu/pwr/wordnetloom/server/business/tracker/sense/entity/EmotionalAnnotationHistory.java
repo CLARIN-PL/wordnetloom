@@ -13,7 +13,8 @@ import java.util.*;
 
 @NamedQuery(name = EmotionalAnnotationHistory.FIND_BY_SENSE_ID,
         query = "SELECT DISTINCT e FROM EmotionalAnnotationHistory e " +
-                "WHERE e.senseId = :id ")
+                "WHERE e.senseId = :id " +
+                "ORDER BY e.rev DESC ")
 
 @NamedQuery(name = EmotionalAnnotationHistory.FIND_BEFORE_REV,
         query = "SELECT DISTINCT e FROM EmotionalAnnotationHistory e " +

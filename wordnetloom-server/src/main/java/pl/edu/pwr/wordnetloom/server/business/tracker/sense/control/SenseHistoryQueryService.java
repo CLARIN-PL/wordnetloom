@@ -4,9 +4,7 @@ import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Word;
 import pl.edu.pwr.wordnetloom.server.business.tracker.BeforeHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.TrackerSearchFilter;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseAttributesHistory;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseHistory;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseRelationHistory;
+import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -82,6 +80,59 @@ public class SenseHistoryQueryService {
                                                        CriteriaQuery<?> qc) {
         return List.of(
                 SenseHistorySpecification.byFilter(filter).toPredicate(root, qc, cb)
+        ).toArray(new Predicate[0]);
+    }
+
+    public List<EmotionalAnnotationHistory> findEmotionalAnnotationHistoryByFilter(TrackerSearchFilter filter) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<EmotionalAnnotationHistory> qc = cb.createQuery(EmotionalAnnotationHistory.class);
+        Root<EmotionalAnnotationHistory> emotionalAnnotationHistoryRoot = qc.from(EmotionalAnnotationHistory.class);
+
+        qc.select(emotionalAnnotationHistoryRoot);
+        qc.distinct(true);
+        qc.orderBy(emotionalAnnotationHistoryByFilterOrders(emotionalAnnotationHistoryRoot, cb));
+        qc.where(emotionalAnnotationHistoryByFilterPredicates(filter, emotionalAnnotationHistoryRoot, cb, qc));
+
+        TypedQuery<EmotionalAnnotationHistory> query = em.createQuery(qc);
+
+        List<EmotionalAnnotationHistory> emotionalAnnotationHistoryList = query.setFirstResult(filter.getStart())
+                .setMaxResults(filter.getEnd())
+                .getResultList();
+        emotionalAnnotationHistoryList.forEach(s -> {
+            addEmotionsAndValuations(s);
+            if (s.getRevType() == 1)
+                s.setBeforeHistory(
+                        findEmotionalAnnotationHistoryBeforeRev(s.getId(), s.getRevisionsInfo().getId()).orElse(null)
+                );
+        });
+
+        return emotionalAnnotationHistoryList;
+    }
+
+    public Long countEmotionalAnnotationHistoryByFilter(TrackerSearchFilter filter) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> qc = cb.createQuery(Long.class);
+        Root<EmotionalAnnotationHistory> emotionalAnnotationHistoryRoot = qc.from(EmotionalAnnotationHistory.class);
+
+        qc.select(cb.countDistinct(emotionalAnnotationHistoryRoot.get("concatKeys")));
+        qc.where(emotionalAnnotationHistoryByFilterPredicates(filter, emotionalAnnotationHistoryRoot, cb, qc));
+        return em.createQuery(qc)
+                .getSingleResult();
+    }
+
+    private List<Order> emotionalAnnotationHistoryByFilterOrders(Root<EmotionalAnnotationHistory> root, CriteriaBuilder cb) {
+        return List.of(
+                cb.desc(root.get("rev")),
+                cb.asc(root.get("id"))
+        );
+    }
+
+    private Predicate[] emotionalAnnotationHistoryByFilterPredicates(TrackerSearchFilter filter,
+                                                       Root<EmotionalAnnotationHistory> root,
+                                                       CriteriaBuilder cb,
+                                                       CriteriaQuery<?> qc) {
+        return List.of(
+                SenseHistorySpecification.emotionalAnnotationByFilter(filter).toPredicate(root, qc, cb)
         ).toArray(new Predicate[0]);
     }
 
@@ -195,21 +246,6 @@ public class SenseHistoryQueryService {
         return senseHistoryList;
     }
 
-    private void addOrMergeAttributes(List<SenseHistory> senseHistoryList,
-                                      List<SenseAttributesHistory> senseAttributesHistoryList) {
-        for (SenseAttributesHistory senseAttributesHistory : senseAttributesHistoryList) {
-            boolean contains = false;
-            for (int senseIter = 0; senseIter < senseHistoryList.size() && !contains; senseIter++)
-                if(senseHistoryList.get(senseIter)
-                        .getRevisionsInfo().getId() == senseAttributesHistory.getRevisionsInfo().getId()) {
-                    contains = true;
-                    senseHistoryList.get(senseIter).setSenseAttributesHistory(senseAttributesHistory);
-                }
-            if (!contains)
-                senseHistoryList.add(new SenseHistory(senseAttributesHistory));
-        }
-    }
-
     public List<SenseRelationHistory> findSenseIncomingRelationsHistory(UUID senseId) {
         return em.createNamedQuery(SenseRelationHistory.FIND_SENSE_HISTORY_INCOMING_RELATIONS, SenseRelationHistory.class)
                 .setParameter("senseId", senseId)
@@ -255,6 +291,16 @@ public class SenseHistoryQueryService {
         return senseHistoryList;
     }
 
+    public List<EmotionalAnnotationHistory> findEmotionalAnnotationBySenseId(UUID senseId) {
+        List<EmotionalAnnotationHistory> emotionalAnnotationHistoryList =
+                em.createNamedQuery(EmotionalAnnotationHistory.FIND_BY_SENSE_ID, EmotionalAnnotationHistory.class)
+                    .setParameter("id", senseId)
+                    .getResultList();
+        emotionalAnnotationHistoryList.forEach(this::addEmotionsAndValuations);
+
+        return emotionalAnnotationHistoryList;
+    }
+
     public List<SenseRelationHistory> findSenseRelationHistoryByTimestamps(long begin, long end) {
         return em.createNamedQuery(SenseRelationHistory.FIND_BY_TIMESTAMP, SenseRelationHistory.class)
                 .setParameter("timestamp_start", begin)
@@ -286,5 +332,59 @@ public class SenseHistoryQueryService {
                 NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public Optional<EmotionalAnnotationHistory> findEmotionalAnnotationHistoryBeforeRev(UUID emotionalAnnotationId, int rev) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(EmotionalAnnotationHistory.FIND_BEFORE_REV, EmotionalAnnotationHistory.class)
+                            .setParameter("id", emotionalAnnotationId)
+                            .setParameter("rev", rev)
+                            .getSingleResult());
+        } catch (
+                NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<SenseEmotionHistory> findSenseEmotionsByIdAndRev(UUID id, int rev) {
+        return em.createNamedQuery(SenseEmotionHistory.FIND_BY_EMOTIONAL_AND_REV, SenseEmotionHistory.class)
+                    .setParameter("id", id)
+                    .setParameter("rev", rev)
+                    .getResultList();
+    }
+
+    public List<SenseValuationHistory> findSenseValuationsByIdAndRev(UUID id, int rev) {
+        return em.createNamedQuery(SenseValuationHistory.FIND_BY_EMOTIONAL_AND_REV, SenseValuationHistory.class)
+                .setParameter("id", id)
+                .setParameter("rev", rev)
+                .getResultList();
+    }
+
+    private void addOrMergeAttributes(List<SenseHistory> senseHistoryList,
+                                      List<SenseAttributesHistory> senseAttributesHistoryList) {
+        for (SenseAttributesHistory senseAttributesHistory : senseAttributesHistoryList) {
+            boolean contains = false;
+            for (int senseIter = 0; senseIter < senseHistoryList.size() && !contains; senseIter++)
+                if(senseHistoryList.get(senseIter)
+                        .getRevisionsInfo().getId() == senseAttributesHistory.getRevisionsInfo().getId()) {
+                    contains = true;
+                    senseHistoryList.get(senseIter).setSenseAttributesHistory(senseAttributesHistory);
+                }
+            if (!contains)
+                senseHistoryList.add(new SenseHistory(senseAttributesHistory));
+        }
+    }
+
+    private void addEmotionsAndValuations(EmotionalAnnotationHistory emotionalAnnotationHistory) {
+        emotionalAnnotationHistory.setEmotions(findSenseEmotionsByIdAndRev(
+                emotionalAnnotationHistory.getId(),
+                emotionalAnnotationHistory.getRev()
+        ));
+
+        emotionalAnnotationHistory.setValuations(findSenseValuationsByIdAndRev(
+                emotionalAnnotationHistory.getId(),
+                emotionalAnnotationHistory.getRev()
+        ));
     }
 }

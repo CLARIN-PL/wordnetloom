@@ -1,17 +1,15 @@
 package pl.edu.pwr.wordnetloom.server.business.tracker;
 
+import pl.edu.pwr.wordnetloom.server.business.dictionary.control.DictionaryQueryService;
 import pl.edu.pwr.wordnetloom.server.business.localistaion.control.LocalisedStringCommandService;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.revisions.entity.RevisionsInfo;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseAttributes;
-import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
+import pl.edu.pwr.wordnetloom.server.business.sense.control.SenseQueryService;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.*;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.Synset;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetAttributes;
 import pl.edu.pwr.wordnetloom.server.business.synset.entity.SynsetRelation;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseAttributesHistory;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseHistory;
-import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseRelationHistory;
+import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.*;
 import pl.edu.pwr.wordnetloom.server.business.tracker.statistic.entity.UserStats;
 import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetAttributesHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetHistory;
@@ -19,16 +17,12 @@ import pl.edu.pwr.wordnetloom.server.business.tracker.synset.entity.SynsetRelati
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.json.stream.JsonCollectors;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.lang.Math.max;
 import static javax.json.Json.createObjectBuilder;
 
 @Singleton
@@ -36,6 +30,12 @@ public class TrackerEntityBuilder {
 
     @Inject
     LocalisedStringCommandService stringCommandService;
+
+    @Inject
+    DictionaryQueryService dictionaryQueryService;
+
+    @Inject
+    SenseQueryService senseQueryService;
 
     public JsonObject buildSense(Sense sense, SenseAttributes attributes) {
         JsonObjectBuilder builder = createObjectBuilder();
@@ -863,5 +863,137 @@ public class TrackerEntityBuilder {
 
         if (beforeHistory.getIliId() != null)
             builder.add("before_ili_id", beforeHistory.getIliId());
+    }
+
+    public JsonObject buildEmotionalAnnotation(EmotionalAnnotation emotionalAnnotation) {
+        JsonObjectBuilder builder = createObjectBuilder();
+
+        builder.add("id", emotionalAnnotation.getId().toString());
+        builder.add("super_annotation", emotionalAnnotation.isSuperAnnotation());
+        builder.add("emotional_characteristic", emotionalAnnotation.isEmotionalCharacteristic());
+        builder.add("emotions", buildSenseEmotionString(emotionalAnnotation.getEmotions()));
+        builder.add("valuations", buildSenseValuationString(emotionalAnnotation.getValuations()));
+
+        if (emotionalAnnotation.getMarkedness() != null)
+            builder.add("markedness", stringCommandService.getById(emotionalAnnotation.getMarkedness().getName()));
+
+        if (emotionalAnnotation.getExample1() != null)
+            builder.add("example1", emotionalAnnotation.getExample1());
+
+        if (emotionalAnnotation.getExample2() != null)
+            builder.add("example2", emotionalAnnotation.getExample2());
+
+        return builder.build();
+    }
+
+    private String buildSenseEmotionString(Set<SenseEmotion> emotionSet) {
+        StringBuilder stringBuilder = new StringBuilder();
+        emotionSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getEmotion().getName())).append(", "));
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
+    }
+
+    private String buildSenseValuationString(Set<SenseValuation> valuationSet) {
+        StringBuilder stringBuilder = new StringBuilder();
+        valuationSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getValuation().getName())).append(", "));
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
+    }
+
+    public JsonObject buildEmotionalAnnotationHistoryList(List<EmotionalAnnotationHistory> emotionalAnnotationHistories) {
+        JsonArray array = emotionalAnnotationHistories
+                .stream().map(this::buildEmotionalAnnotationHistory)
+                .collect(JsonCollectors.toJsonArray());
+        return createObjectBuilder()
+                .add("emotional_annotation_history_list", array)
+                .build();
+    }
+
+    private JsonObject buildEmotionalAnnotationHistory(EmotionalAnnotationHistory emotionalAnnotationHistory) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        addRevisionInfoToJson(builder, emotionalAnnotationHistory.getRevisionsInfo(), emotionalAnnotationHistory.getRevType());
+
+        builder.add("id", emotionalAnnotationHistory.getId().toString());
+        builder.add("super_annotation", emotionalAnnotationHistory.isSuperAnnotation());
+        builder.add("emotional_characteristic", emotionalAnnotationHistory.isEmotionalCharacteristic());
+        builder.add("emotions", buildSenseEmotionHistoryString(emotionalAnnotationHistory.getEmotions()));
+        builder.add("valuations", buildSenseValuationHistoryString(emotionalAnnotationHistory.getValuations()));
+
+        if (emotionalAnnotationHistory.getMarkednessId() != null)
+            builder.add("markedness", getMarkednessNameById(emotionalAnnotationHistory.getMarkednessId()));
+
+        if (emotionalAnnotationHistory.getExample1() != null)
+            builder.add("example1", emotionalAnnotationHistory.getExample1());
+
+        if (emotionalAnnotationHistory.getExample2() != null)
+            builder.add("example2", emotionalAnnotationHistory.getExample2());
+
+        return builder.build();
+    }
+
+    private String buildSenseEmotionHistoryString(List<SenseEmotionHistory> emotionSet) {
+        StringBuilder stringBuilder = new StringBuilder();
+        emotionSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getEmotion().getName())).append(", "));
+        return stringBuilder.substring(0, max(stringBuilder.length() - 2, 0));
+    }
+
+    private String buildSenseValuationHistoryString(List<SenseValuationHistory> valuationSet) {
+        StringBuilder stringBuilder = new StringBuilder();
+        valuationSet.forEach(d -> stringBuilder.append(stringCommandService.getById(d.getValuation().getName())).append(", "));
+        return stringBuilder.substring(0, max(stringBuilder.length() - 2, 0));
+    }
+
+    private String getMarkednessNameById(Long id) {
+        AtomicReference<String> result = new AtomicReference<>(" ");
+        dictionaryQueryService.findMarkedness(id).ifPresent(
+                m -> result.set(stringCommandService.getById(m.getName())));
+        return result.get();
+    }
+
+    public JsonObject buildEmotionalAnnotationHistorySearchList(List<EmotionalAnnotationHistory> emotionalAnnotationHistoryList,
+                                                             int pages,
+                                                             int page,
+                                                             boolean hasNext,
+                                                             boolean hasPrev) {
+        JsonArray array = emotionalAnnotationHistoryList
+                .stream().map(this::buildEmotionalAnnotationHistorySearchListElem)
+                .collect(JsonCollectors.toJsonArray());
+
+        return Json.createObjectBuilder()
+                .add("pages", pages)
+                .add("page", page)
+                .add("has_next", hasNext)
+                .add("has_prev", hasPrev)
+                .add("emotional+annotation", array)
+                .build();
+    }
+
+    private JsonObject buildEmotionalAnnotationHistorySearchListElem(EmotionalAnnotationHistory emotionalAnnotationHistory) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        addRevisionInfoToJson(builder, emotionalAnnotationHistory.getRevisionsInfo(), emotionalAnnotationHistory.getRevType());
+
+        if (emotionalAnnotationHistory.getBeforeHistory() != null) {
+            EmotionalAnnotationHistory history = emotionalAnnotationHistory.getBeforeHistory();
+            builder.add("before_emotions", buildSenseEmotionHistoryString(history.getEmotions()));
+            builder.add("before_valuations", buildSenseValuationHistoryString(history.getValuations()));
+            builder.add("before_editor", history.getRevisionsInfo().getUserEmail());
+
+            if(history.getMarkednessId() != null)
+                builder.add("before_markedness", getMarkednessNameById(history.getMarkednessId()));
+        }
+
+        builder.add("id", emotionalAnnotationHistory.getId().toString());
+        builder.add("emotions", buildSenseEmotionHistoryString(emotionalAnnotationHistory.getEmotions()));
+        builder.add("valuations", buildSenseValuationHistoryString(emotionalAnnotationHistory.getValuations()));
+
+        if (emotionalAnnotationHistory.getMarkednessId() != null)
+            builder.add("markedness", getMarkednessNameById(emotionalAnnotationHistory.getMarkednessId()));
+
+        if (emotionalAnnotationHistory.getSenseId() != null)
+            senseQueryService.findById(emotionalAnnotationHistory.getSenseId()).ifPresent(
+                    s -> {
+                        builder.add("sense_id", s.getId().toString());
+                        builder.add("sense_lemma", s.getWord().getWord());
+                    });
+
+        return builder.build();
     }
 }

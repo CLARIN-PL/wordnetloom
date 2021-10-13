@@ -34,6 +34,14 @@ public class TrackerSenseResource {
     }
 
     @GET
+    @Path("/emotional-annotation/{id}")
+    public JsonObject emotionalAnnotation(@PathParam("id") final UUID id) {
+        return senseQueryService.findEmotionalAnnotationBySenseId(id)
+                .map(e -> trackerEntityBuilder.buildEmotionalAnnotation(e))
+                .orElse(Json.createObjectBuilder().build());
+    }
+
+    @GET
     @Path("/incoming-relations/{id}")
     public JsonObject senseIncomingRelations(@PathParam("id") final UUID id) {
         return trackerEntityBuilder.buildSenseIncomingRelations(senseQueryService.findAllIncomingRelationsById(id));

@@ -1,6 +1,7 @@
 package pl.edu.pwr.wordnetloom.server.business.tracker.sense.control;
 
 import pl.edu.pwr.wordnetloom.server.business.tracker.TrackerSearchFilter;
+import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.EmotionalAnnotationHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseAttributesHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseHistory;
 import pl.edu.pwr.wordnetloom.server.business.tracker.sense.entity.SenseRelationHistory;
@@ -92,6 +93,22 @@ public class SenseHistorySpecification {
         };
     }
 
+    public static HistorySpecification<EmotionalAnnotationHistory> emotionalAnnotationByFilter(TrackerSearchFilter filter) {
+        return (root, query, cb) -> {
+            List<Predicate> criteria = new ArrayList<>();
+
+            if (filter.getUser() != null) {
+                criteria.add(emotionalAnnotationByUser(filter.getUser()).toPredicate(root, query, cb));
+            }
+
+            if (filter.getSenseUuid() != null) {
+                criteria.add(emotionalAnnotationBySenseId(filter.getSenseUuid()).toPredicate(root, query, cb));
+            }
+
+            return cb.and(criteria.toArray(new Predicate[0]));
+        };
+    }
+
     public static HistorySpecification<SenseHistory> byDateFrom(long dateFrom) {
         return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("revisionsInfo").get("timestamp"), dateFrom);
     }
@@ -146,5 +163,13 @@ public class SenseHistorySpecification {
 
     public static HistorySpecification<SenseRelationHistory> relationBySenseId(UUID id) {
         return (root, query, cb) -> cb.equal(root.get("parent").get("id"), id);
+    }
+
+    public static HistorySpecification<EmotionalAnnotationHistory> emotionalAnnotationByUser(String user) {
+        return (root, query, cb) -> cb.equal(root.get("revisionsInfo").get("userEmail"), user);
+    }
+
+    public static HistorySpecification<EmotionalAnnotationHistory> emotionalAnnotationBySenseId(UUID id) {
+        return (root, query, cb) -> cb.equal(root.get("senseId"), id);
     }
 }

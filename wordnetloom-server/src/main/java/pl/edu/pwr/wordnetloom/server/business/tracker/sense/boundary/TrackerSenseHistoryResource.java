@@ -92,4 +92,25 @@ public class TrackerSenseHistoryResource {
                 trackerSearchFilter.getStart() != 0
         );
     }
+
+    @GET
+    @Path("emotional-annotation/{id}")
+    public JsonObject emotionalAnnotationHistory(@PathParam("id") final UUID id) {
+        return trackerEntityBuilder.buildEmotionalAnnotationHistoryList(
+                senseHistoryQueryService.findEmotionalAnnotationBySenseId(id));
+    }
+
+    @GET
+    @Path("emotional-annotation/search")
+    public JsonObject searchEmotionalAnnotationHistory() {
+        final TrackerSearchFilter trackerSearchFilter = new TrackerSearchFilterUrlExtractor(uriInfo).getSearchFilter();
+        long count = senseHistoryQueryService.countEmotionalAnnotationHistoryByFilter(trackerSearchFilter);
+        return trackerEntityBuilder.buildEmotionalAnnotationHistorySearchList(
+                senseHistoryQueryService.findEmotionalAnnotationHistoryByFilter(trackerSearchFilter),
+                (int) Math.ceil((double) count / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE),
+                trackerSearchFilter.getEnd() / TrackerSearchFilterUrlExtractor.ELEMENTS_PER_PAGE,
+                trackerSearchFilter.getEnd() <= count,
+                trackerSearchFilter.getStart() != 0
+        );
+    }
 }

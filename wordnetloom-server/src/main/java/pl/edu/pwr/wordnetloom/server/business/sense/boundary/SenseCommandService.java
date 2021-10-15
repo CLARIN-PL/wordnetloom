@@ -711,4 +711,9 @@ public class SenseCommandService {
             dictionaryQueryService.findEmotion(emotionId).ifPresent(
                     v -> em.persist(new SenseEmotion(emotionalAnnotation, v)));
     }
+
+    public void deleteMorphology(Long morphologyId) {
+        senseQueryService.findMorphology(morphologyId)
+                .ifPresent(m -> em.remove(m));
+    }
 }

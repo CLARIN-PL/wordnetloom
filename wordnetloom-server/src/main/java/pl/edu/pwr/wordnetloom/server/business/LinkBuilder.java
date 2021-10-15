@@ -10,6 +10,7 @@ import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationTest;
 import pl.edu.pwr.wordnetloom.server.business.relationtype.entity.RelationType;
 import pl.edu.pwr.wordnetloom.server.business.security.boundary.SecurityResource;
 import pl.edu.pwr.wordnetloom.server.business.sense.boundary.SenseResource;
+import pl.edu.pwr.wordnetloom.server.business.sense.enity.Morphology;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.Sense;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseExample;
 import pl.edu.pwr.wordnetloom.server.business.sense.enity.SenseRelation;
@@ -116,6 +117,14 @@ public class LinkBuilder {
     public URI forSenseExample(SenseExample se, UriInfo uriInfo) {
         return uriInfo.getBaseUriBuilder().path(SenseResource.class)
                 .path(SenseResource.class, "senseExample").build(se.getSenseAttributes().getId(), se.getId());
+    }
+
+    public URI forSenseMorphologies(UUID senseId, UriInfo uriInfo) {
+        return createResourceUri(SenseResource.class, "senseMorphologies", senseId, uriInfo);
+    }
+
+    public URI forMorphologyDeletion(Long id, UriInfo uriInfo) {
+        return createResourceUri(SenseResource.class, "deleteMorphology", id, uriInfo);
     }
 
     public URI forRelationTypes(UriInfo uriInfo) {

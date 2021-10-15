@@ -337,4 +337,19 @@ public class SenseResource {
         return Response.ok().entity(entityBuilder.buildEmotionalAnnotation(ea.getEntity(), uriInfo)).build();
     }
 
+    @GET
+    @Path("{id}/morphologies")
+    @Operation(summary = "Get sense morphologies", description = "Get list of sense morphologies")
+    public JsonObject senseMorphologies(@PathParam("id") final UUID senseId) {
+        return entityBuilder.buildSenseMorphologies(senseId, queryService.findMorphologiesBySenseId(senseId), uriInfo);
+    }
+
+    @DELETE
+    @RolesAllowed({"admin"})
+    @Path("morphologies/{morphologyId}")
+    @Operation(summary = "Delete morphology", description = "Delete sense morphology")
+    public Response deleteMorphology(@PathParam("morphologyId") final Long morphologyId) {
+        senseCommandService.deleteMorphology(morphologyId);
+        return Response.noContent().build();
+    }
 }

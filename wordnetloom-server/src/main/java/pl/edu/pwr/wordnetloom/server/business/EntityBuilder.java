@@ -1303,7 +1303,8 @@ public class EntityBuilder {
         }
         linkBuilder.add("sense-graph", this.linkBuilder.forSenseGraph(sense.getId(), uriInfo).toString())
                 .add("examples", this.linkBuilder.forSenseExamples(sense.getId(), uriInfo).toString())
-                .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString());
+                .add("relations", this.linkBuilder.forSenseRelations(sense, uriInfo).toString())
+                .add("morphologies", this.linkBuilder.forSenseMorphologies(sense.getId(), uriInfo).toString());
 
         builder.add("_links", linkBuilder);
 
@@ -1847,5 +1848,33 @@ public class EntityBuilder {
         JsonArrayBuilder jsonArrayBuilder = createArrayBuilder();
         valuationSet.forEach(d -> jsonArrayBuilder.add(d.getValuation().getId()));
         return jsonArrayBuilder.build();
+    }
+
+    public JsonObject buildSenseMorphologies(UUID senseId, List<Morphology> morphologies, UriInfo uriInfo) {
+        JsonArrayBuilder morphologyArray = createArrayBuilder();
+        morphologies.forEach(m -> morphologyArray.add(morphologyBuilder(uriInfo, m)));
+
+        return createObjectBuilder()
+                .add("rows", morphologyArray)
+                .add("_links", createObjectBuilder()
+                        .add("self", linkBuilder.forSenseMorphologies(senseId, uriInfo).toString()))
+                .build();
+
+    }
+
+    private JsonObjectBuilder morphologyBuilder(UriInfo uri, Morphology morphology) {
+        JsonObjectBuilder builder = createObjectBuilder();
+        if (morphology.getId() != null)
+            builder.add("id", morphology.getId());
+
+        if (morphology.getMorphologicalTag() != null)
+            builder.add("morphological_tags", morphology.getMorphologicalTag());
+
+        if (morphology.getWordForm() != null)
+            builder.add("word_form", morphology.getWordForm());
+
+        builder.add("_links", createObjectBuilder()
+                .add("delete", linkBuilder.forMorphologyDeletion(morphology.getId(), uri).toString()));
+        return builder;
     }
 }

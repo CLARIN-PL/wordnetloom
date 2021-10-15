@@ -258,4 +258,21 @@ public class SenseQueryService {
             return Optional.empty();
         }
     }
+
+    public List<Morphology> findMorphologiesBySenseId(UUID senseId) {
+        return em.createNamedQuery(Morphology.FIND_BY_SENSE_ID, Morphology.class)
+                    .setParameter("id", senseId)
+                    .getResultList();
+    }
+
+    public Optional<Morphology> findMorphology(Long morphologyId) {
+        try {
+            return Optional.of(
+                    em.createNamedQuery(Morphology.FIND_BY_ID, Morphology.class)
+                            .setParameter("id", morphologyId)
+                            .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

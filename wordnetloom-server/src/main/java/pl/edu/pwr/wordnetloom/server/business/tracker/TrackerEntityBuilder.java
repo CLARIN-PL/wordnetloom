@@ -996,4 +996,22 @@ public class TrackerEntityBuilder {
 
         return builder.build();
     }
+
+    public JsonObject buildSenseMorphology(List<Morphology> morphologies) {
+        JsonArray array = morphologies
+                .stream()
+                .map(this::buildSenseMorphologyElem)
+                .collect(JsonCollectors.toJsonArray());
+
+        return createObjectBuilder()
+                .add("morphologies", array)
+                .build();
+    }
+
+    private JsonObject buildSenseMorphologyElem(Morphology morphology) {
+        return createObjectBuilder()
+                .add("word_form", morphology.getWordForm())
+                .add("morphological_tag", morphology.getMorphologicalTag())
+                .build();
+    }
 }

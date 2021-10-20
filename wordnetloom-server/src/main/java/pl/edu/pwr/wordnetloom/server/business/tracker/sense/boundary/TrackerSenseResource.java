@@ -60,4 +60,10 @@ public class TrackerSenseResource {
                 senseQueryService.findAllRelations()
         );
     }
+
+    @GET
+    @Path("/morphologies/{id}")
+    public JsonObject senseMorphologies(@PathParam("id") final UUID id) {
+        return trackerEntityBuilder.buildSenseMorphology(senseQueryService.findMorphologiesBySenseId(id));
+    }
 }

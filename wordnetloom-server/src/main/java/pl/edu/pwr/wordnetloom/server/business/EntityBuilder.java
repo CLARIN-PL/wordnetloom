@@ -1873,8 +1873,20 @@ public class EntityBuilder {
         if (morphology.getWordForm() != null)
             builder.add("word_form", morphology.getWordForm());
 
-        builder.add("_links", createObjectBuilder()
-                .add("delete", linkBuilder.forMorphologyDeletion(morphology.getId(), uri).toString()));
+        builder.add("_actions", createArrayBuilder()
+                .add(createObjectBuilder()
+                        .add("name", "delete-morphology")
+                        .add("title", "Delete morphology")
+                        .add("method", HttpMethod.DELETE)
+                        .add("href", linkBuilder.forMorphologyDeletion(morphology.getId(), uri).toString())
+                        .add("type", MediaType.APPLICATION_JSON)
+                        .add("headers", Json.createArrayBuilder()
+                                .add(createObjectBuilder()
+                                        .add("name", "Authorization")
+                                        .add("type", "TEXT")
+                                        .add("required", "true")
+                                ))
+                        ));
         return builder;
     }
 }

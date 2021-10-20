@@ -1162,4 +1162,23 @@ public class RemoteService {
         return new EmotionalAnnotation();
     }
 
+    public List<Morphology> findMorphologies(URI link) {
+        WebTarget target = client.target(link);
+
+        LOG.debug("Loading morphologies: " + target.getUri());
+
+        Response response = target
+                .request()
+                .header(HEADER_AUTHORIZATION, user.getToken())
+                .get();
+
+        if (isOkStatus(response)) {
+            Morphologies morphologies = response.readEntity(Morphologies.class);
+            if (morphologies.getMorphologies().isEmpty()) {
+                return new ArrayList<>();
+            }
+            return morphologies.getMorphologies();
+        }
+        return new ArrayList<>();
+    }
 }

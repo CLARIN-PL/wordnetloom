@@ -21,6 +21,11 @@
                     <fx:include fx:id="emotionProperties" source="../emotionsform/EmotionFormView.fxml"/>
                 </content>
             </Tab>
+            <Tab fx:id="morphologiesTab" text="Morphology">
+                <content>
+                    <fx:include fx:id="morphologies" source="../morphologyform/MorphologyFormView.fxml"/>
+                </content>
+            </Tab>
         </TabPane>
 
         <ButtonBar minHeight="40.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0"

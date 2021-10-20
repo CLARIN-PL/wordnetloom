@@ -32,6 +32,8 @@ public class Links {
     @JsonProperty("emotional-annotations")
     private URI emotionalAnnotations;
 
+    private URI morphologies;
+
     public URI getSelf() {
         return self;
     }
@@ -120,4 +122,11 @@ public class Links {
         this.reverseRelation = reverseRelation;
     }
 
+    public URI getMorphologies() {
+        return morphologies;
+    }
+
+    public void setMorphologies(URI morphologies) {
+        this.morphologies = morphologies;
+    }
 }
